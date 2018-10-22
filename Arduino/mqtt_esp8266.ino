@@ -120,7 +120,7 @@ void reconnect() {
       client.publish("status/client-id/new", clientID);
       // ... and resubscribe
       client.subscribe("esp/#");
-      client.subscribe("status/client-id/" .. clientID);
+      client.subscribe("status/client-id/");
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());
