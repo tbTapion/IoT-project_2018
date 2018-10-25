@@ -10,7 +10,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace>
     </RootNamespace>
-    <ProjectGuid>{950669FA-05AE-D687-7885-6279367FBF99}</ProjectGuid>
+    <ProjectGuid>{CD8C9303-404B-FB8D-6B9B-21988D5CAC0A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -95,18 +95,20 @@
     <Compile Include="Assets\MQTT\scripts\test\mqttTest.cs" />
     <Compile Include="Assets\MQTT\scripts\Utility\QueueExtension.cs" />
     <Compile Include="Assets\MQTT\scripts\Utility\Trace.cs" />
-    <Compile Include="Assets\Script\Test.cs" />
+    <Compile Include="Assets\Script\GameLogic.cs" />
+    <Compile Include="Assets\Script\MQTTHandler.cs" />
+    <Compile Include="Assets\Script\TwinObject.cs" />
     <Reference Include="UnityEditor.StandardEvents">
-      <HintPath>C:/Users/Andreas/Documents/MQTT-test/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
+      <HintPath>C:/Users/Andreas/Documents/GitHub/IoT-project_2018/Unity/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro.Editor">
-      <HintPath>C:/Users/Andreas/Documents/MQTT-test/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+      <HintPath>C:/Users/Andreas/Documents/GitHub/IoT-project_2018/Unity/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.PackageManagerUI.Editor">
-      <HintPath>C:/Users/Andreas/Documents/MQTT-test/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
+      <HintPath>C:/Users/Andreas/Documents/GitHub/IoT-project_2018/Unity/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
-      <HintPath>C:/Users/Andreas/Documents/MQTT-test/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
+      <HintPath>C:/Users/Andreas/Documents/GitHub/IoT-project_2018/Unity/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AIModule">
       <HintPath>C:/Program Files/Unity/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
