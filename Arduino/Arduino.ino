@@ -26,6 +26,8 @@ int buttonPrev = 0;
 int pinButton = 4;
 
 const char* clientID; //Filled with mac address
+String clientIDstr;
+
 
 void setup() {
   pinMode(pinButton, INPUT);
@@ -53,7 +55,8 @@ void setup_wifi() {
   Serial.println("");
   Serial.println("WiFi connected");
   Serial.println("IP address: ");
-  clientID = WiFi.macAddress().c_str();
+  clientIDstr = WiFi.macAddress();
+  clientID = clientIDstr.c_str();
   Serial.println(clientID);
 }
 
@@ -61,6 +64,22 @@ void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print("Message arrived [");
   Serial.print(topic);
   Serial.print("] ");
+
+  char* topicElement;
+  topicElement = strtok(topic, "/");
+  while(topicElement != NULL){
+    if(topicElement == "ping"){
+      ping_event();
+    }else if(topicElement == "action"){
+      action_event(topicElement, payload);
+    }else if(topicElement == "get"){
+      get_event(topicElement);
+    }else if(topicElement == "getconfig"){
+      getconfig_event();
+    }
+    topicElement = strtok(NULL, "/");
+  }
+  
   for (int i = 0; i < length; i++) {
     Serial.print((char)payload[i]);
   }
@@ -72,6 +91,40 @@ void callback(char* topic, byte* payload, unsigned int length) {
   }
 }
 
+void getconfig_event(){
+  Serial.print("Get configuration event received!");
+  Serial.print("Sending active devices!");
+  client.publish(("unity/device/" + clientIDstr + "/config/cube1").c_str(), "1");
+}
+
+void get_event(char* topicElement){
+  while(topicElement != NULL){
+    if(topicElement == "led"){
+      client.publish(("unity/device/ " + clientIDstr + "/value/led").c_str(), (char*)led.getValue());
+    }
+    topicElement = strtok(NULL, "/");
+  }
+}
+
+void action_event(char* topicElement, byte* payload){
+  while(topicElement != NULL){
+    if(topicElement == "led"){
+        if ((char)payload[0] == '1') {
+          led.setValue(HIGH);
+        }else{
+          led.setValue(LOW);
+        }
+    }
+    topicElement = strtok(NULL, "/");
+  }
+}
+
+void ping_event(){
+  Serial.print("Ping event received!");
+  Serial.print("Pinging back!");
+  client.publish(("unity/device/" + clientIDstr + "/ping").c_str(), "1");
+}
+
 void reconnect() {
   // Loop until we're reconnected
   while (!client.connected()) {
@@ -79,11 +132,10 @@ void reconnect() {
     // Attempt to connect
     if (client.connect("ESP8266Client")) {
       Serial.println("connected");
-      // Once connected, publish an announcement...
-      client.publish("status/client-id/new", clientID);
-      // ... and resubscribe
-      client.subscribe("esp/#");
-      client.subscribe("status/client-id/");
+      // Once connected, publish an announcement to unity: unity/connect/device-id
+      client.publish(("unity/connect/"+clientIDstr).c_str(), "1");
+      // Then Subcribe to everything client-id/#
+      client.subscribe((clientIDstr + "/#").c_str());
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());
@@ -93,6 +145,7 @@ void reconnect() {
     }
   }
 }
+
 void loop() {
 
   if (!client.connected()) {
@@ -116,11 +169,8 @@ void loop() {
       buttonPrev = 0;
     }
   }
-  long now = millis();
+  /*long now = millis();
   if (now - lastMsg > 30000) {
     lastMsg = now;
-    Serial.print("Publish message: ");
-    Serial.println("ping");
-    client.publish("", "1");
-  }
+  }*/
 }
