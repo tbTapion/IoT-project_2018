@@ -9,6 +9,7 @@ class Led {
         int _value;
     public:
         Led(int pin);
+        void toggle();
         void setValue(int value);
         int getValue();
 }

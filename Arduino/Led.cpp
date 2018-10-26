@@ -3,8 +3,17 @@
 
 Led::Led(int pin){
     _pin = pin;
-    _value = 0;
+    _value = LOW;
     pinMode(_pin, OUTPUT);
+}
+
+void Led::toggle(){
+    if(_value == LOW){
+        _value = HIGH;
+    }else{
+        _value =LOW
+    }
+    digitalWrite(_pin, _value);
 }
 
 void Led::setValue(int value){

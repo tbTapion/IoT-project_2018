@@ -4,6 +4,7 @@ Arduino ESP8266 WiFi and MQTT
 
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
+#include "Led.h"
 
 // Update these with values suitable for your network.
 
@@ -11,7 +12,6 @@ const char* ssid = "pisbizarreadventure";
 const char* password = "piberryrasp";
 const char* mqtt_server = "192.168.42.1";
 const int mqtt_port = 1883;
-
 const char* mqtt_topic = "esp/led";
 
 WiFiClient espClient;
@@ -20,14 +20,13 @@ long lastMsg = 0;
 char msg[50];
 int value = 0;
 
-int ledtoggle = LOW;
+Led led(BUILTIN_LED); //Built-in led as output
 int buttonPrev = 0;
 int pinButton = 4;
 
 const char* clientID; //Filled with mac address
 
 void setup() {
-  pinMode(BUILTIN_LED, OUTPUT);     // Initialize the BUILTIN_LED pin as an output
   pinMode(pinButton, INPUT);
   Serial.begin(115200);
   setup_wifi();
@@ -68,18 +67,8 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
   // Switch on the LED if an 1 was received as first character
   if ((char)payload[0] == '1') {
-    digitalWrite(BUILTIN_LED, ledtoggle);   // Turn the LED on (Note that LOW is the voltage level
-    if(ledtoggle == LOW){
-      ledtoggle = HIGH;
-    }else{
-      ledtoggle = LOW;
-    }
-    // but actually the LED is on; this is because
-    // it is acive low on the ESP-01)
-  } else {
-    digitalWrite(BUILTIN_LED, HIGH);  // Turn the LED off by making the voltage HIGH
+    led.toggle();
   }
-
 }
 
 void reconnect() {
