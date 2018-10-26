@@ -8,11 +8,7 @@ Led::Led(int pin){
 }
 
 void Led::toggle(){
-    if(_value == LOW){
-        _value = HIGH;
-    }else{
-        _value =LOW
-    }
+    _value = !_value;
     digitalWrite(_pin, _value);
 }
 

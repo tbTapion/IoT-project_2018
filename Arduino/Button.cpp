@@ -1,7 +1,7 @@
 #include "Arduino.h"
 #include "Button.h"
 
-#define DEBOUNCE 10;
+#define DEBOUNCE 10
 
 Button::Button(int pin){
     _pin = pin;
@@ -23,7 +23,7 @@ void Button::update(){
     _currentState = digitalRead(_pin);
 
     if(_currentState != _previousState){
-        _pressed = _currentState
+        _pressed = _currentState;
     }
 }
 

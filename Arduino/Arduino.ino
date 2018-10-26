@@ -5,6 +5,7 @@ Arduino ESP8266 WiFi and MQTT
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 #include "Led.h"
+#include "Button.h"
 
 // Update these with values suitable for your network.
 
@@ -115,13 +116,11 @@ void loop() {
       buttonPrev = 0;
     }
   }
-  /*long now = millis();
-  if (now - lastMsg > 2000) {
+  long now = millis();
+  if (now - lastMsg > 30000) {
     lastMsg = now;
-    ++value;
-    snprintf (msg, 75, "hello world #%ld", value);
     Serial.print("Publish message: ");
-    Serial.println(msg);
-    client.publish("esp/hello", msg);
-  }*/
+    Serial.println("ping");
+    client.publish("", "1");
+  }
 }

@@ -12,6 +12,6 @@ class Led {
         void toggle();
         void setValue(int value);
         int getValue();
-}
+};
 
 #endif

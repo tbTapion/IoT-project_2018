@@ -18,6 +18,6 @@ class Button {
         void update();
         boolean pressed();
         boolean lifted();
-}
+};
 
 #endif
