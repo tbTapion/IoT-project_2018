@@ -13,24 +13,18 @@ const char* ssid = "pisbizarreadventure";
 const char* password = "piberryrasp";
 const char* mqtt_server = "192.168.42.1";
 const int mqtt_port = 1883;
-const char* mqtt_topic = "esp/led";
 
 WiFiClient espClient;
 PubSubClient client(espClient);
-long lastMsg = 0;
-char msg[50];
-int value = 0;
 
 Led led(BUILTIN_LED); //Built-in led as output
-int buttonPrev = 0;
-int pinButton = 4;
+PLab_PushButton button(4); //Button class with pin nr. 4 passed
 
 const char* clientID; //Filled with mac address
 String clientIDstr;
 
 
 void setup() {
-  pinMode(pinButton, INPUT);
   Serial.begin(115200);
   setup_wifi();
   client.setServer(mqtt_server, mqtt_port);
@@ -38,7 +32,6 @@ void setup() {
 }
 
 void setup_wifi() {
-
   delay(10);
   // We start by connecting to a WiFi network
   Serial.println();
@@ -79,16 +72,6 @@ void callback(char* topic, byte* payload, unsigned int length) {
     }
     topicElement = strtok(NULL, "/");
   }
-  
-  for (int i = 0; i < length; i++) {
-    Serial.print((char)payload[i]);
-  }
-  Serial.println();
-
-  // Switch on the LED if an 1 was received as first character
-  if ((char)payload[0] == '1') {
-    led.toggle();
-  }
 }
 
 void getconfig_event(){
@@ -100,7 +83,9 @@ void getconfig_event(){
 void get_event(char* topicElement){
   while(topicElement != NULL){
     if(topicElement == "led"){
-      client.publish(("unity/device/ " + clientIDstr + "/value/led").c_str(), (char*)led.getValue());
+      client.publish(("unity/device/" + clientIDstr + "/value/led").c_str(), (char*)led.getValue());
+    }else if(topicElement == "button"){
+      client.publish(("unity/device/" + clientIDstr + "/value/button").c_str(),(char*)button.isDown());
     }
     topicElement = strtok(NULL, "/");
   }
@@ -147,30 +132,13 @@ void reconnect() {
 }
 
 void loop() {
-
   if (!client.connected()) {
     reconnect();
   }
   client.loop();
-  if(digitalRead(pinButton) == HIGH){
-    if(buttonPrev == 0){
-      Serial.println("Button pressed!");
-      Serial.print("Publish message: ");
-      Serial.println("Button pressed!");
-      client.publish("esp/button", "1");
-      buttonPrev = 1;
-    }
-  }else {
-    if(buttonPrev == 1){
-      Serial.println("Button lifted!");
-      Serial.print("Publish message: ");
-      Serial.println("Button lifted!");
-      client.publish("esp/button", "0");
-      buttonPrev = 0;
-    }
+  if(button.justpressed()){
+    client.publish(("unity/device/" + clientIDstr + "/event/button").c_str(), "1");
+  }else if(button.justreleased()){
+    client.publish(("unity/device/" + clientIDstr + "/event/button").c_str(), "0");
   }
-  /*long now = millis();
-  if (now - lastMsg > 30000) {
-    lastMsg = now;
-  }*/
 }
