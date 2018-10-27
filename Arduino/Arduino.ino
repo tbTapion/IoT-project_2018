@@ -5,13 +5,13 @@ Arduino ESP8266 WiFi and MQTT
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 #include "Led.h"
-#include "Button.h"
+#include "PLab_PushButton.h"
 
 // Update these with values suitable for your network.
 
-const char* ssid = "pisbizarreadventure";
-const char* password = "piberryrasp";
-const char* mqtt_server = "192.168.42.1";
+const char* ssid = "your ssid";
+const char* password = "your pass";
+const char* mqtt_server = "your ip";
 const int mqtt_port = 1883;
 
 WiFiClient espClient;
