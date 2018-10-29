@@ -9,9 +9,9 @@ Arduino ESP8266 WiFi and MQTT
 
 // Update these with values suitable for your network.
 
-const char* ssid = "your ssid";
-const char* password = "your pass";
-const char* mqtt_server = "your ip";
+const char* ssid = "pisbizarreadventure";
+const char* password = "piberryrasp";
+const char* mqtt_server = "192.168.42.1";
 const int mqtt_port = 1883;
 
 WiFiClient espClient;
@@ -61,13 +61,15 @@ void callback(char* topic, byte* payload, unsigned int length) {
   char* topicElement;
   topicElement = strtok(topic, "/");
   while(topicElement != NULL){
-    if(topicElement == "ping"){
+    Serial.println(topicElement);
+    if(strcmp(topicElement, "ping") == 0){
+      Serial.println("Ping event space entered!");
       ping_event();
-    }else if(topicElement == "action"){
+    }else if(strcmp(topicElement,"action") == 0){
       action_event(topicElement, payload);
-    }else if(topicElement == "get"){
+    }else if(strcmp(topicElement,"get") == 0){
       get_event(topicElement);
-    }else if(topicElement == "getconfig"){
+    }else if(strcmp(topicElement,"getconfig") == 0){
       getconfig_event();
     }
     topicElement = strtok(NULL, "/");
@@ -82,13 +84,17 @@ void getconfig_event(){
 
 void get_event(char* topicElement){
   while(topicElement != NULL){
-    if(topicElement == "led"){
-      client.publish(("unity/device/" + clientIDstr + "/value/led").c_str(), (char*)led.getValue());
-    }else if(topicElement == "button"){
+    if(strcmp(topicElement,"led") == 0){
+      if(led.getValue() == HIGH){
+        client.publish(("unity/device/" + clientIDstr + "/value/led").c_str(),"1");
+      }else {
+        client.publish(("unity/device/" + clientIDstr + "/value/led").c_str(),"0");
+      }
+    }else if(strcmp(topicElement, "button") == 0){
       if(button.isDown()){
         client.publish(("unity/device/" + clientIDstr + "/value/button").c_str(),"1");
       }else {
-        client.publish(("unity/device/" + clientIDstr + "/value/button").c_str(),"0";
+        client.publish(("unity/device/" + clientIDstr + "/value/button").c_str(),"0");
       }
     }
     topicElement = strtok(NULL, "/");
@@ -97,7 +103,7 @@ void get_event(char* topicElement){
 
 void action_event(char* topicElement, byte* payload){
   while(topicElement != NULL){
-    if(topicElement == "led"){
+    if(strcmp(topicElement, "led") == 0){
         if ((char)payload[0] == '1') {
           led.setValue(HIGH);
         }else{
@@ -140,9 +146,9 @@ void loop() {
     reconnect();
   }
   client.loop();
-  if(button.justpressed()){
+  if(button.pressed()){
     client.publish(("unity/device/" + clientIDstr + "/event/button").c_str(), "1");
-  }else if(button.justreleased()){
+  }else if(button.released()){
     client.publish(("unity/device/" + clientIDstr + "/event/button").c_str(), "0");
   }
 }
