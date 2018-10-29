@@ -146,6 +146,7 @@ void loop() {
     reconnect();
   }
   client.loop();
+  button.update();
   if(button.pressed()){
     client.publish(("unity/device/" + clientIDstr + "/event/button").c_str(), "1");
   }else if(button.released()){
