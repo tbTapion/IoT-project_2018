@@ -20,8 +20,8 @@ PubSubClient client(espClient);
 Led led(BUILTIN_LED); //Built-in led as output
 PLab_PushButton button(4); //Button class with pin nr. 4 passed
 
-const char* clientID; //Filled with mac address
-String clientIDstr;
+const char* clientID; //Filled with mac address, unused, but kept in case of future functionality requiring it. 
+String clientIDstr; //String containing mac address, used in conjunction with message building
 
 
 void setup() {
@@ -85,7 +85,11 @@ void get_event(char* topicElement){
     if(topicElement == "led"){
       client.publish(("unity/device/" + clientIDstr + "/value/led").c_str(), (char*)led.getValue());
     }else if(topicElement == "button"){
-      client.publish(("unity/device/" + clientIDstr + "/value/button").c_str(),(char*)button.isDown());
+      if(button.isDown()){
+        client.publish(("unity/device/" + clientIDstr + "/value/button").c_str(),"1");
+      }else {
+        client.publish(("unity/device/" + clientIDstr + "/value/button").c_str(),"0";
+      }
     }
     topicElement = strtok(NULL, "/");
   }
