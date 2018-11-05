@@ -64,7 +64,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
     Serial.println(topicElement);
     if(strcmp(topicElement, "ping") == 0){
       Serial.println("Ping event space entered!");
-      ping_event();
+      ping_event(payload);
     }else if(strcmp(topicElement,"action") == 0){
       action_event(topicElement, payload);
     }else if(strcmp(topicElement,"get") == 0){
@@ -114,10 +114,14 @@ void action_event(char* topicElement, byte* payload){
   }
 }
 
-void ping_event(){
+void ping_event(byte* payload){
   Serial.print("Ping event received!");
-  Serial.print("Pinging back!");
-  client.publish(("unity/device/" + clientIDstr + "/ping").c_str(), "1");
+  if ((char)payload[0] == '1') {
+    Serial.print("Pinging back!");
+    client.publish(("unity/device/" + clientIDstr + "/ping").c_str(), "1");
+  }else{
+    WiFi.disconnect(true);
+  }
 }
 
 void reconnect() {
