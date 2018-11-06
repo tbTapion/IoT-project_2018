@@ -8,19 +8,30 @@ public class TwinObject : MonoBehaviour {
     private MQTTHandler mqttHandler; //Handler for messages
     private string deviceID; //ID of the device
     private bool linked;
-
-    //Variables for the Cube values. Twin object values
-    private int led;
-    private bool buttonHeld;
+    protected string configName;
 
 	// Use this for initialization
 	void Start () {
 	}
 
-    void setLedValue(int led)
+    public void sendPingMessage(string deviceID)
     {
-        string tempMessage = deviceID + "/LED"; //change for proper message transaction
-        mqttHandler.sendDeviceMessage(tempMessage, led);
+        mqttHandler.sendDeviceMessage(deviceID + "/ping", 1);
+    }
+
+    public void sendActionMessage(string deviceID, string componentName)
+    {
+        mqttHandler.sendDeviceMessage(deviceID + "/ping", 1);
+    }
+
+    public void sendGetMessage(string deviceID, string componentName)
+    {
+        mqttHandler.sendDeviceMessage(deviceID + "/get/" + componentName, 1);
+    }
+
+    public void sendGetConfigMessage(string deviceID)
+    {
+        mqttHandler.sendDeviceMessage(deviceID + "/getconfg", 1);
     }
 
     public string getDeviceID()
@@ -37,7 +48,12 @@ public class TwinObject : MonoBehaviour {
     {
         this.deviceID = deviceID;
         this.linked = true;
-        mqttHandler.sendDeviceMessage(deviceID + "/ping", 1);
+        sendPingMessage(deviceID);
+    }
+
+    public string getConfigName()
+    {
+        return configName;
     }
 
     // Update is called once per frame

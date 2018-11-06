@@ -23,6 +23,7 @@ PLab_PushButton button(4); //Button class with pin nr. 4 passed
 const char* clientID; //Filled with mac address, unused, but kept in case of future functionality requiring it. 
 String clientIDstr; //String containing mac address, used in conjunction with message building
 
+String configID = "cube1";
 
 void setup() {
   Serial.begin(115200);
@@ -132,7 +133,7 @@ void reconnect() {
     if (client.connect("ESP8266Client")) {
       Serial.println("connected");
       // Once connected, publish an announcement to unity: unity/connect/device-id
-      client.publish(("unity/connect/"+clientIDstr).c_str(), "1");
+      client.publish(("unity/connect/"+clientIDstr+"/"+configID).c_str(), "1");
       // Then Subcribe to everything client-id/#
       client.subscribe((clientIDstr + "/#").c_str());
     } else {
