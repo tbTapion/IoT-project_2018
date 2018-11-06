@@ -3,7 +3,7 @@
 
 Led::Led(int pin){
     _pin = pin;
-    _value = LOW;
+    _value = HIGH;
     pinMode(_pin, OUTPUT);
     digitalWrite(_pin, _value);
 }
