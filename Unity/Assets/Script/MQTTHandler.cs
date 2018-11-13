@@ -36,6 +36,7 @@ public class MQTTHandler{
     {
         Debug.Log("Received: " + Encoding.UTF8.GetString(e.Message));
         String topic = e.Topic;
+		String payload = Encoding.UTF8.GetString(e.Message);
         String[] topicSplit = topic.Split('/');
         if(topicSplit[0] == "unity")
         {
@@ -44,27 +45,40 @@ public class MQTTHandler{
                 deviceConnect(topicSplit);
             }else if(topicSplit[1] == "device")
             {
-                if (topicSplit[3] == "event")
-                {
-                    deviceEvent(topicSplit);
-                }
-                else if (topicSplit[3] == "value")
-                {
-                    deviceValue(topicSplit);
-                }
+				if (topicSplit [3] == "event") {
+					deviceEvent (topicSplit, payload);
+				} else if (topicSplit [3] == "value") {
+					deviceValue (topicSplit, payload);
+				} else if (topicSplit [3] == "ping") {
+					devicePing (topicSplit[2]);
+				}
             }
         }
     }
 
-    private void deviceValue(string[] topicSplit)
+	private void deviceValue(string[] topicSplit, string payload)
     {
-
+		TwinObject to = getObjectByID (topicSplit [2]);
+		if (to) {
+			to.valueMessage (topicSplit, payload);
+		}
     }
 
-    private void deviceEvent(string[] topicSplit)
+	private void deviceEvent(string[] topicSplit, string payload)
     {
-
+		TwinObject to = getObjectByID (topicSplit [2]);
+		if (to) {
+			to.eventMessage (topicSplit, payload);
+		}
     }
+
+	private void devicePing(string deviceID)
+	{	
+		TwinObject to = getObjectByID (deviceID);
+		if (to) {
+			to.setLinkStatus (true);
+		}
+	}
 
     private void deviceConnect(string[] topicSplit)
     {
@@ -84,6 +98,16 @@ public class MQTTHandler{
             sendDeviceMessage(topicSplit[2] + "/ping", 0);
         }
     }
+
+	private TwinObject getObjectByID(string deviceID){
+		foreach (GameObject obj in twinObjects) {
+			TwinObject to = obj.GetComponent<TwinObject> ();
+			if (to.getDeviceID() == deviceID) {
+				return to;
+			}
+		}
+		return null;
+	}
 
     public List<GameObject> getTwinObjectList()
     {

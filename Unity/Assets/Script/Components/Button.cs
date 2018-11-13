@@ -5,6 +5,8 @@ using UnityEngine;
 public class Button : MonoBehaviour {
 
     private bool state;
+	private bool _justPressed;
+	private bool _justReleased;
 
 	// Use this for initialization
 	void Start () {
@@ -13,15 +15,30 @@ public class Button : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		_justPressed = false;
+		_justReleased = false;
 	}
 
-    bool ispressed()
+	public bool justPressed(){
+		return _justPressed;
+	}
+
+	public bool justReleased(){
+		return _justReleased;
+	}
+
+    public bool ispressed()
     {
         return state;
     }
 
-    void setPressed(bool pressed)
+    public void setPressed(bool pressed)
     {
         state = pressed;
+		if (state) {
+			_justPressed = true;
+		} else {
+			_justReleased = true;
+		}
     }
 }
