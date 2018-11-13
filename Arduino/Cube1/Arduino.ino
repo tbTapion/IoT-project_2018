@@ -5,7 +5,6 @@ Arduino ESP8266 WiFi and MQTT
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 #include "Led.h"
-#include "PLab_PushButton.h"
 
 // Update these with values suitable for your network.
 
@@ -18,7 +17,6 @@ WiFiClient espClient;
 PubSubClient client(espClient);
 
 Led led(BUILTIN_LED); //Built-in led as output
-PLab_PushButton button(4); //Button class with pin nr. 4 passed
 
 const char* clientID; //Filled with mac address, unused, but kept in case of future functionality requiring it. 
 String clientIDstr; //String containing mac address, used in conjunction with message building
@@ -70,9 +68,9 @@ void callback(char* topic, byte* payload, unsigned int length) {
       action_event(topicElement, payload);
     }else if(strcmp(topicElement,"get") == 0){
       get_event(topicElement);
-    }/*else if(strcmp(topicElement,"getconfig") == 0){
+    }else if(strcmp(topicElement,"getconfig") == 0){
       getconfig_event();
-    }*/
+    }
     topicElement = strtok(NULL, "/");
   }
 }
@@ -90,12 +88,6 @@ void get_event(char* topicElement){
         client.publish(("unity/device/" + clientIDstr + "/value/led").c_str(),"1");
       }else {
         client.publish(("unity/device/" + clientIDstr + "/value/led").c_str(),"0");
-      }
-    }else if(strcmp(topicElement, "button") == 0){
-      if(button.isDown()){
-        client.publish(("unity/device/" + clientIDstr + "/value/button").c_str(),"1");
-      }else {
-        client.publish(("unity/device/" + clientIDstr + "/value/button").c_str(),"0");
       }
     }
     topicElement = strtok(NULL, "/");
@@ -151,10 +143,4 @@ void loop() {
     reconnect();
   }
   client.loop();
-  button.update();
-  if(button.pressed()){
-    client.publish(("unity/device/" + clientIDstr + "/event/button").c_str(), "1");
-  }else if(button.released()){
-    client.publish(("unity/device/" + clientIDstr + "/event/button").c_str(), "0");
-  }
 }
