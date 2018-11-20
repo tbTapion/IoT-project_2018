@@ -8,9 +8,9 @@ Arduino ESP8266 WiFi and MQTT
 
 // Update these with values suitable for your network.
 
-const char* ssid = "ssid";
-const char* password = "pass";
-const char* mqtt_server = "ip";
+const char* ssid = "pisbizarreadventure";
+const char* password = "piberryrasp";
+const char* mqtt_server = "192.168.42.1";
 const int mqtt_port = 1883;
 
 WiFiClient espClient;
@@ -69,7 +69,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
     }else if(strcmp(topicElement,"get") == 0){
       get_event(topicElement);
     }else if(strcmp(topicElement,"getconfig") == 0){
-      getconfig_event();
+      //getconfig_event();
     }
     topicElement = strtok(NULL, "/");
   }
@@ -97,10 +97,15 @@ void get_event(char* topicElement){
 void action_event(char* topicElement, byte* payload){
   while(topicElement != NULL){
     if(strcmp(topicElement, "led") == 0){
-        if ((char)payload[0] == '1') {
-          led.setValue(HIGH);
+        topicElement = strtok(NULL, "/");
+        if(strcmp(topicElement, "heartbeat") == 0){
+          led.setHeartbeatInterval((int)payload[0]);
         }else{
-          led.setValue(LOW);
+          if ((char)payload[0] == '1') {
+            led.setValue(HIGH);
+          }else{
+            led.setValue(LOW);
+          }
         }
     }
     topicElement = strtok(NULL, "/");

@@ -36,13 +36,13 @@ void Led::setHeartbeatInterval(int interval){
 void Led::update(){
     if(_value == HIGH && _heartbeat == true){
         int waitTime = 0;
-        if(interval == 4){
+        if(_interval == 4){
             waitTime = 2000;
-        }else if(interval == 3){
+        }else if(_interval == 3){
             waitTime = 1500;
-        }else if(interval == 2){
+        }else if(_interval == 2){
             waitTime = 1000;
-        }else if(interval == 1){
+        }else if(_interval == 1){
             waitTime = 500;
         }
         if(checkWait(waitTime)){
@@ -52,7 +52,7 @@ void Led::update(){
 }
 
 bool Led::checkWait(int interval){
-    if(millis() > (lasttime + interval)){
+    if(millis() > (_lasttime + interval)){
         return true;
     }
     return false;
@@ -60,5 +60,5 @@ bool Led::checkWait(int interval){
 
 void Led::heartbeat(){
     int value = digitalRead(_pin);
-    digitalWrite(!_pin);
+    digitalWrite(_pin, !value);
 }

@@ -9,16 +9,16 @@ Arduino ESP8266 WiFi and MQTT
 
 // Update these with values suitable for your network.
 
-const char* ssid = "ssid";
-const char* password = "pass";
-const char* mqtt_server = "ip";
+const char* ssid = "pisbizarreadventure";
+const char* password = "piberryrasp";
+const char* mqtt_server = "192.168.42.1";
 const int mqtt_port = 1883;
 
 WiFiClient espClient;
 PubSubClient client(espClient);
 
-PLab_PushButton button(4); //Button class with pin nr. 4 passed. Change to actual pin used. 
-Potmeter potmeter(5); //Potmeter class with pin nr. 5 passed. Change to actual pin used.
+PLab_PushButton button(5); //Button class with pin nr. 4 passed. Change to actual pin used. 
+Potmeter potmeter(A0); //Potmeter class with pin nr. 5 passed. Change to actual pin used.
 
 const char* clientID; //Filled with mac address, unused, but kept in case of future functionality requiring it. 
 String clientIDstr; //String containing mac address, used in conjunction with message building
@@ -92,7 +92,7 @@ void get_event(char* topicElement){
         client.publish(("unity/device/" + clientIDstr + "/value/button").c_str(),"0");
       }
     }else if(strcmp(topicElement, "potmeter") == 0){
-      client.publish(("unity/device/" + clientIDstr + "/value/potmeter"),(byte)potmeter.getValue());
+      client.publish(("unity/device/" + clientIDstr + "/value/potmeter").c_str(),potmeter.getValue());
     }
     topicElement = strtok(NULL, "/");
   }
@@ -146,6 +146,6 @@ void loop() {
   }else if(button.released()){
     client.publish(("unity/device/" + clientIDstr + "/event/button").c_str(), "0");
   }else if(potmeter.checkWait()){
-    client.publish(("unity/device/" + clientIDstr + "/event/potmeter"),(byte)potmeter.getValue());
+    client.publish(("unity/device/" + clientIDstr + "/event/potmeter").c_str(),potmeter.getValue());
   }
 }
