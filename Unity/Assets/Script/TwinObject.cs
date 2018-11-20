@@ -11,27 +11,32 @@ public abstract class TwinObject : MonoBehaviour {
     protected string configName;
 
 	// Use this for initialization
-	public virtual void Start () {
+	public void Start () {
 	}
+
+    public void setMQTTHandler(MQTTHandler mqttHandler)
+    {
+        this.mqttHandler = mqttHandler;
+    }
 
     public void sendPingMessage(string deviceID)
     {
-        mqttHandler.sendDeviceMessage(deviceID + "/ping", 1);
+        mqttHandler.sendDeviceMessage(deviceID + "/ping", "1");
     }
 
     public void sendActionMessage(string deviceID, string componentName, string payload)
     {
-		mqttHandler.sendDeviceMessage(deviceID + "/action/" + componentName, 1);
+		mqttHandler.sendDeviceMessage(deviceID + "/action/" + componentName, payload);
     }
 
     public void sendGetMessage(string deviceID, string componentName)
     {
-        mqttHandler.sendDeviceMessage(deviceID + "/get/" + componentName, 1);
+        mqttHandler.sendDeviceMessage(deviceID + "/get/" + componentName, "1");
     }
 
     public void sendGetConfigMessage(string deviceID)
     {
-        mqttHandler.sendDeviceMessage(deviceID + "/getconfg", 1);
+        mqttHandler.sendDeviceMessage(deviceID + "/getconfg", "1");
     }
 
     public string getDeviceID()
@@ -74,5 +79,8 @@ public abstract class TwinObject : MonoBehaviour {
 		updateComponent (topic[4], payload);
 	}
 
-	protected abstract void updateComponent (string component, string payload);
+	protected virtual void updateComponent (string component, string payload)
+    {
+
+    }
 }

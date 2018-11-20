@@ -8,9 +8,9 @@ public class Cube1 : TwinObject {
 
 	// Use this for initialization
 	void Start () {
-		base.Start ();
-        configName = "cube2";
+        configName = "cube1";
         led = this.gameObject.AddComponent<Led>();
+        led.setDevice(this);
 	}
 	
 	// Update is called once per frame
@@ -27,4 +27,9 @@ public class Cube1 : TwinObject {
 			}
 		}
 	}
+
+    public Led getLed()
+    {
+        return led;
+    }
 }

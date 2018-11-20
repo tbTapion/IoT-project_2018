@@ -20,7 +20,7 @@ bool Potmeter::checkWait(){
         _lasttime = millis();
         _value = analogRead(_pin);
         Serial.println(_value);
-        if(_value+3 < _previousValue || _value-3 > _previousValue){
+        if(_value+5 < _previousValue || _value-5 > _previousValue){
             _previousValue = _value;
             return true;
         }

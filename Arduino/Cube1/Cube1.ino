@@ -65,6 +65,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
       Serial.println("Ping event space entered!");
       ping_event(payload);
     }else if(strcmp(topicElement,"action") == 0){
+      Serial.println("ActionEvent!");
       action_event(topicElement, payload);
     }else if(strcmp(topicElement,"get") == 0){
       get_event(topicElement);
@@ -96,15 +97,18 @@ void get_event(char* topicElement){
 
 void action_event(char* topicElement, byte* payload){
   while(topicElement != NULL){
+    Serial.println(topicElement);
     if(strcmp(topicElement, "led") == 0){
         topicElement = strtok(NULL, "/");
-        if(strcmp(topicElement, "heartbeat") == 0){
-          led.setHeartbeatInterval((int)payload[0]);
+        if(topicElement != NULL){
+          if(strcmp(topicElement,"heartbeat") == 0){
+            led.setHeartbeatInterval((int)payload[0]);
+          }
         }else{
           if ((char)payload[0] == '1') {
-            led.setValue(HIGH);
-          }else{
             led.setValue(LOW);
+          }else{
+            led.setValue(HIGH);
           }
         }
     }
@@ -127,7 +131,7 @@ void reconnect() {
   while (!client.connected()) {
     Serial.print("Attempting MQTT connection...");
     // Attempt to connect
-    if (client.connect("ESP8266Client")) {
+    if (client.connect(clientID)) {
       Serial.println("connected");
       // Once connected, publish an announcement to unity: unity/connect/device-id
       client.publish(("unity/connect/"+clientIDstr+"/"+configID).c_str(), "1");

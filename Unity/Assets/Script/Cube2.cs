@@ -8,9 +8,9 @@ public class Cube2 : TwinObject {
     private Potmeter potmeter;
 
 	// Use this for initialization
-	public override void Start () {
-		base.Start ();
-        configName = "cube1";
+	void Start () {
+        
+        configName = "cube2";
         button = gameObject.AddComponent<Button>();
         potmeter = gameObject.AddComponent<Potmeter>();
 	}
@@ -39,4 +39,14 @@ public class Cube2 : TwinObject {
 			}
 		}
 	}
+
+    public Button getButton()
+    {
+        return button;
+    }
+
+    public Potmeter getPotmeter()
+    {
+        return potmeter;
+    }
 }

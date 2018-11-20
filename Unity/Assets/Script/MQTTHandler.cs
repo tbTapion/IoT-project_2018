@@ -13,6 +13,8 @@ public class MQTTHandler{
     private MqttClient client;
     private List<GameObject> twinObjects = new List<GameObject>();
     private GameLogic gameLogic;
+    private List<String> topicBuffer = new List<String>();
+    private List<String> payloadBuffer = new List<String>();
 
     // Use this for initialization
     public MQTTHandler (GameLogic gameLogic, string hostaddress="127.0.0.1", int port=1883) {
@@ -34,24 +36,42 @@ public class MQTTHandler{
 
     void handleMQTTMessage(object sender, MqttMsgPublishEventArgs e)
     {
-        Debug.Log("Received: " + Encoding.UTF8.GetString(e.Message));
-        String topic = e.Topic;
-		String payload = Encoding.UTF8.GetString(e.Message);
-        String[] topicSplit = topic.Split('/');
-        if(topicSplit[0] == "unity")
+        Debug.Log("Received: " + e.Topic);
+        topicBuffer.Add(e.Topic);
+        String payload = Encoding.UTF8.GetString(e.Message);
+        payloadBuffer.Add(payload);
+    }
+
+    public void update()
+    {
+        while (topicBuffer.Count != 0)
         {
-            if (topicSplit[1] == "connect")
+            String topic = topicBuffer[0];
+            topicBuffer.RemoveAt(0);
+            String payload = payloadBuffer[0];
+            payloadBuffer.RemoveAt(0);
+            String[] topicSplit = topic.Split('/');
+            if (topicSplit[0] == "unity")
             {
-                deviceConnect(topicSplit);
-            }else if(topicSplit[1] == "device")
-            {
-				if (topicSplit [3] == "event") {
-					deviceEvent (topicSplit, payload);
-				} else if (topicSplit [3] == "value") {
-					deviceValue (topicSplit, payload);
-				} else if (topicSplit [3] == "ping") {
-					devicePing (topicSplit[2]);
-				}
+                if (topicSplit[1] == "connect")
+                {
+                    deviceConnect(topicSplit);
+                }
+                else if (topicSplit[1] == "device")
+                {
+                    if (topicSplit[3] == "event")
+                    {
+                        deviceEvent(topicSplit, payload);
+                    }
+                    else if (topicSplit[3] == "value")
+                    {
+                        deviceValue(topicSplit, payload);
+                    }
+                    else if (topicSplit[3] == "ping")
+                    {
+                        devicePing(topicSplit[2]);
+                    }
+                }
             }
         }
     }
@@ -82,28 +102,28 @@ public class MQTTHandler{
 
     private void deviceConnect(string[] topicSplit)
     {
-        bool linkPossible = true;
+        Debug.Log("New Device detected!");
+        bool linkPossible = false;
         foreach (GameObject obj in twinObjects)
         {
-            TwinObject to = obj.GetComponent<TwinObject>();
+            TwinObject to = obj.GetComponent<TwinObject>() as TwinObject;
             if (to.getConfigName() == topicSplit[3] && to.getLinkStatus() == false)
             {
-                obj.GetComponent<TwinObject>().linkDevice(topicSplit[2]);
+                to.linkDevice(topicSplit[2]);
                 linkPossible = true;
                 break;
             }
         }
         if (!linkPossible)
         {
-            sendDeviceMessage(topicSplit[2] + "/ping", 0);
+            sendDeviceMessage(topicSplit[2] + "/ping", "0");
         }
     }
 
 	private TwinObject getObjectByID(string deviceID){
 		foreach (GameObject obj in twinObjects) {
-			TwinObject to = obj.GetComponent<TwinObject> ();
-			if (to.getDeviceID() == deviceID) {
-				return to;
+			if (obj.GetComponent<TwinObject>().getDeviceID() == deviceID) {
+				return obj.GetComponent<TwinObject>();
 			}
 		}
 		return null;

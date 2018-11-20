@@ -17,7 +17,7 @@ const int mqtt_port = 1883;
 WiFiClient espClient;
 PubSubClient client(espClient);
 
-PLab_PushButton button(5); //Button class with pin nr. 4 passed. Change to actual pin used. 
+PLab_PushButton button(4); //Button class with pin nr. 4 passed. Change to actual pin used. 
 Potmeter potmeter(A0); //Potmeter class with pin nr. 5 passed. Change to actual pin used.
 
 const char* clientID; //Filled with mac address, unused, but kept in case of future functionality requiring it. 
@@ -119,12 +119,11 @@ void reconnect() {
   while (!client.connected()) {
     Serial.print("Attempting MQTT connection...");
     // Attempt to connect
-    if (client.connect("ESP8266Client")) {
+    if (client.connect(clientID)) {
       Serial.println("connected");
+      client.subscribe((clientIDstr + "/#").c_str());
       // Once connected, publish an announcement to unity: unity/connect/device-id
       client.publish(("unity/connect/"+clientIDstr+"/"+configID).c_str(), "1");
-      // Then Subcribe to everything client-id/#
-      client.subscribe((clientIDstr + "/#").c_str());
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());
