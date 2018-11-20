@@ -27,9 +27,9 @@ public class MQTTHandler{
         //client.Publish("unity/hellowoworld", Encoding.UTF8.GetBytes("Hello World")); //test message on topic
     }
 
-    internal void sendDeviceMessage(string tempMessageTopic, int payload)
+    internal void sendDeviceMessage(string tempMessageTopic, string payload)
     {
-        client.Publish(tempMessageTopic, Encoding.UTF8.GetBytes(payload.ToString()));
+        client.Publish(tempMessageTopic, Encoding.UTF8.GetBytes(payload));
     }
 
     void handleMQTTMessage(object sender, MqttMsgPublishEventArgs e)

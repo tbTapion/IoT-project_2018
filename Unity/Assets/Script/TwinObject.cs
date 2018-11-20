@@ -19,7 +19,7 @@ public abstract class TwinObject : MonoBehaviour {
         mqttHandler.sendDeviceMessage(deviceID + "/ping", 1);
     }
 
-    public void sendActionMessage(string deviceID, string componentName)
+    public void sendActionMessage(string deviceID, string componentName, string payload)
     {
 		mqttHandler.sendDeviceMessage(deviceID + "/action/" + componentName, 1);
     }
