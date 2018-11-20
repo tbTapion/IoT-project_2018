@@ -4,18 +4,27 @@ using UnityEngine;
 
 public class Cube1 : TwinObject {
 
-    private Button button;
-    private Potmeter potmeter;
+    private Led led;
 
 	// Use this for initialization
 	void Start () {
-        configName = "cube1";
-        button = gameObject.AddComponent<Button>();
-        potmeter = gameObject.AddComponent<Potmeter>();
+		base.Start ();
+        configName = "cube2";
+        led = this.gameObject.AddComponent<Led>();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		
+		base.Update ();
+	}
+
+	protected override void updateComponent(string component, string payload){
+		if (component == "led") {
+			if (payload == "1") {
+				led.setState (true);
+			} else {
+				led.setState (false);
+			}
+		}
 	}
 }

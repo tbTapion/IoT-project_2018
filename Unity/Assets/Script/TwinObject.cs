@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TwinObject : MonoBehaviour {
+public abstract class TwinObject : MonoBehaviour {
 
     //MQTT variables
     private MQTTHandler mqttHandler; //Handler for messages
@@ -11,7 +11,7 @@ public class TwinObject : MonoBehaviour {
     protected string configName;
 
 	// Use this for initialization
-	void Start () {
+	public virtual void Start () {
 	}
 
     public void sendPingMessage(string deviceID)
@@ -19,9 +19,9 @@ public class TwinObject : MonoBehaviour {
         mqttHandler.sendDeviceMessage(deviceID + "/ping", 1);
     }
 
-    public void sendActionMessage(string deviceID, string componentName)
+    public void sendActionMessage(string deviceID, string componentName, string payload)
     {
-        mqttHandler.sendDeviceMessage(deviceID + "/ping", 1);
+		mqttHandler.sendDeviceMessage(deviceID + "/action/" + componentName, 1);
     }
 
     public void sendGetMessage(string deviceID, string componentName)
@@ -44,6 +44,11 @@ public class TwinObject : MonoBehaviour {
         return linked;
     }
 
+	public void setLinkStatus(bool linked)
+	{
+		this.linked = linked;
+	}
+
     public void linkDevice(string deviceID)
     {
         this.deviceID = deviceID;
@@ -57,8 +62,17 @@ public class TwinObject : MonoBehaviour {
     }
 
     // Update is called once per frame
-    void Update()
+    public virtual void Update()
     {
 
     }
+
+	public virtual void eventMessage (string[] topic, string payload){
+		updateComponent (topic[4], payload);
+	}
+	public virtual void valueMessage (string[] topic, string payload){
+		updateComponent (topic[4], payload);
+	}
+
+	protected abstract void updateComponent (string component, string payload);
 }

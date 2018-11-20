@@ -15,7 +15,7 @@ public class Potmeter : MonoBehaviour {
 	void Update () {
 	}
 
-    void setValue(int value)
+    public void setValue(int value)
     {
         this.value = value;
     }
