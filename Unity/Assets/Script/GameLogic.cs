@@ -14,16 +14,18 @@ public class GameLogic : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         mqttHandler = new MQTTHandler(this, "192.168.42.1");
+
         cube1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
         cube1.AddComponent<Cube1>();
         cube1.GetComponent<Cube1>().setMQTTHandler(mqttHandler);
         cube1.transform.position = new Vector3(-0.8f,0f,0f);
-        mqttHandler.addTwinObject(cube1);
+        mqttHandler.addTwinObject(cube1.GetComponent<TwinObject>());
+
         cube2 = GameObject.CreatePrimitive(PrimitiveType.Cube);
         cube2.AddComponent<Cube2>();
         cube2.GetComponent<Cube2>().setMQTTHandler(mqttHandler);
         cube2.transform.position = new Vector3(0.8f, 0f, 0f);
-        mqttHandler.addTwinObject(cube2);
+        mqttHandler.addTwinObject(cube2.GetComponent<TwinObject>());
     }
 
 	// Update is called once per frame

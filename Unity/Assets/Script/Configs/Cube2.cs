@@ -8,8 +8,8 @@ public class Cube2 : TwinObject {
     private Potmeter potmeter;
 
 	// Use this for initialization
-	void Start () {
-        
+	public override void Start () {
+        base.Start();
         configName = "cube2";
         button = new Button(this);
         potmeter = new Potmeter(this);

@@ -10,31 +10,53 @@ public abstract class TwinObject : MonoBehaviour {
     private bool linked;
     protected string configName;
 
+    private int pingCount;
+    private int pingTime;
+
 	// Use this for initialization
-	public void Start () {
+	public virtual void Start () {
+        pingCount = 0;
+        pingTime = 30*60;
 	}
+    
+    // Update is called once per frame
+    public virtual void Update()
+    {
+        if(linked){
+            pingTime--;
+            if(pingTime == 0){
+                if(pingCount > 2){
+                    linked = false;
+                }else{
+                    sendPingMessage();
+                    pingCount++;
+                }
+                pingTime = 30*60;
+            }
+        }
+    }
 
     public void setMQTTHandler(MQTTHandler mqttHandler)
     {
         this.mqttHandler = mqttHandler;
     }
 
-    public void sendPingMessage(string deviceID)
+    public void sendPingMessage()
     {
         mqttHandler.sendDeviceMessage(deviceID + "/ping", "1");
     }
 
-    public void sendActionMessage(string deviceID, string componentName, string payload)
+    public void sendActionMessage(string componentName, string payload)
     {
 		mqttHandler.sendDeviceMessage(deviceID + "/action/" + componentName, payload);
     }
 
-    public void sendGetMessage(string deviceID, string componentName)
+    public void sendGetMessage(string componentName)
     {
         mqttHandler.sendDeviceMessage(deviceID + "/get/" + componentName, "1");
     }
 
-    public void sendGetConfigMessage(string deviceID)
+    public void sendGetConfigMessage()
     {
         mqttHandler.sendDeviceMessage(deviceID + "/getconfg", "1");
     }
@@ -58,18 +80,12 @@ public abstract class TwinObject : MonoBehaviour {
     {
         this.deviceID = deviceID;
         this.linked = true;
-        sendPingMessage(deviceID);
+        sendPingMessage();
     }
 
     public string getConfigName()
     {
         return configName;
-    }
-
-    // Update is called once per frame
-    public virtual void Update()
-    {
-
     }
 
 	public virtual void eventMessage (string[] topic, string payload){
@@ -78,6 +94,10 @@ public abstract class TwinObject : MonoBehaviour {
 	public virtual void valueMessage (string[] topic, string payload){
 		updateComponent (topic[4], payload);
 	}
+
+    public void pingResponse(){
+        pingCount = 0;
+    }
 
 	protected virtual void updateComponent (string component, string payload)
     {

@@ -12,11 +12,6 @@ public class Led : DeviceComponent {
         this.device = device;
         state = false;
     }
-	
-	// Update is called once per frame
-	public override void update () {
-		
-	}
 
     public void toggle()
     {
@@ -27,11 +22,11 @@ public class Led : DeviceComponent {
     {
         this.state = state;
         if (state) {
-            this.device.sendActionMessage(this.device.getDeviceID(), "led", "1");
+            this.device.sendActionMessage("led", "1");
         }
         else
         {
-            this.device.sendActionMessage(this.device.getDeviceID(), "led", "0");
+            this.device.sendActionMessage("led", "0");
         }
     }
 
@@ -45,7 +40,7 @@ public class Led : DeviceComponent {
         tempHeartbeatTime = Mathf.RoundToInt((tempHeartbeatTime / 70)*4);
         if(tempHeartbeatTime != this.heartbeatTime){
             this.heartbeatTime = tempHeartbeatTime;
-            this.device.sendActionMessage(this.device.getDeviceID(), "led/heartbeat",heartbeat.ToString());
+            this.device.sendActionMessage("led/heartbeat",this.heartbeatTime.ToString());
             if(this.heartbeatTime > 0){
                 this.heartbeat = true;
             }else{

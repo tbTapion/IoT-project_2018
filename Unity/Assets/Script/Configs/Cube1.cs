@@ -7,13 +7,14 @@ public class Cube1 : TwinObject {
     private Led led;
 
 	// Use this for initialization
-	void Start () {
+	public override void Start () {
+		base.Start();
         configName = "cube1";
         led = new Led(this);
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	public override void Update () {
 		base.Update ();
 	}
 
