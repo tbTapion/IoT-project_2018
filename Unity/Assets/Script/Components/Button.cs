@@ -2,19 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Button : MonoBehaviour {
+public class Button : DeviceComponent {
 
     private bool state;
 	private bool _justPressed;
 	private bool _justReleased;
 
-	// Use this for initialization
-	void Start () {
-        state = false;
+	public Button(TwinObject device){
+		this.device = device;
+		state = false;
 	}
 	
-	// Update is called once per frame
-	void Update () {
+	public override void update () {
 		_justPressed = false;
 		_justReleased = false;
 	}

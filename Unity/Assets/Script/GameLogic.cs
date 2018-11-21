@@ -33,5 +33,6 @@ public class GameLogic : MonoBehaviour {
         {
             cube1.GetComponent<Cube1>().getLed().toggle();
         }
+        cube1.GetComponent<Cube1>().getLed().setHeartbeatTime(cube2.GetComponent<Cube2>().getPotmeter().getValue());
 	}
 }

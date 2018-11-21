@@ -5,8 +5,8 @@ using UnityEngine;
 public class RGBLed : Led {
 
 	// Use this for initialization
-	public override void Start () {
-        base.Start();
+	public RGBLed(TwinObject device) : base(device)
+	{
 	}
 	
 	// Update is called once per frame

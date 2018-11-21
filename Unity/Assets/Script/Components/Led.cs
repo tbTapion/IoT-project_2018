@@ -2,27 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Led : MonoBehaviour {
+public class Led : DeviceComponent {
 
     protected bool state;
     protected bool heartbeat;
     protected int heartbeatTime;
-    protected TwinObject obj;
 
-	// Use this for initialization
-	public virtual void Start () {
+    public Led(TwinObject device){
+        this.device = device;
         state = false;
-	}
+    }
 	
 	// Update is called once per frame
-	void Update () {
+	public override void update () {
 		
 	}
-
-    public void setDevice(TwinObject obj)
-    {
-        this.obj = obj;
-    }
 
     public void toggle()
     {
@@ -33,22 +27,39 @@ public class Led : MonoBehaviour {
     {
         this.state = state;
         if (state) {
-            obj.sendActionMessage(obj.getDeviceID(), "led", "1");
+            this.device.sendActionMessage(this.device.getDeviceID(), "led", "1");
         }
         else
         {
-            obj.sendActionMessage(obj.getDeviceID(), "led", "0");
+            this.device.sendActionMessage(this.device.getDeviceID(), "led", "0");
         }
+    }
+
+    public bool getState(){
+        return state;
     }
 
     public void setHeartbeatTime(int heartbeatTime)
     {
-        this.heartbeatTime = heartbeatTime;
-        obj.sendActionMessage(obj.getDeviceID(), "led/heartbeat",heartbeat.ToString());
+        int tempHeartbeatTime = Mathf.Min(heartbeatTime, 70);
+        tempHeartbeatTime = Mathf.RoundToInt((tempHeartbeatTime / 70)*4);
+        if(tempHeartbeatTime != this.heartbeatTime){
+            this.heartbeatTime = tempHeartbeatTime;
+            this.device.sendActionMessage(this.device.getDeviceID(), "led/heartbeat",heartbeat.ToString());
+            if(this.heartbeatTime > 0){
+                this.heartbeat = true;
+            }else{
+                this.heartbeat = false;
+            }
+        }
     }
 
     public int getHeartbeatTime()
     {
         return heartbeatTime;
+    }
+
+    public bool getHeartbeatState(){
+        return heartbeat;
     }
 }

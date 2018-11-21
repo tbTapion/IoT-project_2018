@@ -2,17 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Potmeter : MonoBehaviour {
+public class Potmeter : DeviceComponent{
 
     private int value;
-
-	// Use this for initialization
-	void Start () {
+    
+    public Potmeter(TwinObject device){
+        this.device = device;
         value = 0;
-	}
+    }
 	
-	// Update is called once per frame
-	void Update () {
+	public override void update () {
 	}
 
     public void setValue(int value)
