@@ -30,13 +30,13 @@ public class MQTTHandler{
 
     internal void sendDeviceMessage(string tempMessageTopic, string payload)
     {
-        client.Publish(tempMessageTopic, Encoding.UTF8.GetBytes(payload));
+        client.Publish(tempMessageTopic, Encoding.Default.GetBytes(payload));
     }
 
     void handleMQTTMessage(object sender, MqttMsgPublishEventArgs e)
     {
         Debug.Log("Received: " + e.Topic);
-        msgBuffer.Add(new MessagePair(e.Topic, Encoding.UTF8.GetString(e.Message)));
+        msgBuffer.Add(new MessagePair(e.Topic, Encoding.Default.GetString(e.Message)));
     }
 
     public void update()

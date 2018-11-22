@@ -37,10 +37,11 @@ public class Led : DeviceComponent {
     public void setHeartbeatTime(int heartbeatTime)
     {
         int tempHeartbeatTime = Mathf.Min(heartbeatTime, 70);
-        tempHeartbeatTime = Mathf.RoundToInt((tempHeartbeatTime / 70)*4);
+        tempHeartbeatTime = Mathf.RoundToInt((tempHeartbeatTime / 70.0f)*4);
         if(tempHeartbeatTime != this.heartbeatTime){
             this.heartbeatTime = tempHeartbeatTime;
-            this.device.sendActionMessage("led/heartbeat",this.heartbeatTime.ToString());
+            Debug.Log("Sending Heartbeat: " + this.heartbeatTime);
+            device.sendActionMessage("led/heartbeat",this.heartbeatTime.ToString());
             if(this.heartbeatTime > 0){
                 this.heartbeat = true;
             }else{

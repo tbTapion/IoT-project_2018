@@ -12,7 +12,7 @@ class Potmeter {
         int _timewait;
     public:
         Potmeter(int pin);
-        char* getValue();
+        int getValue();
         bool checkWait();
 };
 

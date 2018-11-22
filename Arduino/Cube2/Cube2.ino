@@ -92,7 +92,7 @@ void get_event(char* topicElement){
         client.publish(("unity/device/" + clientIDstr + "/value/button").c_str(),"0");
       }
     }else if(strcmp(topicElement, "potmeter") == 0){
-      client.publish(("unity/device/" + clientIDstr + "/value/potmeter").c_str(),potmeter.getValue());
+      client.publish(("unity/device/" + clientIDstr + "/value/potmeter").c_str(),String(potmeter.getValue()).c_str());
     }
     topicElement = strtok(NULL, "/");
   }
@@ -145,6 +145,6 @@ void loop() {
   }else if(button.released()){
     client.publish(("unity/device/" + clientIDstr + "/event/button").c_str(), "0");
   }else if(potmeter.checkWait()){
-    client.publish(("unity/device/" + clientIDstr + "/event/potmeter").c_str(),potmeter.getValue());
+    client.publish(("unity/device/" + clientIDstr + "/event/potmeter").c_str(),String(potmeter.getValue()).c_str());
   }
 }

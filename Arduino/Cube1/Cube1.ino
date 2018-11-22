@@ -102,13 +102,14 @@ void action_event(char* topicElement, byte* payload){
         topicElement = strtok(NULL, "/");
         if(topicElement != NULL){
           if(strcmp(topicElement,"heartbeat") == 0){
+            Serial.println(topicElement);
             led.setHeartbeatInterval((int)payload[0]);
           }
         }else{
           if ((char)payload[0] == '1') {
-            led.setValue(LOW);
-          }else{
             led.setValue(HIGH);
+          }else{
+            led.setValue(LOW);
           }
         }
     }
@@ -152,4 +153,5 @@ void loop() {
     reconnect();
   }
   client.loop();
+  led.update();
 }

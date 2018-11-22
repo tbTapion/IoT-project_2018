@@ -9,17 +9,16 @@ Potmeter::Potmeter(int pin){
     _timewait = 125;
 }
 
-char* Potmeter::getValue(){
-    char buff [10];
-    itoa(_value, buff, 10); 
-    return buff;
+int Potmeter::getValue(){
+    Serial.println(String(_value).c_str());
+    return _value;
 }
 
 bool Potmeter::checkWait(){
     if(millis() > (_lasttime + _timewait)){
         _lasttime = millis();
         _value = analogRead(_pin);
-        Serial.println(_value);
+        //Serial.print(_value);
         if(_value+5 < _previousValue || _value-5 > _previousValue){
             _previousValue = _value;
             return true;
