@@ -9,6 +9,7 @@ class Led {
         int _value;
         long _lasttime;
         int _interval;
+        int _intervalBase;
         bool _heartbeat;
     public:
         Led(int pin);

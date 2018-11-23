@@ -5,6 +5,7 @@ Led::Led(int pin){
     _pin = pin;
     _value = LOW;
     _lasttime = millis();
+    _intervalBase = 500;
     pinMode(_pin, OUTPUT);
     digitalWrite(_pin, _value);
 }
@@ -36,15 +37,7 @@ void Led::setHeartbeatInterval(int interval){
 void Led::update(){
     if(_value == HIGH && _heartbeat == true){
         int waitTime = 0;
-        if(_interval == 4){
-            waitTime = 2000;
-        }else if(_interval == 3){
-            waitTime = 1500;
-        }else if(_interval == 2){
-            waitTime = 1000;
-        }else if(_interval == 1){
-            waitTime = 500;
-        }
+        waitTime = _interval * _intervalBase; // values 1-4 * 500 base
         if(checkWait(waitTime)){
             Serial.println("Beating!");
             heartbeat();
