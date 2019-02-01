@@ -45,7 +45,9 @@ PLab_PushButton button(4); //Button class with pin nr. 4 passed
 const char* clientID; //Filled with mac address, unused, but kept in case of future functionality requiring it. 
 String clientIDstr; //String containing mac address, used in conjunction with message building
 
-String configID = "cube1";
+String configID = "cube3";
+
+uint8_t previousRange;
 
 void setup() {
   Serial.begin(115200);
@@ -151,8 +153,10 @@ void action_event(char* topicElement, byte* payload){
     if(strcmp(topicElement, "led") == 0){
         if ((char)payload[0] == '1') {
           led.setValue(HIGH);
+          lightsOn();
         }else{
           led.setValue(LOW);
+          lightsOff();
         }
     }
     topicElement = strtok(NULL, "/");
@@ -188,6 +192,7 @@ void reconnect() {
       delay(5000);
     }
   }
+  lightsConnected(50);
 }
 
 void loop() {
@@ -201,9 +206,14 @@ void loop() {
   //button.update();
   if (status == VL6180X_ERROR_NONE) {
     Serial.print("Range: "); Serial.println(range);
-    if (range < 50) {
+    if (range < 50 && previousRange >= 50) {
+      client.publish(("unity/device/" + clientIDstr + "/event/button").c_str(), "1");
       led.setValue(LOW);
+      lightsOff();
+    }else if((range >= 50 || range == NULL ) && previousRange < 50){
+      client.publish(("unity/device/" + clientIDstr + "/event/button").c_str(), "0");
     }
+    previousRange = range;
   }
   
   //if(button.pressed()){
@@ -211,10 +221,6 @@ void loop() {
   //}else if(button.released()){
   // client.publish(("unity/device/" + clientIDstr + "/event/button").c_str(), "0");
   //}
-
-  if (led.getValue() == HIGH) {
-    lightsOn();
-  }
     
 }
 
@@ -223,14 +229,32 @@ void lightsOn() {
       // pixels.Color takes RGB values, from 0,0,0 up to 255,255,255
       pixels.setPixelColor(i, pixels.Color(0,50,25)); // Moderately bright green color.
       pixels.show(); // This sends the updated pixel color to the hardware.
-      tone(PIN13, frequency, tonePlay);
-      //delay(delayval); // Delay for a period of time (in milliseconds).
-      }
-      for(int i=0;i<NUMPIXELS;i++){
+   }
+   tone(PIN13, frequency, 80);
+}//End of lightsOn
+
+void lightsOff(){
+  for(int i=0;i<NUMPIXELS;i++){
       // pixels.Color takes RGB values, from 0,0,0 up to 255,255,255
       pixels.setPixelColor(i, pixels.Color(0,0,0)); // Moderately bright green color.
       pixels.show(); // This sends the updated pixel color to the hardware.
-      tone(PIN13, frequency, tonePlay);
-      //delay(delayval); // Delay for a period of time (in milliseconds).
+   }
+   tone(PIN13, frequency, 80);
+}
+
+void lightsConnected(int delayval) {
+  for(int i=0;i<NUMPIXELS;i++){
+      // pixels.Color takes RGB values, from 0,0,0 up to 255,255,255
+      pixels.setPixelColor(i, pixels.Color(0,50,25)); // Moderately bright green color.
+      pixels.show(); // This sends the updated pixel color to the hardware.
+      tone(PIN13, frequency, 20);
+      delay(delayval); // Delay for a period of time (in milliseconds).
       }
+   for(int i=0;i<NUMPIXELS;i++){
+      // pixels.Color takes RGB values, from 0,0,0 up to 255,255,255
+      pixels.setPixelColor(i, pixels.Color(0,0,0)); // Moderately bright green color.
+      pixels.show(); // This sends the updated pixel color to the hardware.
+      tone(PIN13, frequency, 20);
+      delay(delayval); // Delay for a period of time (in milliseconds).
+   }
 }//End of lightsOn
