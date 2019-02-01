@@ -133,6 +133,18 @@ public class MQTTHandler{
 
     public void addTwinObject(TwinObject obj)
     {
+        obj.setMQTTHandler(this);
         twinObjects.Add(obj);
+    }
+
+    public Boolean allDevicesConnected(){
+        bool connected = true;
+        foreach(TwinObject obj in twinObjects){
+            if(!obj.getLinkStatus()){
+                connected = false;
+                break;
+            }
+        }
+        return connected;
     }
 }

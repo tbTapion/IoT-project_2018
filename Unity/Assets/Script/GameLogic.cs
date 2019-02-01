@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,34 +6,38 @@ public class GameLogic : MonoBehaviour {
 
     private MQTTHandler mqttHandler;
 
-    public GameObject obj;
+    List<GameObject> objectList = new List<GameObject>();
 
-    GameObject cube1, cube2;
+
+    GameObject activatedObject;
+
+    int numberOfObjects = 3;
 
 	// Use this for initialization
 	void Start () {
+        //MQTT handler. Takes care of the connection to the RPI and sending/receiving messages.
         mqttHandler = new MQTTHandler(this, "192.168.42.1");
 
-        cube1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        cube1.AddComponent<Cube1>();
-        cube1.GetComponent<Cube1>().setMQTTHandler(mqttHandler);
-        cube1.transform.position = new Vector3(-0.8f,0f,0f);
-        mqttHandler.addTwinObject(cube1.GetComponent<TwinObject>());
-
-        cube2 = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        cube2.AddComponent<Cube2>();
-        cube2.GetComponent<Cube2>().setMQTTHandler(mqttHandler);
-        cube2.transform.position = new Vector3(0.8f, 0f, 0f);
-        mqttHandler.addTwinObject(cube2.GetComponent<TwinObject>());
+        //Test object
+        for(int i = 0; i<numberOfObjects; i++){
+            GameObject obj = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            obj.transform.position = new Vector3(-1.6f + (i*1.05f), 0.0f, 0.0f);
+            objectList.Add(obj);
+            mqttHandler.addTwinObject(obj.AddComponent<Cube3>());
+        }
     }
 
 	// Update is called once per frame
 	void Update () {
         mqttHandler.update();
-        if (cube2.GetComponent<Cube2>().getButton().justPressed())
-        {
-            cube1.GetComponent<Cube1>().getLed().toggle();
+        if(mqttHandler.allDevicesConnected()){
+            if(activatedObject == null){
+                activatedObject = objectList[Random.Range(0, objectList.Count-1)];
+                activatedObject.GetComponent<Cube3>().getLed().setState(true);
+            }else if(activatedObject.GetComponent<Cube3>().getButton().justPressed()){
+                activatedObject.GetComponent<Cube3>().getLed().setState(false);
+                activatedObject = null;
+            }
         }
-        cube1.GetComponent<Cube1>().getLed().setHeartbeatTime(cube2.GetComponent<Cube2>().getPotmeter().getValue());
 	}
 }
