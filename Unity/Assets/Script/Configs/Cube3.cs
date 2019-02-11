@@ -10,7 +10,7 @@ public class Cube3 : TwinObject {
 	// Use this for initialization
 	public override void Start () {
 		base.Start();
-		configName = "Cube3";
+		configName = "cube3";
 		button = new Button(this);
 		led = new Led(this);
 	}
@@ -18,6 +18,7 @@ public class Cube3 : TwinObject {
 	// Update is called once per frame
 	public override void Update () {
 		base.Update();
+        button.update();
 	}
 
 	protected override void updateComponent(string component, string payload){
