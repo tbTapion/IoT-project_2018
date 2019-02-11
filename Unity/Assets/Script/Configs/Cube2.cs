@@ -7,6 +7,7 @@ public class Cube2 : TwinObject {
     private Button button;
     private Potmeter potmeter;
 
+
 	// Use this for initialization
 	public override void Start () {
         base.Start();
