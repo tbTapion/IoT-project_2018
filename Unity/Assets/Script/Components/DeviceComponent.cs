@@ -14,5 +14,5 @@ public abstract class DeviceComponent {
         return device;
     }
 
-    public virtual void update(){}
+    public abstract void update();
 }
