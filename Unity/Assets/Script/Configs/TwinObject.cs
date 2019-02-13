@@ -99,8 +99,5 @@ public abstract class TwinObject : MonoBehaviour {
         pingCount = 0;
     }
 
-	protected virtual void updateComponent (string component, string payload)
-    {
-
-    }
+	protected abstract void updateComponent (string component, string payload);
 }

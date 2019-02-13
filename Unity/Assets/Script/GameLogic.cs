@@ -8,24 +8,23 @@ public class GameLogic : MonoBehaviour {
 
     private MQTTHandler mqttHandler;
 
-    List<GameObject> objectList = new List<GameObject>();
+    public List<GameObject> objectList = new List<GameObject>();
 
 
     public GameObject activatedObject;
 
-    int numberOfObjects = 3;
+    int numberOfObjects = 4;
 
 	// Use this for initialization
 	void Start () {
         //MQTT handler. Takes care of the connection to the RPI and sending/receiving messages.
-        mqttHandler = new MQTTHandler(this, "10.42.0.1");
+        mqttHandler = new MQTTHandler(this, "129.241.105.187");
 
         //Test object
         for(int i = 0; i<numberOfObjects; i++){
-            GameObject obj = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            obj.transform.position = new Vector3(-1.6f + (i*1.05f), 0.0f, 0.0f);
+            GameObject obj = Instantiate(Resources.Load("Prefabs/Cube3"),new Vector3(-1.6f + (i*1.05f), 0.0f, 0.0f),Quaternion.identity) as GameObject;
             objectList.Add(obj);
-            mqttHandler.addTwinObject(obj.AddComponent<Cube3>());
+            mqttHandler.addTwinObject(obj.GetComponent<Cube3>());
         }
     }
 

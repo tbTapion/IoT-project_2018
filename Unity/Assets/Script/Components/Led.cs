@@ -13,6 +13,10 @@ public class Led : DeviceComponent {
         state = false;
     }
 
+    public override void update(){
+
+    }
+
     public void toggle()
     {
         setState(!state);
@@ -21,13 +25,7 @@ public class Led : DeviceComponent {
     public void setState(bool state)
     {
         this.state = state;
-        if (state) {
-            this.device.sendActionMessage("led", "1");
-        }
-        else
-        {
-            this.device.sendActionMessage("led", "0");
-        }
+        device.sendActionMessage("led", (state ? 1 : 0).ToString());
     }
 
     public bool getState(){
