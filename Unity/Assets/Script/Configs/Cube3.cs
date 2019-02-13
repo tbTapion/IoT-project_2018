@@ -21,9 +21,14 @@ public class Cube3 : TwinObject {
 		button.update();
 
 		if(led.getState()){
-			GetComponent<Renderer>().material.shader = Shader.Find("_Color");
-			GetComponent<Renderer>().material.SetColor("_Color", Color.green);
+			//GetComponent<Renderer>().material.shader = Shader.Find("_Color");
+			GetComponent<Renderer>().material.SetColor("_Color", Color.blue);
 		}
+        else
+        {
+            //GetComponent<Renderer>().material.shader = Shader.Find("_Color");
+            GetComponent<Renderer>().material.SetColor("_Color", Color.white);
+        }
 	}
 
 	protected override void updateComponent(string component, string payload){
