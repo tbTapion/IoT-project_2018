@@ -7,7 +7,9 @@ public abstract class TwinObject : MonoBehaviour {
     //MQTT variables
     private MQTTHandler mqttHandler; //Handler for messages
     private string deviceID; //ID of the device
-    private bool linked;
+    private bool linked; //Linked to both object and device
+    private bool deviceLink; // Linked to device
+    private bool objectLink; // Linked to object
     protected string configName;
 
     private int pingCount;
@@ -71,10 +73,30 @@ public abstract class TwinObject : MonoBehaviour {
         return linked;
     }
 
+    public bool getDeviceLinkStatus()
+    {
+        return deviceLink;
+    }
+
+    public bool getObjectLinkStatus()
+    {
+        return objectLink;
+    }
+
 	public void setLinkStatus(bool linked)
 	{
 		this.linked = linked;
 	}
+
+    public void setDeviceLinkStatus(bool deviceLink)
+    {
+        this.deviceLink = deviceLink;
+    }
+
+    public void setObjectLinkStatus(bool objectLink)
+    {
+        this.objectLink = objectLink;
+    }
 
     public void linkDevice(string deviceID)
     {
