@@ -35,9 +35,9 @@ public class GameLogic : MonoBehaviour {
             if(activatedObject == null){
                 activatedObject = objectList[Random.Range(0, objectList.Count)];
                 Thread.Sleep(1000);
-                activatedObject.GetComponent<Cube3>().getLed().setState(true);
-            }else if(activatedObject.GetComponent<Cube3>().getButton().justPressed()){
-                activatedObject.GetComponent<Cube3>().getLed().setState(false);
+                activatedObject.GetComponent<Cube3>().getRingLight().setState(true);
+            }else if(activatedObject.GetComponent<Cube3>().getTimeOfFlight().getValue() < 10){
+                activatedObject.GetComponent<Cube3>().getRingLight().setState(false);
                 activatedObject = null;
             }
         }

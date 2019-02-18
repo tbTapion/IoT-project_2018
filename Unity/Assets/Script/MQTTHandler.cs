@@ -81,6 +81,9 @@ public class MQTTHandler{
         }
     }
 
+    /*
+    Value message from a device. Sent to the Twin Object of the device and handled there. 
+    */
 	private void deviceValue(string[] topicSplit, string payload)
     {
 		TwinObject to = getObjectByID (topicSplit [2]);
@@ -89,6 +92,9 @@ public class MQTTHandler{
 		}
     }
 
+    /*
+    Event message from a device. Sent to the Twin Object of the device and handled there.
+    */
 	private void deviceEvent(string[] topicSplit, string payload)
     {
 		TwinObject to = getObjectByID (topicSplit [2]);
@@ -97,6 +103,9 @@ public class MQTTHandler{
 		}
     }
 
+    /*
+    Ping message from a device. Updates it's link status if not linked and also resets the ping count.
+     */
 	private void devicePing(string deviceID)
 	{	
 		TwinObject to = getObjectByID (deviceID);
@@ -108,6 +117,9 @@ public class MQTTHandler{
 		}
 	}
 
+    /*
+    Handles the connect message from a device and sets up a link between it and a Twin object. 
+    */
     private void deviceConnect(string[] topicSplit)
     {
         Debug.Log("New Device detected!");

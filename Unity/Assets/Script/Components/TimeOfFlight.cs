@@ -13,11 +13,11 @@ public class TimeOfFlight : DeviceComponent
     public override void update () {
 	}
 
-    public void setDistance(int distance){
+    public void setValue(int distance){
         this.distance = distance;
     }
 
-    public int getDistance(){
+    public int getValue(){
         return distance;
     }
 }

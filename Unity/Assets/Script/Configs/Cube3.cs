@@ -4,23 +4,28 @@ using UnityEngine;
 
 public class Cube3 : TwinObject {
 
-	private Led led;
-	private Button button;
+	//private Led led;
+	//private Button button;
+
+	private RingLight ringLight;
+	private TimeOfFlight tof;
 
 	// Use this for initialization
 	public override void Start () {
 		base.Start();
 		configName = "cube3";
-		button = new Button(this);
-		led = new Led(this);
+		//button = new Button(this);
+		//led = new Led(this);
+		ringLight = new RingLight(this);
+		tof = new TimeOfFlight(this);
+
 	}
 	
 	// Update is called once per frame
 	public override void Update () {
 		base.Update();
-		button.update();
 
-		if(led.getState()){
+		if(ringLight.getState()){
 			//GetComponent<Renderer>().material.shader = Shader.Find("_Color");
 			GetComponent<Renderer>().material.SetColor("_Color", Color.blue);
 		}
@@ -32,26 +37,30 @@ public class Cube3 : TwinObject {
 	}
 
 	protected override void updateComponent(string component, string payload){
-		if (component == "button") {
-			if (payload == "1") {
-				button.setPressed (true);
-			} else {
-				button.setPressed (false);
+		if (component == "timeofflight") {
+			int parsedValue = -1;
+			try{
+				int.TryParse (payload, out parsedValue);
+			}catch(System.Exception e){
+				Debug.Log(e.Message);
 			}
-		}else if (component == "led") {
+			if (parsedValue != -1) {
+				tof.setValue (parsedValue);
+			}
+		}else if (component == "ringlight") {
 			if (payload == "1") {
-				led.setState (true);
+				ringLight.setState (true);
 			} else {
-				led.setState (false);
+				ringLight.setState (false);
 			}
 		}
 	}
 
-	public Led getLed(){
-		return led;
+	public RingLight getRingLight(){
+		return ringLight;
 	}
 
-	public Button getButton(){
-		return button;
+	public TimeOfFlight getTimeOfFlight(){
+		return tof;
 	}
 }
