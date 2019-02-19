@@ -18,12 +18,10 @@ public class Cube1 : TwinObject {
 		base.Update ();
 	}
 
-	protected override void updateComponent(string component, string payload){
-		if (component == "led") {
-			if (payload == "1") {
-				led.setState (true);
-			} else {
-				led.setState (false);
+	protected override void updateComponent(EventMessage e){
+		if (e.component == "led") {
+			if(e.name == "state"){
+				led.setState(e.state);
 			}
 		}
 	}

@@ -4,7 +4,7 @@ using UnityEngine;
 using System.Timers;
 using System.Threading;
 
-public class GameLogic : MonoBehaviour {
+public class FollowTheRedDor : MonoBehaviour {
 
     private MQTTHandler mqttHandler;
 

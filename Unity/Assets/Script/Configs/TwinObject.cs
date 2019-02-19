@@ -112,15 +112,17 @@ public abstract class TwinObject : MonoBehaviour {
     }
 
 	public virtual void eventMessage (string[] topic, string payload){
-		updateComponent (topic[4], payload);
+		updateComponent (new EventMessage(topic[4], payload));
 	}
 	public virtual void valueMessage (string[] topic, string payload){
-		updateComponent (topic[4], payload);
+		updateComponent (new EventMessage(topic[4], payload));
 	}
 
     public void pingResponse(){
         pingCount = 0;
     }
 
-	protected abstract void updateComponent (string component, string payload);
+    protected virtual void onEvent(EventMessage e){}
+
+	protected abstract void updateComponent (EventMessage e);
 }

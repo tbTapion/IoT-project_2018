@@ -22,23 +22,11 @@ public class Cube2 : TwinObject {
 		button.update();
 	}
 
-	protected override void updateComponent(string component, string payload){
-		if (component == "button") {
-			if (payload == "1") {
-				button.setPressed (true);
-			} else {
-				button.setPressed (false);
-			}
-		} else if (component == "potmeter") {
-			int parsedValue = -1;
-			try{
-				int.TryParse (payload, out parsedValue);
-			}catch(System.Exception e){
-				Debug.Log(e.Message);
-			}
-			if (parsedValue != -1) {
-				potmeter.setValue (parsedValue);
-			}
+	protected override void updateComponent(EventMessage e){
+		if (e.component == "button") {
+			button.setPressed(e.state);
+		} else if (e.component == "potmeter") {
+			potmeter.setValue(e.value);
 		}
 	}
 
