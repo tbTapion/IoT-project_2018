@@ -18,7 +18,7 @@ public class GameLogic : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         //MQTT handler. Takes care of the connection to the RPI and sending/receiving messages.
-        mqttHandler = new MQTTHandler(this, "129.241.105.187");
+        mqttHandler = new MQTTHandler("129.241.105.187");
 
         //Test object
         for(int i = 0; i<numberOfObjects; i++){

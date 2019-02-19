@@ -16,7 +16,7 @@ public abstract class TwinObject : MonoBehaviour {
     private int pingTime;
 
 	// Use this for initialization
-	public virtual void Start () {
+	public virtual void Start() {
         pingCount = 0;
         pingTime = 30*60;
 	}
@@ -29,6 +29,7 @@ public abstract class TwinObject : MonoBehaviour {
             if(pingTime == 0){
                 if(pingCount > 2){
                     linked = false;
+                    //deviceLink = false;
                 }else{
                     sendPingMessage();
                     pingCount++;

@@ -12,14 +12,12 @@ public class MQTTHandler{
     //MQTT Client class
     private MqttClient client;
     private List<TwinObject> twinObjects = new List<TwinObject>();
-    private GameLogic gameLogic;
     private List<MessagePair> msgBuffer = new List<MessagePair>();
 
     /*
     Initialization of the MQTTHandler object.
      */
-    public MQTTHandler (GameLogic gameLogic, string hostaddress="127.0.0.1", int port=1883) {
-        this.gameLogic = gameLogic;
+    public MQTTHandler (string hostaddress="127.0.0.1", int port=1883) {
         client = new MqttClient(IPAddress.Parse(hostaddress), port, false, null); //Initializing the MQTT Class with ip, port, SSL level.
 
         client.MqttMsgPublishReceived += handleMQTTMessage; //Setting up the function triggered on received messages
@@ -84,7 +82,7 @@ public class MQTTHandler{
 	private void deviceValue(string[] topicSplit, string payload)
     {
 		TwinObject to = getObjectByID (topicSplit [2]);
-		if (to) {
+		if (to != null) {
 			to.valueMessage (topicSplit, payload);
 		}
     }
@@ -92,7 +90,7 @@ public class MQTTHandler{
 	private void deviceEvent(string[] topicSplit, string payload)
     {
 		TwinObject to = getObjectByID (topicSplit [2]);
-		if (to) {
+		if (to  != null) {
 			to.eventMessage (topicSplit, payload);
 		}
     }
@@ -100,7 +98,7 @@ public class MQTTHandler{
 	private void devicePing(string deviceID)
 	{	
 		TwinObject to = getObjectByID (deviceID);
-		if (to) {
+		if (to != null) {
             if(!to.getLinkStatus()){
                 to.setLinkStatus (true);
             }
@@ -114,7 +112,11 @@ public class MQTTHandler{
         bool linkPossible = false;
         foreach (TwinObject obj in twinObjects)
         {
-            if (obj.getConfigName() == topicSplit[3] && obj.getLinkStatus() == false)
+            if(obj.getDeviceID() == topicSplit[2]){
+                obj.setLinkStatus(true);
+                linkPossible = true;
+                break;
+            }else if (obj.getConfigName() == topicSplit[3])
             {
                 obj.linkDevice(topicSplit[2]);
                 linkPossible = true;
