@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class MessagePair{
+﻿public class MessagePair{
 
 	public string topic, payload;
 

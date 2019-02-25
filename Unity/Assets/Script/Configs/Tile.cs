@@ -7,6 +7,9 @@ public class Tile : TwinObject
     protected RingLight ringLight;
     protected TimeOfFlight timeOfFlight;
     protected TonePlayer tonePlayer;
+
+    //protected IMU imu;
+
     // Start is called before the first frame update
     public override void Start()
     {
@@ -15,6 +18,7 @@ public class Tile : TwinObject
         ringLight = new RingLight(this,transform.Find("RingLight").GetComponentsInChildren<RingLightLed>());
         timeOfFlight = new TimeOfFlight(this);
         tonePlayer = new TonePlayer(this);
+        //imu = new IMU(this);
     }
 
     // Update is called once per frame
