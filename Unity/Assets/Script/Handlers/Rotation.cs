@@ -14,6 +14,6 @@ public class Rotation {
     }
 
     public void setRotation(Rotation rotation){
-        setRotation()
+        setRotation(rotation.roll, rotation.pitch, rotation.yaw);
     }
 }
