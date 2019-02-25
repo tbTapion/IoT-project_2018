@@ -20,6 +20,11 @@ public class RingLight : DeviceComponent{
 	public override void update(){
 	}
 
+	public void toggle()
+    {
+        setState(!state);
+    }
+
 	public void setState(bool state){
 		this.state = state;
 		if(state == false){
@@ -31,7 +36,7 @@ public class RingLight : DeviceComponent{
 				ledList[i].setState(state);
 			}
 		}
-		//device.sendActionMessage("ringlight/state", (state ? 1 : 0).ToString());
+		device.sendActionMessage("ringlight/state", (state ? 1 : 0).ToString());
 	}
 
 	public bool getState(){

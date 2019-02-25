@@ -19,13 +19,9 @@ public class MQTTHandler{
      */
     public MQTTHandler (string hostaddress="127.0.0.1", int port=1883) {
         client = new MqttClient(IPAddress.Parse(hostaddress), port, false, null); //Initializing the MQTT Class with ip, port, SSL level.
-
         client.MqttMsgPublishReceived += handleMQTTMessage; //Setting up the function triggered on received messages
-
         client.Connect("Unity02"); //Connecting to the MQTT broker specified on the ip in the client init - String: client ID
-
         client.Subscribe(new string[] {"unity/#"}, new byte[] { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE }); //Subscribing to the topic
-        //client.Publish("unity/hellowoworld", Encoding.UTF8.GetBytes("Hello World")); //test message on topic
     }
     /*
     Sends a message to the MQTT server. Message built on TwinObject.

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MyGameLogic : MonoBehaviour
 {
-    //private MQTTHandler mqttHandler;
+    private MQTTHandler mqttHandler;
 
     int numberOfObjects = 3;
     public List<CustomTile> tileList = new List<CustomTile>();
@@ -12,7 +12,7 @@ public class MyGameLogic : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //mqttHandler = new MQTTHandler();
+        mqttHandler = new MQTTHandler();
 
         //Test object
         for(int i = 0; i<numberOfObjects; i++){
@@ -20,7 +20,7 @@ public class MyGameLogic : MonoBehaviour
             CustomTile tile = obj.AddComponent<CustomTile>();
             tileList.Add(tile);
             tile.setGameLogic(this);
-            //mqttHandler.addTwinObject(obj.AddComponent<CustomTile>());
+            mqttHandler.addTwinObject(obj.AddComponent<CustomTile>());
         }
         foreach(CustomTile tile in tileList){
             tile.setOtherList(tileList);
@@ -30,6 +30,7 @@ public class MyGameLogic : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        mqttHandler.update();
         bool anyActive = false;
         foreach(CustomTile tile in tileList){
             if(tile.active){

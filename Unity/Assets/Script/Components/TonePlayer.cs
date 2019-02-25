@@ -28,7 +28,7 @@ public class TonePlayer : DeviceComponent
         return frequency;
     }
 
-    /*public void playTone(){
+    public void playTone(){
         device.sendActionMessage("toneplayer/", )
-    }*/
+    }
 }
