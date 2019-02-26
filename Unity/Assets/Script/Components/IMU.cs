@@ -12,7 +12,6 @@ public class IMU : DeviceComponent
 
     public override void update()
     {
-        base.update();
         tapped = false;
     }
 

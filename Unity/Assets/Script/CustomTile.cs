@@ -20,17 +20,22 @@ public class CustomTile : Tile
     public override void Update()
     {
         base.Update();
-        /*if(active){
-            if(imu.justTapped()){
-                otherTiles[Random.Range(0, otherTiles.Count)].setActive(true);;
-                
-            }
-        }*/
+        if(active){
+            //if(imu.justTapped()){
+                if(i == 0){
+                    otherTiles[Random.Range(0, otherTiles.Count)].setActive(true);;
+                    setActive(false);
+                    i=60;
+                }else{
+                    i--;
+                }
+            //}
+        }
     }
 
-    public override void onEvent(EventMessage event){
-        if(event.component == event.ComponentType.IMU){
-            if(event.name == event.EventType.TAPPED){
+    protected override void onEvent(EventMessage e){
+        if(e.component == "imu"){
+            if(e.name == "tapped"){
                 CustomTile temp = otherTiles[Random.Range(0,otherTiles.Count)];
                 temp.setActive(true);
                 setActive(false);

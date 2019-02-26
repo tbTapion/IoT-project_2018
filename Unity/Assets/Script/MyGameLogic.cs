@@ -12,7 +12,7 @@ public class MyGameLogic : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        mqttHandler = new MQTTHandler();
+        //mqttHandler = new MQTTHandler();
 
         //Test object
         for(int i = 0; i<numberOfObjects; i++){
@@ -20,7 +20,7 @@ public class MyGameLogic : MonoBehaviour
             CustomTile tile = obj.AddComponent<CustomTile>();
             tileList.Add(tile);
             tile.setGameLogic(this);
-            mqttHandler.addTwinObject(obj.AddComponent<CustomTile>());
+            //mqttHandler.addTwinObject(obj.AddComponent<CustomTile>());
         }
         foreach(CustomTile tile in tileList){
             tile.setOtherList(tileList);
@@ -30,8 +30,8 @@ public class MyGameLogic : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        mqttHandler.update();
-        if(mqttHandler.allDevicesConnected()){
+        //mqttHandler.update();
+        //if(mqttHandler.allDevicesConnected()){
             bool anyActive = false;
             foreach(CustomTile tile in tileList){
                 if(tile.active){
@@ -42,6 +42,6 @@ public class MyGameLogic : MonoBehaviour
                 CustomTile firstActive = tileList[Random.Range(0, tileList.Count)];
                 firstActive.active = true;
             }
-        }
+        //}
     }
 }

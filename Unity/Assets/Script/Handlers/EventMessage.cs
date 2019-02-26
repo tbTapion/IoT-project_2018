@@ -10,25 +10,6 @@ public class EventMessage
     public bool state;
     public int value;
 
-    public enum ComponentType : string {
-        BUTTON = "button",
-        POTMETER = "potmeter",
-        RINGLIGHT = "ringlight",
-        TIMEOFFLIGHT = "timeofflight",
-        TONEPLAYER = "toneplayer",
-        IMU = "imu"
-    };
-
-    public enum EventType : string {
-        STATE = "state",
-        VALUE = "value",
-        HEARTBEAT = "heartbeat",
-        COLOR = "color",
-        NUMOFLEDS = "numOfLeds",
-        FREQUENCY = "frequency",
-        DURATION = "duration"
-    }
-
     public EventMessage(string component, string payload)
     {
         string[] msgPair = component.Split('-');

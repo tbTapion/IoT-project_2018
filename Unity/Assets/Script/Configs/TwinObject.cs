@@ -125,7 +125,7 @@ public abstract class TwinObject : MonoBehaviour {
         pingCount = 0;
     }
 
-    protected virtual void onEvent(EventMessage e){}
+    protected virtual void onEvent (EventMessage e){}
 
 	protected abstract void updateComponent (EventMessage e);
 }

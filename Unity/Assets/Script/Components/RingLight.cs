@@ -36,7 +36,7 @@ public class RingLight : DeviceComponent{
 				ledList[i].setState(state);
 			}
 		}
-		device.sendActionMessage("ringlight/state", (state ? 1 : 0).ToString());
+		//device.sendActionMessage("ringlight/state", (state ? 1 : 0).ToString());
 	}
 
 	public bool getState(){
@@ -45,7 +45,7 @@ public class RingLight : DeviceComponent{
 
 	public void setColor(Color color){
 		this.color = color;
-		device.sendActionMessage("ringlight/color", color.r + "," + color.g + "," + color.b);
+		//device.sendActionMessage("ringlight/color", color.r + "," + color.g + "," + color.b);
 	}
 
 	public Color getColor(){

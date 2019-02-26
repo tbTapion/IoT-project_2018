@@ -29,6 +29,5 @@ public class TonePlayer : DeviceComponent
     }
 
     public void playTone(){
-        device.sendActionMessage("toneplayer/", )
     }
 }
