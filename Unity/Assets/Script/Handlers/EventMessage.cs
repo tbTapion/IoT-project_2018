@@ -9,6 +9,26 @@ public class EventMessage
     public string payload;
     public bool state;
     public int value;
+
+    public enum ComponentType : string {
+        BUTTON = "button",
+        POTMETER = "potmeter",
+        RINGLIGHT = "ringlight",
+        TIMEOFFLIGHT = "timeofflight",
+        TONEPLAYER = "toneplayer",
+        IMU = "imu"
+    };
+
+    public enum EventType : string {
+        STATE = "state",
+        VALUE = "value",
+        HEARTBEAT = "heartbeat",
+        COLOR = "color",
+        NUMOFLEDS = "numOfLeds",
+        FREQUENCY = "frequency",
+        DURATION = "duration"
+    }
+
     public EventMessage(string component, string payload)
     {
         string[] msgPair = component.Split('-');
@@ -33,6 +53,9 @@ public class EventMessage
                 break;
             case "toneplayer":
                 handleTonePlayer(msgPair[1], payload);
+                break;
+            case "imu":
+                handleIMU(msgPair[1], payload);
                 break;
         }
     }
@@ -127,6 +150,14 @@ public class EventMessage
         else if (type == "duration")
         {
             parsevalue(payload);
+        }
+    }
+
+    private void handleIMU(string type, string payload){
+        if(type == "rotation"){
+            
+        }else if(type == "tapped"){
+            parsestate(payload);
         }
     }
 }

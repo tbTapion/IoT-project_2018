@@ -8,7 +8,6 @@ public class CustomTile : Tile
     public bool active;
 
     public List<CustomTile> otherTiles;
-
     int i = 60;
 
     // Start is called before the first frame update
@@ -21,13 +20,20 @@ public class CustomTile : Tile
     public override void Update()
     {
         base.Update();
-        if(active){
-            if(i == 0){
+        /*if(active){
+            if(imu.justTapped()){
                 otherTiles[Random.Range(0, otherTiles.Count)].setActive(true);;
+                
+            }
+        }*/
+    }
+
+    public override void onEvent(EventMessage event){
+        if(event.component == event.ComponentType.IMU){
+            if(event.name == event.EventType.TAPPED){
+                CustomTile temp = otherTiles[Random.Range(0,otherTiles.Count)];
+                temp.setActive(true);
                 setActive(false);
-                i = 60;
-            }else{
-                i--;
             }
         }
     }

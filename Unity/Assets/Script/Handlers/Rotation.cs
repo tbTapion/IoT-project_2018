@@ -1,6 +1,7 @@
 public class Rotation {
 
     public float yaw, roll, pitch;
+    
     public Rotation(float roll, float pitch, float yaw){
         this.yaw = yaw;
         this.roll = roll;

@@ -31,15 +31,17 @@ public class MyGameLogic : MonoBehaviour
     void Update()
     {
         mqttHandler.update();
-        bool anyActive = false;
-        foreach(CustomTile tile in tileList){
-            if(tile.active){
-                anyActive = tile.active;
+        if(mqttHandler.allDevicesConnected()){
+            bool anyActive = false;
+            foreach(CustomTile tile in tileList){
+                if(tile.active){
+                    anyActive = tile.active;
+                }
             }
-        }
-        if(anyActive == false){
-            CustomTile firstActive = tileList[Random.Range(0, tileList.Count)];
-            firstActive.active = true;
+            if(anyActive == false){
+                CustomTile firstActive = tileList[Random.Range(0, tileList.Count)];
+                firstActive.active = true;
+            }
         }
     }
 }
