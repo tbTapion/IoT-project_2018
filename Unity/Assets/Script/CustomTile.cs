@@ -14,6 +14,7 @@ public class CustomTile : Tile
     public override void Start()
     {
         base.Start();
+        ringLight.setColor(new Color(0.5f, 0.3f, 0.5f));
     }
 
     // Update is called once per frame

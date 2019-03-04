@@ -5,11 +5,12 @@ using UnityEngine;
 public class RingLight : DeviceComponent{
 
 	private Color color;
+
 	private bool state;
 
 	private int numOfLeds;
 	
-	RingLightLed[] ledList;
+	private RingLightLed[] ledList;
 
 	public RingLight(TwinObject device, RingLightLed[] ledList){
 		color = new Color(0,0,0);
@@ -45,7 +46,11 @@ public class RingLight : DeviceComponent{
 
 	public void setColor(Color color){
 		this.color = color;
-		//device.sendActionMessage("ringlight/color", color.r + "," + color.g + "," + color.b);
+		string colorString = buildNumberString((int)(color.r * 255)) + "-" + 
+			buildNumberString((int)(color.g * 255)) +"-" + 
+			buildNumberString((int)(color.b * 255));
+		Debug.Log(colorString);
+		//device.sendActionMessage("ringlight/color", colorString);
 	}
 
 	public Color getColor(){
@@ -58,5 +63,19 @@ public class RingLight : DeviceComponent{
 
 	public int getNumOfLeds(){
 		return numOfLeds;
+	}
+
+	public RingLightLed[] getLedList(){
+		return ledList;
+	}
+
+	private string buildNumberString(int color){
+		string temp = "";
+		if(color< 10){
+			temp += "00";
+		}else if(color < 100) {
+			temp += "0";
+		}
+		return temp += color;
 	}
 }

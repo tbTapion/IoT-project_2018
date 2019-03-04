@@ -129,10 +129,24 @@ void get_event(char* topicElement){
 void action_event(char* topicElement, byte* payload){
   while(topicElement != NULL){
     if(strcmp(topicElement, "led") == 0){
-        if ((char)payload[0] == '1') {
-          lightsOn();
+        topicElement = strtok(NULL, "/");
+        if(strcmp(topicElement, "color") == 0){
+          char payload_char[sizeof(payload)];
+          for(int i = 0; i<sizeof(payload); i++){
+            payload_char[i] = char(payload[i]);
+          }
+          char* payloadelement = strtok(payload_char, "-");
+          int rgb[3];
+          for(int i = 0; i<3; i++){
+            int value = (payloadelement[0] * 100) + (payloadelement[1] * 10) + payloadelement[2];
+            payloadelement = strtok(NULL, "/");
+          }
         }else{
-          lightsOff();
+          if ((char)payload[0] == '1') {
+            lightsOn();
+          }else{
+            lightsOff();
+          }
         }
     }
     topicElement = strtok(NULL, "/");
