@@ -44,24 +44,56 @@ public abstract class TwinObject : MonoBehaviour {
         this.mqttHandler = mqttHandler;
     }
 
-    public void sendPingMessage()
+    internal void sendDeviceMessage(string tempMessageTopic, string payload)
     {
-        mqttHandler.sendDeviceMessage(deviceID + "/ping", "1");
+        mqttHandler.sendDeviceMessage(tempMessageTopic, System.Text.Encoding.Default.GetBytes(payload));
+    }
+
+    internal void sendDeviceMessage(string tempMessageTopic, int payload){
+        mqttHandler.sendDeviceMessage(tempMessageTopic, new byte[]{(byte)payload});
+    }
+
+    internal void sendDeviceMessage(string tempMessageTopic, int[] payload){
+
+    }
+
+    internal void sendDeviceMessage(string tempMessageTopic, bool payload){
+        mqttHandler.sendDeviceMessage(tempMessageTopic, new byte[]{(byte)(payload ? 1 : 0)});
     }
 
     public void sendActionMessage(string componentName, string payload)
     {
+		sendDeviceMessage(deviceID + "/action/" + componentName, payload);
+    }
+
+    public void sendActionMessage(string componentName, int payload)
+    {
+		sendDeviceMessage(deviceID + "/action/" + componentName, payload);
+    }
+
+    public void sendActionMessage(string componentName, bool payload)
+    {
+		sendDeviceMessage(deviceID + "/action/" + componentName, payload);
+    }
+
+    public void sendActionMessage(string componentName, byte[] payload)
+    {
 		mqttHandler.sendDeviceMessage(deviceID + "/action/" + componentName, payload);
+    }
+    
+    public void sendPingMessage()
+    {
+        sendDeviceMessage(deviceID + "/ping", true);
     }
 
     public void sendGetMessage(string componentName)
     {
-        mqttHandler.sendDeviceMessage(deviceID + "/get/" + componentName, "1");
+        sendDeviceMessage(deviceID + "/get/" + componentName, 1);
     }
 
     public void sendGetConfigMessage()
     {
-        mqttHandler.sendDeviceMessage(deviceID + "/getconfg", "1");
+        sendDeviceMessage(deviceID + "/getconfg", 1);
     }
 
     public string getDeviceID()
@@ -111,12 +143,12 @@ public abstract class TwinObject : MonoBehaviour {
         return configName;
     }
 
-	public virtual void eventMessage (string[] topic, string payload){
+	public virtual void eventMessage (string[] topic, byte[] payload){
         EventMessage msg = new EventMessage(topic[4], payload);
 		updateComponent (msg);
         onEvent(msg);
 	}
-	public virtual void valueMessage (string[] topic, string payload){
+	public virtual void valueMessage (string[] topic, byte[] payload){
         EventMessage msg = new EventMessage(topic[4], payload);
 		updateComponent (new EventMessage(topic[4], payload));
 	}

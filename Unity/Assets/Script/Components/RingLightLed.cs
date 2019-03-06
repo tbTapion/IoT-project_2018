@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class RingLightLed : MonoBehaviour
 {
-    public bool state;
+    private bool state;
+    private Color color;
     // Start is called before the first frame update
     void Start()
     {
-        
     }
 
     // Update is called once per frame
@@ -35,5 +35,13 @@ public class RingLightLed : MonoBehaviour
 
     public bool getState(){
         return state;
+    }
+
+    public void setColor(Color color){
+        this.color = color;
+    }
+
+    public Color getColor(){
+        return color;
     }
 }

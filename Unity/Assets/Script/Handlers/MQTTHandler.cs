@@ -26,9 +26,9 @@ public class MQTTHandler{
     /*
     Sends a message to the MQTT server. Message built on TwinObject.
      */
-    internal void sendDeviceMessage(string tempMessageTopic, string payload)
-    {
-        client.Publish(tempMessageTopic, Encoding.Default.GetBytes(payload));
+
+    internal void sendDeviceMessage(string tempMessageTopic, byte[] payload){
+        client.Publish(tempMessageTopic, payload);
     }
 
     /*
@@ -37,7 +37,7 @@ public class MQTTHandler{
     void handleMQTTMessage(object sender, MqttMsgPublishEventArgs e)
     {
         Debug.Log("Received: " + e.Topic);
-        msgBuffer.Add(new MessagePair(e.Topic, Encoding.Default.GetString(e.Message)));
+        msgBuffer.Add(new MessagePair(e.Topic, e.Message));
     }
 
     /*
@@ -75,7 +75,7 @@ public class MQTTHandler{
         }
     }
 
-	private void deviceValue(string[] topicSplit, string payload)
+	private void deviceValue(string[] topicSplit, byte[] payload)
     {
 		TwinObject to = getObjectByID (topicSplit [2]);
 		if (to != null) {
@@ -83,7 +83,7 @@ public class MQTTHandler{
 		}
     }
 
-	private void deviceEvent(string[] topicSplit, string payload)
+	private void deviceEvent(string[] topicSplit, byte[] payload)
     {
 		TwinObject to = getObjectByID (topicSplit [2]);
 		if (to  != null) {
@@ -121,7 +121,7 @@ public class MQTTHandler{
         }
         if (!linkPossible)
         {
-            sendDeviceMessage(topicSplit[2] + "/ping", "0");
+            sendDeviceMessage(topicSplit[2] + "/ping", new byte[]{0});
         }
     }
 

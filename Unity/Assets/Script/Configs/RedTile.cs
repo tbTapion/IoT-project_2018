@@ -36,8 +36,7 @@ public class RedTile : TwinObject
             }
             else if (e.name == "color")
             {   
-                string[] temp = e.payload.Split(',');
-                Color tempColor = new Color(int.Parse(temp[0]),int.Parse(temp[1]),int.Parse(temp[2]));
+                Color tempColor = new Color(e.payload[0]/256.0f,e.payload[1]/256.0f,e.payload[2]/256.0f);
                 ringLight.setColor(tempColor);
             }
             else if (e.name == "numOfLeds")
@@ -47,9 +46,7 @@ public class RedTile : TwinObject
         }
         else if (e.component == "imu")
         {
-            if(e.name == "rotation"){
-
-            }else if(e.name == "tapped"){
+            if(e.name == "tapped"){
                 imu.setTapped();
             }
         }

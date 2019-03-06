@@ -37,7 +37,7 @@ public class RingLight : DeviceComponent{
 				ledList[i].setState(state);
 			}
 		}
-		//device.sendActionMessage("ringlight/state", (state ? 1 : 0).ToString());
+		device.sendActionMessage("ringlight/state", state);
 	}
 
 	public bool getState(){
@@ -46,11 +46,23 @@ public class RingLight : DeviceComponent{
 
 	public void setColor(Color color){
 		this.color = color;
-		string colorString = buildNumberString((int)(color.r * 255)) + "-" + 
-			buildNumberString((int)(color.g * 255)) +"-" + 
-			buildNumberString((int)(color.b * 255));
-		Debug.Log(colorString);
-		//device.sendActionMessage("ringlight/color", colorString);
+		byte[] colorBytes = new byte[]{(byte)(color.r*255),(byte)(color.g*255),(byte)(color.b*255)};
+		device.sendActionMessage("ringlight/color", colorBytes);
+	}
+
+	public void setAllLedsColor(){
+		List<byte> colorBytes = new List<byte>();
+		foreach(RingLightLed led in ledList){
+			Color c;
+			if(led.getState()){
+				c = led.getColor();
+			}else{
+				c = Color.black;
+			}
+			byte[] colors = new byte[]{(byte)(c.r*256),(byte)(c.g*256),(byte)(c.b*256)};
+			colorBytes.AddRange(colors);
+		}
+		device.sendActionMessage("ringlight/allcolors", colorBytes.ToArray());
 	}
 
 	public Color getColor(){

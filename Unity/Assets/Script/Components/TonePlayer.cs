@@ -1,10 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class TonePlayer : DeviceComponent
 {
-    private int duration, frequency;
     public TonePlayer(TwinObject device){
         this.device = device;
     }
@@ -12,22 +12,21 @@ public class TonePlayer : DeviceComponent
     public override void update(){
     }
 
-    public void setDuration(int duration){
-        this.duration = duration;
+    public void playTone(int frequency){
+        byte[] freqbytes = BitConverter.GetBytes(frequency);
+        device.sendActionMessage("toneplayer/freq", freqbytes);
     }
 
-    public void setFrequency(int frequency){
-        this.frequency = frequency;
+    public void playTone(int frequency, int duration){
+        byte[] freqbytes = BitConverter.GetBytes(frequency);
+        byte[] durbytes = BitConverter.GetBytes(duration);
+        List<byte> bytesArray = new List<byte>();
+        bytesArray.AddRange(freqbytes);
+        bytesArray.AddRange(durbytes);
+        device.sendActionMessage("toneplayer/freqdur", bytesArray.ToArray());
     }
 
-    public int getDuration(){
-        return duration;
-    }
-
-    public int getFrequency(){
-        return frequency;
-    }
-
-    public void playTone(){
+    public void stopTone(){
+        device.sendActionMessage("toneplayer/stop", 0);
     }
 }

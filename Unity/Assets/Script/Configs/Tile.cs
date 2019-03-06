@@ -43,8 +43,7 @@ public class Tile : TwinObject
             }
             else if (e.name == "color")
             {   
-                string[] temp = e.payload.Split('-');
-                Color tempColor = new Color(int.Parse(temp[0]),int.Parse(temp[1]),int.Parse(temp[2]));
+                Color tempColor = new Color(e.payload[0]/256.0f,e.payload[1]/256.0f,e.payload[2]/256.0f);
                 ringLight.setColor(tempColor);
             }
             else if (e.name == "numOfLeds")
@@ -56,6 +55,11 @@ public class Tile : TwinObject
         {
             if(e.name == "tapped"){
                 imu.setTapped();
+            }else if(e.name == "rotation"){
+                int roll = e.payload[0]+(e.payload[1]*256);
+                int pitch = e.payload[2]+(e.payload[3]*256);
+                int yaw = e.payload[4]+(e.payload[5]*256);
+                imu.setRotation(roll,pitch,yaw);
             }
         }
     }

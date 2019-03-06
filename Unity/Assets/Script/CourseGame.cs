@@ -6,25 +6,25 @@ public class CourseGame : MonoBehaviour
 {
     private MQTTHandler mQTTHandler;
     int numberOfObjects = 3;
-    public List<CustomTile> tileList;
+    public List<CourseTile> tileList;
     bool playMode;
 
-    public List<CustomTile> courseOrder;
+    public List<CourseTile> courseOrder;
     int currentTile = 0;
     // Start is called before the first frame update
     void Start()
     {
         //mqttHandler = new MQTTHandler();
-        tileList = new List<CustomTile>();
-        courseOrder = new List<CustomTile>();
+        tileList = new List<CourseTile>();
+        courseOrder = new List<CourseTile>();
 
         //Test object
         for(int i = 0; i<numberOfObjects; i++){
             GameObject obj = Instantiate(Resources.Load("Prefabs/Tile"),new Vector3(-1.6f + (i*1.05f), 0.0f, 0.0f),Quaternion.identity) as GameObject;
-            CustomTile tile = obj.AddComponent<CustomTile>();
+            CourseTile tile = obj.AddComponent<CourseTile>();
             tileList.Add(tile);
-            //tile.setupWaiting();
-            //mqttHandler.addTwinObject(obj.AddComponent<CustomTile>());
+            tile.setupWaiting();
+            //mqttHandler.addTwinObject(obj.AddComponent<CourseTile>());
         }
     }
 
@@ -32,7 +32,8 @@ public class CourseGame : MonoBehaviour
     void Update()
     {
         if(playMode){
-            if(courseOrder[currentTile].active == false){
+            if(courseOrder[currentTile].getIMU().justTapped()){
+                courseOrder[currentTile].setActive(false);
                 currentTile = (currentTile + 1) % courseOrder.Count;
                 courseOrder[currentTile].setActive(true);
             }
@@ -40,11 +41,12 @@ public class CourseGame : MonoBehaviour
             //wait for activation
             if(courseOrder.Count == tileList.Count){
                 courseOrder[currentTile].setActive(true);
+                playMode = true;
             }else{
-                foreach(CustomTile tile in tileList){
+                foreach(CourseTile tile in tileList){
                     if(tile.getIMU().justTapped()){
                         courseOrder.Add(tile);
-                        //tile.readyState();
+                        tile.setupReady();
                     }
                 }
             }

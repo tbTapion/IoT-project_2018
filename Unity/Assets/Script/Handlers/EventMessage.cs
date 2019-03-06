@@ -6,11 +6,11 @@ public class EventMessage
 {
     public string name;
     public string component;
-    public string payload;
+    public byte[] payload;
     public bool state;
     public int value;
 
-    public EventMessage(string component, string payload)
+    public EventMessage(string component, byte[] payload)
     {
         string[] msgPair = component.Split('-');
         component = msgPair[0];
@@ -32,45 +32,31 @@ public class EventMessage
             case "timeofflight":
                 handleTimeOfFlight(msgPair[1], payload);
                 break;
-            case "toneplayer":
-                handleTonePlayer(msgPair[1], payload);
-                break;
             case "imu":
                 handleIMU(msgPair[1], payload);
                 break;
         }
     }
 
-    private void parsevalue(string payload)
+    private void parsevalue(byte[] payload)
     {
-        int parsedValue = -1;
-        try
-        {
-            int.TryParse(payload, out parsedValue);
+        int parsedValue = 0;
+        for(int i = 0; i<payload.Length; i++){
+            parsedValue = payload[i] * (int)Mathf.Pow(256, i);
         }
-        catch (System.Exception e)
-        {
-            Debug.Log(e.Message);
-        }
-        if (parsedValue != -1)
-        {
-            value = parsedValue;
-        }
+        value = parsedValue;
     }
 
-    private void parsestate(string payload)
+    private void parsestate(byte[] payload)
     {
-        if (payload == "1")
-        {
+        if(payload[0] == 1){
             state = true;
-        }
-        else
-        {
+        }else{
             state = false;
         }
     }
 
-    private void handleLed(string type, string payload)
+    private void handleLed(string type, byte[] payload)
     {
         if (type == "state")
         {
@@ -82,7 +68,7 @@ public class EventMessage
         }
     }
 
-    private void handleButton(string type, string payload)
+    private void handleButton(string type, byte[] payload)
     {
         if (type == "state")
         {
@@ -90,7 +76,7 @@ public class EventMessage
         }
     }
 
-    private void handlePotmeter(string type, string payload)
+    private void handlePotmeter(string type, byte[] payload)
     {
         if (type == "value")
         {
@@ -98,7 +84,7 @@ public class EventMessage
         }
     }
 
-    private void handleRingLight(string type, string payload)
+    private void handleRingLight(string type, byte[] payload)
     {
         if (type == "state")
         {
@@ -114,7 +100,7 @@ public class EventMessage
         }
     }
 
-    private void handleTimeOfFlight(string type, string payload)
+    private void handleTimeOfFlight(string type, byte[] payload)
     {
         if (type == "value")
         {
@@ -122,21 +108,9 @@ public class EventMessage
         }
     }
 
-    private void handleTonePlayer(string type, string payload)
-    {
-        if (type == "frequency")
-        {
-            parsevalue(payload);
-        }
-        else if (type == "duration")
-        {
-            parsevalue(payload);
-        }
-    }
-
-    private void handleIMU(string type, string payload){
+    private void handleIMU(string type, byte[] payload){
         if(type == "rotation"){
-            
+            this.payload = payload;
         }else if(type == "tapped"){
             parsestate(payload);
         }
