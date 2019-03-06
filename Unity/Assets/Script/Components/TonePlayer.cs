@@ -14,7 +14,7 @@ public class TonePlayer : DeviceComponent
 
     public void playTone(int frequency){
         byte[] freqbytes = BitConverter.GetBytes(frequency);
-        device.sendActionMessage("toneplayer/freq", freqbytes);
+        device.sendActionMessage("toneplayer/play", freqbytes);
     }
 
     public void playTone(int frequency, int duration){
@@ -23,7 +23,7 @@ public class TonePlayer : DeviceComponent
         List<byte> bytesArray = new List<byte>();
         bytesArray.AddRange(freqbytes);
         bytesArray.AddRange(durbytes);
-        device.sendActionMessage("toneplayer/freqdur", bytesArray.ToArray());
+        device.sendActionMessage("toneplayer/frequency_duration", bytesArray.ToArray());
     }
 
     public void stopTone(){

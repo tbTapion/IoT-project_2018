@@ -62,7 +62,7 @@ public class RingLight : DeviceComponent{
 			byte[] colors = new byte[]{(byte)(c.r*256),(byte)(c.g*256),(byte)(c.b*256)};
 			colorBytes.AddRange(colors);
 		}
-		device.sendActionMessage("ringlight/allcolors", colorBytes.ToArray());
+		device.sendActionMessage("ringlight/all_colors", colorBytes.ToArray());
 	}
 
 	public Color getColor(){
@@ -71,6 +71,7 @@ public class RingLight : DeviceComponent{
 
 	public void setNumOfLeds(int numOfLeds){
 		this.numOfLeds = numOfLeds;
+		device.sendActionMessage("ringlight/number_of_leds", numOfLeds);
 	}
 
 	public int getNumOfLeds(){

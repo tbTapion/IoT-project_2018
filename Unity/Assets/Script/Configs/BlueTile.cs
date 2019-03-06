@@ -52,12 +52,7 @@ public class BlueTile : TwinObject
         }
         else if (e.component == "imu")
         {
-            if(e.name == "rotation"){
-                int roll = e.payload[0]+(e.payload[1]*256);
-                int pitch = e.payload[2]+(e.payload[3]*256);
-                int yaw = e.payload[4]+(e.payload[5]*256);
-                imu.setRotation(roll,pitch,yaw);
-            }else if(e.name == "tapped"){
+            if(e.name == "tapped"){
                 imu.setTapped();
             }
         }
