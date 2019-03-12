@@ -144,13 +144,13 @@ public abstract class TwinObject : MonoBehaviour {
     }
 
 	public virtual void eventMessage (string[] topic, byte[] payload){
-        EventMessage msg = new EventMessage(topic[4], payload);
+        EventMessage msg = new EventMessage(topic[4], topic[5], payload);
 		updateComponent (msg);
         onEvent(msg);
 	}
 	public virtual void valueMessage (string[] topic, byte[] payload){
-        EventMessage msg = new EventMessage(topic[4], payload);
-		updateComponent (new EventMessage(topic[4], payload));
+        EventMessage msg = new EventMessage(topic[4], topic[5], payload);
+		updateComponent (new EventMessage(topic[4], topic[5], payload));
 	}
 
     public void pingResponse(){

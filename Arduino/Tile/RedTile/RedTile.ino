@@ -29,7 +29,7 @@ const char *clientID; //Filled with mac address, unused, but kept in case of fut
 String clientIDstr;   //String containing mac address, used in conjunction with message building
 String IP;            //String containing IP address.
 String HOSTNAME;      //String containing HOSTNAME.
-String configID = "bluetile";
+String configID = "redtile";
 //Neopixel vars
 byte individualLedColors[NUMPIXELS * 3];
 int numberOfActiveLeds = NUMPIXELS;
@@ -70,17 +70,13 @@ void setup()
   Serial.println("Sensor found!");*/
 
   // Call imu.begin() to verify communication and initialize
-  if (imu.begin() != INV_SUCCESS)
+  while (imu.begin() != INV_SUCCESS)
   {
-    while (1)
-    {
-      Serial.println("Unable to communicate with MPU-9250");
-      Serial.println("Check connections, and try again.");
-      Serial.println();
-      delay(7000);
-    }
+    Serial.println("Unable to communicate with MPU-9250");
+    Serial.println("Check connections, and try again.");
+    Serial.println();
+    delay(2000);
   }
-  Serial.println("Begin 1.");
   int success = imu.dmpBegin(DMP_FEATURE_6X_LP_QUAT |                    // Enable 6-axis quat
                                  DMP_FEATURE_GYRO_CAL | DMP_FEATURE_TAP, // Use gyro calibration
                              10);                                        // Set DMP FIFO rate to 10 Hz
@@ -105,7 +101,6 @@ void setup()
   imu.dmpSetTap(xThresh, yThresh, zThresh, taps, tapTime, tapMulti);
 
   Serial.print(success);
-  Serial.println("Begin 2.");
   //Setting default color for ringlight leds
   for (int i = 0; i < NUMPIXELS; i++)
   {
@@ -145,8 +140,8 @@ void callback(char *topic, byte *payload, unsigned int length)
 {
   Serial.print("New message arrived [");
   Serial.print(topic);
-  Serial.print("] ");
-
+  Serial.println("] ");
+  
   char *topicElement;
   topicElement = strtok(topic, "/");
 
@@ -155,15 +150,17 @@ void callback(char *topic, byte *payload, unsigned int length)
     Serial.println(topicElement);
     if (strcmp(topicElement, "ping") == 0)
     {
-      //Serial.println("Ping event space entered!");
+      Serial.println("Ping space entered!");
       ping_event(payload);
     }
     else if (strcmp(topicElement, "action") == 0)
     {
+      Serial.println("Action space entered!");
       action_event(topicElement, payload);
     }
     else if (strcmp(topicElement, "get") == 0)
     {
+      Serial.println("Get space entered!");
       get_event(topicElement);
     }
     topicElement = strtok(NULL, "/");
@@ -173,22 +170,21 @@ void callback(char *topic, byte *payload, unsigned int length)
 byte rotation[6];
 void get_event(char *topicElement)
 {
-  while (topicElement != NULL)
-  {
-    Serial.println(topicElement);
-    if(strcmp(topicElement, "imu")){
-      topicElement = strtok(NULL, "/");
+  while(topicElement != NULL){
+    if(strcmp(topicElement, "imu") == 0){
       Serial.println(topicElement);
-      if(strcmp(topicElement, "rotation")){
+      topicElement = strtok(NULL, "/");
+      if(strcmp(topicElement, "rotation") == 0){
+        Serial.println(topicElement);    
         char payload[sizeof(rotation)+1];
-        for(int i = 0; i<sizeof(rotation); i++){
+        for(int i = 0; i<6; i++){
           payload[i] = (char)rotation[i];
           Serial.println(rotation[i]);
         }
         payload[sizeof(rotation)] = '\0';
         client.publish(("unity/device/" + clientIDstr + "/value/imu/rotation").c_str(), payload);
+        Serial.println("Value sent!");
       }
-      topicElement = strtok(NULL, "/");
     }
     topicElement = strtok(NULL, "/");
   }
@@ -196,13 +192,17 @@ void get_event(char *topicElement)
 
 void action_event(char *topicElement, byte *payload)
 {
-  while (topicElement != NULL)
-  {
+  while(topicElement != NULL){
     if (strcmp(topicElement, "ringlight") == 0)
     {
+      Serial.println("ringlight");
       topicElement = strtok(NULL, "/");
       if (strcmp(topicElement, "color") == 0)
       {
+        Serial.println("color");
+        for(int i = 0; i<3; i++){
+            Serial.println(int(payload[i]));
+         }
         for (int i = 0; i < NUMPIXELS; i++)
         {
           individualLedColors[(i * 3)] = payload[0];
@@ -210,18 +210,18 @@ void action_event(char *topicElement, byte *payload)
           individualLedColors[(i * 3) + 2] = payload[2];
         }
       }
-      else if (strcmp(topicElement, "state"))
+      else if (strcmp(topicElement, "state") == 0)
       {
         if (payload[0] == 1)
         {
-          //lightsOn();
+          lightsOn();
         }
         else
         {
-          //lightsOff();
+          lightsOff();
         }
       }
-      else if (strcmp(topicElement, "all_colors"))
+      else if (strcmp(topicElement, "all_colors") == 0)
       {
         for (int i = 0; i < NUMPIXELS; i++)
         {
@@ -230,15 +230,15 @@ void action_event(char *topicElement, byte *payload)
           individualLedColors[(i * 3) + 2] = payload[(i * 3) + 2];
         }
       }
-      else if (strcmp(topicElement, "number_of_leds"))
+      else if (strcmp(topicElement, "number_of_leds") == 0)
       {
         numberOfActiveLeds = payload[0];
       }
     }
-    else if (strcmp(topicElement, "toneplayer"))
+    else if (strcmp(topicElement, "toneplayer") == 0)
     {
       topicElement = strtok(NULL, "/");
-      if (strcmp(topicElement, "play"))
+      if (strcmp(topicElement, "play") == 0)
       {
         int frequency = 0;
         for (int i = 0; i < 4; i++)
@@ -247,11 +247,11 @@ void action_event(char *topicElement, byte *payload)
         }
         tone(BUZZERPIN, frequency);
       }
-      else if (strcmp(topicElement, "stop"))
+      else if (strcmp(topicElement, "stop") == 0)
       {
         noTone(BUZZERPIN);
       }
-      else if (strcmp(topicElement, "frequency_duration"))
+      else if (strcmp(topicElement, "frequency_duration") == 0)
       {
         int frequency = 0;
         int duration = 0;
@@ -365,16 +365,16 @@ void printIMUData(void)
   float rollAngle = -qEulerDeg.z();
   float yawAngle = qEulerDeg.x();
 
-  int roll = (rollAngle + 2) * 360;
-  int pitch = (pitchAngle + 2) * 360;
-  int yaw = (yawAngle + 2) * 360;
-  
-  rotation[0] = roll & 0xFF;
-  rotation[1] = (roll >> 8) & 0xFF;
-  rotation[2] = pitch & 0xFF;
-  rotation[3] = (pitch >> 8) & 0xFF;
-  rotation[4] = yaw & 0xFF;
-  rotation[5] = (yaw >> 8) & 0xFF;
+  /*int roll = (rollAngle + 1) * 180;
+  int pitch = (pitchAngle + 1) * 180;
+  int yaw = (yawAngle + 1) * 180;
+  */
+  rotation[0] = (int)rollAngle +180 & 0xFF;
+  rotation[1] = ((int)rollAngle+180 >> 8) & 0xFF;
+  rotation[2] = (int)pitchAngle+180 & 0xFF;
+  rotation[3] = ((int)pitchAngle+180 >> 8) & 0xFF;
+  rotation[4] = (int)yawAngle+180 & 0xFF;
+  rotation[5] = ((int)yawAngle+180 >> 8) & 0xFF;
 
   /*
    if (first_reading) {
@@ -412,6 +412,29 @@ void pixelBar(Adafruit_NeoPixel *ringLightBar, int noOfPixelsOn, uint32_t color)
     }
   }
 }
+
+void lightsOn()
+{
+  for (int i = 0; i < NUMPIXELS; i++)
+  {
+    int red = individualLedColors[(i * 3)];
+    int green = individualLedColors[(i * 3) + 1];
+    int blue = individualLedColors[(i * 3) + 2];
+    // pixels.Color takes RGB values, from 0,0,0 up to 255,255,255
+    ringLight.setPixelColor(i, ringLight.Color(red, green, blue)); // Moderately bright green color.
+    ringLight.show();                                    // This sends the updated pixel color to the hardware.
+  }
+} //End of lightsOn
+
+void lightsOff()
+{
+  for (int i = 0; i < NUMPIXELS; i++)
+  {
+    // pixels.Color takes RGB values, from 0,0,0 up to 255,255,255
+    ringLight.setPixelColor(i, ringLight.Color(0, 0, 0)); // Moderately bright green color.
+    ringLight.show();                                  // This sends the updated pixel color to the hardware.
+  }
+} //End of lightsOff
 
 void lightsConnected(int delayval)
 {

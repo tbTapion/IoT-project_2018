@@ -24,24 +24,32 @@ public class RingLightLed : MonoBehaviour
     public void setState(bool state)
     {
         this.state = state;
-        if(state){
-			GetComponent<Renderer>().material.SetColor("_Color", Color.blue);
-		}
-        else
+        Renderer r = GetComponent<Renderer>();
+        if (r != null)
         {
-            GetComponent<Renderer>().material.SetColor("_Color", Color.white);
+            if (state)
+            {
+                r.material.SetColor("_Color", Color.blue);
+            }
+            else
+            {
+                r.material.SetColor("_Color", Color.white);
+            }
         }
     }
 
-    public bool getState(){
+    public bool getState()
+    {
         return state;
     }
 
-    public void setColor(Color color){
+    public void setColor(Color color)
+    {
         this.color = color;
     }
 
-    public Color getColor(){
+    public Color getColor()
+    {
         return color;
     }
 }

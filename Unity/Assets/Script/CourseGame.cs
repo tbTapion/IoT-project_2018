@@ -4,46 +4,89 @@ using UnityEngine;
 
 public class CourseGame : MonoBehaviour
 {
-    private MQTTHandler mQTTHandler;
-    int numberOfObjects = 3;
-    public List<CourseTile> tileList;
-    bool playMode;
+    private const bool Active = true;
+    public MQTTHandler mqttHandler;
 
-    public List<CourseTile> courseOrder;
-    int currentTile = 0;
+    public List<TwinObject> tileList;
+    
+    public enum mode {INIT=0, DEMO=1, PLAY=2};
+    public int state = 0;
+
+    public List<TwinObject> courseOrder;
+    public int currentTile = 0;
     // Start is called before the first frame update
     void Start()
     {
-        //mqttHandler = new MQTTHandler();
-        tileList = new List<CourseTile>();
-        courseOrder = new List<CourseTile>();
+        mqttHandler = new MQTTHandler("129.241.104.227");
+        tileList = new List<TwinObject>();
+        courseOrder = new List<TwinObject>();
 
-        //Test object
-        for(int i = 0; i<numberOfObjects; i++){
-            GameObject obj = Instantiate(Resources.Load("Prefabs/Tile"),new Vector3(-1.6f + (i*1.05f), 0.0f, 0.0f),Quaternion.identity) as GameObject;
-            CourseTile tile = obj.AddComponent<CourseTile>();
-            tileList.Add(tile);
-            tile.setupWaiting();
-            //mqttHandler.addTwinObject(obj.AddComponent<CourseTile>());
-        }
+        GameObject obj = Instantiate(Resources.Load("Prefabs/Tile"), new Vector3(-1.6f + (0 * 1.05f), 0.0f, 0.0f), Quaternion.identity) as GameObject;
+        RedCourseTile redTile = obj.AddComponent<RedCourseTile>();
+        tileList.Add(redTile);
+        mqttHandler.addTwinObject(redTile);
+
+        GameObject obj2 = Instantiate(Resources.Load("Prefabs/Tile"), new Vector3(-1.6f + (1 * 1.05f), 0.0f, 0.0f), Quaternion.identity) as GameObject;
+        BlueCourseTile blueTile = obj2.AddComponent<BlueCourseTile>();
+        tileList.Add(blueTile);
+        mqttHandler.addTwinObject(blueTile);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(playMode){
-            if(courseOrder[currentTile].getIMU().justTapped()){
-                courseOrder[currentTile].setActive(false);
-                currentTile = (currentTile + 1) % courseOrder.Count;
-                courseOrder[currentTile].setActive(true);
+        mqttHandler.update();
+        if (mqttHandler.allDevicesConnected())
+        {
+            switch(state){
+                case (int)mode.PLAY:
+                    playMode();
+                    break;
+                case (int)mode.DEMO:
+                    demoMode();
+                    break;
+                case (int)mode.INIT:
+                    initDevices();
+                    break;
             }
-        }else{
-            //wait for activation
-            if(courseOrder.Count == tileList.Count){
-                courseOrder[currentTile].setActive(true);
-                playMode = true;
+        }
+    }
+    
+    public void playMode(){
+        if(courseOrder[currentTile].GetType() == typeof(RedCourseTile)){
+            RedCourseTile tile = courseOrder[currentTile] as RedCourseTile;
+            if(tile.active){
+                if(tile.getIMU().justTapped()){
+                    tile.setActive(false);
+                    currentTile = (currentTile + 1) % courseOrder.Count;
+                }
             }else{
-                foreach(CourseTile tile in tileList){
+                tile.setActive(true);
+            }
+        }else if(courseOrder[currentTile].GetType() == typeof(BlueCourseTile)){
+            BlueCourseTile tile = courseOrder[currentTile] as BlueCourseTile;
+            if(tile.active){
+                if(tile.getIMU().justTapped()){
+                    tile.setActive(false);
+                    currentTile = (currentTile + 1) % courseOrder.Count;
+                }
+            }else{
+                tile.setActive(true);
+            }
+        }
+    }
+
+    public void demoMode(){
+        foreach(TwinObject to in tileList){
+            if(courseOrder.Contains(to) == false){
+                if(to.GetType() == typeof(RedCourseTile)){
+                    RedCourseTile tile = to as RedCourseTile;
+                    if(tile.getIMU().justTapped()){
+                        courseOrder.Add(tile);
+                        tile.setupReady();
+                    }
+                }else if(to.GetType() == typeof(BlueCourseTile)){
+                    BlueCourseTile tile = to as BlueCourseTile;
                     if(tile.getIMU().justTapped()){
                         courseOrder.Add(tile);
                         tile.setupReady();
@@ -51,5 +94,31 @@ public class CourseGame : MonoBehaviour
                 }
             }
         }
+        if(courseOrder.Count == tileList.Count){
+            state = (int)mode.PLAY;
+             if(courseOrder[currentTile].GetType() == typeof(RedCourseTile)){
+                (courseOrder[currentTile] as RedCourseTile).setActive(true);
+            }else if(courseOrder[currentTile].GetType() == typeof(BlueCourseTile)){
+                (courseOrder[currentTile] as BlueCourseTile).setActive(true);
+            }
+        }
     }
+
+    public void initDevices(){
+        foreach(TwinObject to in tileList){
+            if(to.GetType() == typeof(RedCourseTile)){
+                RedCourseTile tile = to as RedCourseTile;
+                if(!tile.active){
+                    tile.setupWaiting();
+                }
+            }else if(to.GetType() == typeof(BlueCourseTile)){
+                BlueCourseTile tile = to as BlueCourseTile;
+                if(!tile.active){
+                    tile.setupWaiting();
+                }
+            }
+        }
+        state = (int)mode.DEMO;
+    }
+
 }

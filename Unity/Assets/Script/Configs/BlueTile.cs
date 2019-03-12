@@ -11,18 +11,18 @@ public class BlueTile : TwinObject
     protected IMU imu;
 
     // Start is called before the first frame update
-    void Start()
+    public override void Start()
     {
         base.Start();
         configName = "bluetile";
-        ringLight = new RingLight(this, transform.Find("RingLight").GetComponentsInChildren<RingLightLed>());        
+        ringLight = new RingLight(this, transform);        
         timeOfFlight = new TimeOfFlight(this);
         tonePlayer = new TonePlayer(this);
         imu = new IMU(this);
     }
 
     // Update is called once per frame
-    void Update()
+    public override void Update()
     {
         base.Update();
         ringLight.update();

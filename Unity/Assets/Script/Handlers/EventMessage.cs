@@ -10,30 +10,29 @@ public class EventMessage
     public bool state;
     public int value;
 
-    public EventMessage(string component, byte[] payload)
+    public EventMessage(string component, string name, byte[] payload)
     {
-        string[] msgPair = component.Split('-');
-        component = msgPair[0];
-        name = msgPair[1];
-        switch (msgPair[0])
+        this.component = component;
+        this.name = name;
+        switch (component)
         {
             case "led":
-                handleLed(msgPair[1], payload);
+                handleLed(name, payload);
                 break;
             case "button":
-                handleButton(msgPair[1], payload);
+                handleButton(name, payload);
                 break;
             case "potmeter":
-                handlePotmeter(msgPair[1], payload);
+                handlePotmeter(name, payload);
                 break;
             case "ringlight":
-                handleRingLight(msgPair[1], payload);
+                handleRingLight(name, payload);
                 break;
             case "timeofflight":
-                handleTimeOfFlight(msgPair[1], payload);
+                handleTimeOfFlight(name, payload);
                 break;
             case "imu":
-                handleIMU(msgPair[1], payload);
+                handleIMU(name, payload);
                 break;
         }
     }

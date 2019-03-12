@@ -77,7 +77,7 @@ void setup()
       Serial.println("Unable to communicate with MPU-9250");
       Serial.println("Check connections, and try again.");
       Serial.println();
-      delay(7000);
+      delay(2000);
     }
   }
   Serial.println("Begin 1.");
@@ -194,18 +194,18 @@ void action_event(char *topicElement, byte *payload)
           individualLedColors[(i * 3) + 2] = payload[2];
         }
       }
-      else if (strcmp(topicElement, "state"))
+      else if (strcmp(topicElement, "state") == 0)
       {
         if (payload[0] == 1)
         {
-          //lightsOn();
+          lightsOn();
         }
         else
         {
-          //lightsOff();
+          lightsOff();
         }
       }
-      else if (strcmp(topicElement, "all_colors"))
+      else if (strcmp(topicElement, "all_colors") == 0)
       {
         for (int i = 0; i < NUMPIXELS; i++)
         {
@@ -214,12 +214,12 @@ void action_event(char *topicElement, byte *payload)
           individualLedColors[(i * 3) + 2] = payload[(i * 3) + 2];
         }
       }
-      else if (strcmp(topicElement, "number_of_leds"))
+      else if (strcmp(topicElement, "number_of_leds") == 0)
       {
         numberOfActiveLeds = payload[0];
       }
     }
-    else if (strcmp(topicElement, "toneplayer"))
+    else if (strcmp(topicElement, "toneplayer") == 0)
     {
       topicElement = strtok(NULL, "/");
       if (strcmp(topicElement, "play"))
@@ -231,11 +231,11 @@ void action_event(char *topicElement, byte *payload)
         }
         tone(BUZZERPIN, frequency);
       }
-      else if (strcmp(topicElement, "stop"))
+      else if (strcmp(topicElement, "stop") == 0)
       {
         noTone(BUZZERPIN);
       }
-      else if (strcmp(topicElement, "frequency_duration"))
+      else if (strcmp(topicElement, "frequency_duration") == 0)
       {
         int frequency = 0;
         int duration = 0;
@@ -411,6 +411,29 @@ void pixelBar(Adafruit_NeoPixel *ringLightBar, int noOfPixelsOn, uint32_t color)
     }
   }
 }
+
+void lightsOn()
+{
+  for (int i = 0; i < NUMPIXELS; i++)
+  {
+    int red = individualLedColors[(i * 3)];
+    int green = individualLedColors[(i * 3) + 1];
+    int blue = individualLedColors[(i * 3) + 2];
+    // pixels.Color takes RGB values, from 0,0,0 up to 255,255,255
+    ringLight.setPixelColor(i, ringLight.Color(red, green, blue)); // Moderately bright green color.
+    ringLight.show();                                    // This sends the updated pixel color to the hardware.
+  }
+} //End of lightsOn
+
+void lightsOff()
+{
+  for (int i = 0; i < NUMPIXELS; i++)
+  {
+    // pixels.Color takes RGB values, from 0,0,0 up to 255,255,255
+    ringLight.setPixelColor(i, ringLight.Color(0, 0, 0)); // Moderately bright green color.
+    ringLight.show();                                  // This sends the updated pixel color to the hardware.
+  }
+} //End of lightsOff
 
 void lightsConnected(int delayval)
 {
