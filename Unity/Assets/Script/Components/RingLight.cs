@@ -29,6 +29,7 @@ public class RingLight : DeviceComponent
                 foreach (RingLightLed led in ledList)
                 {
                     this.ledList.Add(led);
+                    led.setColor(color);
                 }
             }
         }
@@ -81,6 +82,9 @@ public class RingLight : DeviceComponent
     public void setColor(Color color)
     {
         this.color = color;
+        foreach(RingLightLed led in ledList){
+            led.setColor(color);
+        }
         byte[] colorBytes = new byte[] { (byte)(color.r * 255), (byte)(color.g * 255), (byte)(color.b * 255) };
         device.sendActionMessage("ringlight/color", colorBytes);
     }

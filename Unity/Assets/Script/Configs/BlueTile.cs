@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class BlueTile : TwinObject
 {
-    
+
+    private bool debug = true;
+
     protected RingLight ringLight;
     protected TimeOfFlight timeOfFlight;
     protected TonePlayer tonePlayer;
@@ -15,10 +17,14 @@ public class BlueTile : TwinObject
     {
         base.Start();
         configName = "bluetile";
-        ringLight = new RingLight(this, transform);        
+        ringLight = new RingLight(this, transform);
         timeOfFlight = new TimeOfFlight(this);
         tonePlayer = new TonePlayer(this);
         imu = new IMU(this);
+        if (transform != null)
+        {
+            GetComponent<Renderer>().material.SetColor("_Color", Color.blue);
+        }
     }
 
     // Update is called once per frame
@@ -27,9 +33,28 @@ public class BlueTile : TwinObject
         base.Update();
         ringLight.update();
         imu.update();
-    }   
 
-    protected override void updateComponent(EventMessage e){
+        if (debug)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                RaycastHit hit;
+
+                if (Physics.Raycast(ray, out hit))
+                {
+                    if (hit.transform == transform)
+                    {
+                        Debug.Log("A Blue Tile tapped");
+                        imu.setTapped();
+                    }
+                }
+            }
+        }
+    }
+
+    protected override void updateComponent(EventMessage e)
+    {
         if (e.component == "timeofflight")
         {
             timeOfFlight.setDistance(e.value);
@@ -41,8 +66,8 @@ public class BlueTile : TwinObject
                 ringLight.setState(e.state);
             }
             else if (e.name == "color")
-            {   
-                Color tempColor = new Color(e.payload[0]/256.0f,e.payload[1]/256.0f,e.payload[2]/256.0f);
+            {
+                Color tempColor = new Color(e.payload[0] / 256.0f, e.payload[1] / 256.0f, e.payload[2] / 256.0f);
                 ringLight.setColor(tempColor);
             }
             else if (e.name == "numOfLeds")
@@ -52,25 +77,30 @@ public class BlueTile : TwinObject
         }
         else if (e.component == "imu")
         {
-            if(e.name == "tapped"){
+            if (e.name == "tapped")
+            {
                 imu.setTapped();
             }
         }
     }
 
-    public RingLight getRingLight(){
+    public RingLight getRingLight()
+    {
         return ringLight;
     }
 
-    public TimeOfFlight getTimeOfFlight(){
+    public TimeOfFlight getTimeOfFlight()
+    {
         return timeOfFlight;
     }
 
-    public TonePlayer getTonePlayer(){
+    public TonePlayer getTonePlayer()
+    {
         return tonePlayer;
     }
 
-    public IMU getIMU(){
+    public IMU getIMU()
+    {
         return imu;
     }
 }

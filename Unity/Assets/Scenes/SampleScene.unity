@@ -125,7 +125,7 @@ GameObject:
   - component: {fileID: 534669903}
   m_Layer: 0
   m_Name: Main Camera
-  m_TagString: Untagged
+  m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -220,13 +220,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1419382903}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dd9ff156b4207e4dbba5395b9e7af481, type: 3}
+  m_Script: {fileID: 11500000, guid: c3327ede4db4e49f8a40f28625d5d2ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   tileList: []
-  state: 0
-  courseOrder: []
-  currentTile: 0
+  activatedObject: {fileID: 0}
 --- !u!4 &1419382905
 Transform:
   m_ObjectHideFlags: 0

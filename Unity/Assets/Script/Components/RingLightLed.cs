@@ -29,11 +29,11 @@ public class RingLightLed : MonoBehaviour
         {
             if (state)
             {
-                r.material.SetColor("_Color", Color.blue);
+                r.material.SetColor("_Color", Color.red);
             }
             else
             {
-                r.material.SetColor("_Color", Color.white);
+                r.material.SetColor("_Color", Color.black);
             }
         }
     }
