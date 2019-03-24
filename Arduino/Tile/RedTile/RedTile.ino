@@ -23,7 +23,7 @@ const char *password = "40219917";
 const char *mqtt_server = "10.42.0.1";
 const int mqtt_port = 1883;
 //Buzzer
-const int tonePlay = 80;   // half a second tone
+const int tonePlay = 80; // half a second tone
 //WiFi + MQTT
 const char *clientID; //Filled with mac address, unused, but kept in case of future functionality requiring it.
 String clientIDstr;   //String containing mac address, used in conjunction with message building
@@ -108,6 +108,7 @@ void setup()
     individualLedColors[(i * 3) + 1] = 150;
     individualLedColors[(i * 3) + 2] = 0;
   }
+  lightsConnected(20);
 }
 
 void setup_wifi()
@@ -136,12 +137,16 @@ void setup_wifi()
   Serial.println("Hostname: " + HOSTNAME);
 }
 
+int payloadIndex = 0;
+
 void callback(char *topic, byte *payload, unsigned int length)
 {
   Serial.print("New message arrived [");
   Serial.print(topic);
   Serial.println("] ");
-  
+
+  payloadIndex = 0;
+
   char *topicElement;
   topicElement = strtok(topic, "/");
 
@@ -150,17 +155,14 @@ void callback(char *topic, byte *payload, unsigned int length)
     Serial.println(topicElement);
     if (strcmp(topicElement, "ping") == 0)
     {
-      Serial.println("Ping space entered!");
       ping_event(payload);
     }
     else if (strcmp(topicElement, "action") == 0)
     {
-      Serial.println("Action space entered!");
       action_event(topicElement, payload);
     }
     else if (strcmp(topicElement, "get") == 0)
     {
-      Serial.println("Get space entered!");
       get_event(topicElement);
     }
     topicElement = strtok(NULL, "/");
@@ -170,14 +172,18 @@ void callback(char *topic, byte *payload, unsigned int length)
 byte rotation[6];
 void get_event(char *topicElement)
 {
-  while(topicElement != NULL){
-    if(strcmp(topicElement, "imu") == 0){
+  while (topicElement != NULL)
+  {
+    if (strcmp(topicElement, "imu") == 0)
+    {
       Serial.println(topicElement);
       topicElement = strtok(NULL, "/");
-      if(strcmp(topicElement, "rotation") == 0){
-        Serial.println(topicElement);    
-        char payload[sizeof(rotation)+1];
-        for(int i = 0; i<6; i++){
+      if (strcmp(topicElement, "rotation") == 0)
+      {
+        Serial.println(topicElement);
+        char payload[sizeof(rotation) + 1];
+        for (int i = 0; i < 6; i++)
+        {
           payload[i] = (char)rotation[i];
           Serial.println(rotation[i]);
         }
@@ -192,47 +198,50 @@ void get_event(char *topicElement)
 
 void action_event(char *topicElement, byte *payload)
 {
-  while(topicElement != NULL){
+  while (topicElement != NULL)
+  {
     if (strcmp(topicElement, "ringlight") == 0)
     {
-      Serial.println("ringlight");
       topicElement = strtok(NULL, "/");
       if (strcmp(topicElement, "color") == 0)
       {
-        Serial.println("color");
-        for(int i = 0; i<3; i++){
-            Serial.println(int(payload[i]));
-         }
         for (int i = 0; i < NUMPIXELS; i++)
         {
-          individualLedColors[(i * 3)] = payload[0];
-          individualLedColors[(i * 3) + 1] = payload[1];
-          individualLedColors[(i * 3) + 2] = payload[2];
+          individualLedColors[(i * 3)] = payload[(payloadIndex + 1) + 0];
+          individualLedColors[(i * 3) + 1] = payload[(payloadIndex + 1) + 1];
+          individualLedColors[(i * 3) + 2] = payload[(payloadIndex + 1) + 2];
         }
+        lightsOn();
+        payloadIndex = (payloadIndex + 4);
       }
       else if (strcmp(topicElement, "state") == 0)
       {
-        if (payload[0] == 1)
+        if (payload[payloadIndex + 1] == 1)
         {
           lightsOn();
         }
-        else
+        else if(payload[payloadIndex + 1] == 0)
         {
           lightsOff();
         }
+        payloadIndex = (payloadIndex + 2);
       }
       else if (strcmp(topicElement, "all_colors") == 0)
       {
         for (int i = 0; i < NUMPIXELS; i++)
         {
-          individualLedColors[(i * 3)] = payload[(i * 3)];
-          individualLedColors[(i * 3) + 1] = payload[(i * 3) + 1];
-          individualLedColors[(i * 3) + 2] = payload[(i * 3) + 2];
+          individualLedColors[(i * 3)] = payload[(payloadIndex + 1) + (i * 3)];
+          individualLedColors[(i * 3) + 1] = payload[(payloadIndex + 1) + (i * 3) + 1];
+          individualLedColors[(i * 3) + 2] = payload[(payloadIndex + 1) + (i * 3) + 2];
         }
+        lightsOn();
+        payloadIndex = payloadIndex + (NUMPIXELS * 3) + 1;
       }
       else if (strcmp(topicElement, "number_of_leds") == 0)
       {
-        numberOfActiveLeds = payload[0];
+        numberOfActiveLeds = payload[payloadIndex + 1];
+        lightsOn();
+        payloadIndex = payloadIndex + 2;
       }
     }
     else if (strcmp(topicElement, "toneplayer") == 0)
@@ -243,13 +252,15 @@ void action_event(char *topicElement, byte *payload)
         int frequency = 0;
         for (int i = 0; i < 4; i++)
         {
-          frequency = payload[i] * pow(256, i);
+          frequency = frequency + payload[payloadIndex + 1 + i] * pow(256, i);
         }
         tone(BUZZERPIN, frequency);
+        payloadIndex = payloadIndex + 5;
       }
       else if (strcmp(topicElement, "stop") == 0)
       {
         noTone(BUZZERPIN);
+        payloadIndex = payloadIndex + 2;
       }
       else if (strcmp(topicElement, "frequency_duration") == 0)
       {
@@ -257,10 +268,11 @@ void action_event(char *topicElement, byte *payload)
         int duration = 0;
         for (int i = 0; i < 4; i++)
         {
-          frequency = payload[i] * pow(256, i);
-          duration = payload[4 + i] * pow(256, i);
+          frequency = frequency + payload[payloadIndex + 1 + i] * pow(256, i);
+          duration = duration + payload[payloadIndex + 5 + i] * pow(256, i);
         }
         tone(BUZZERPIN, frequency, duration);
+        payloadIndex = payloadIndex + 9;
       }
     }
     topicElement = strtok(NULL, "/");
@@ -270,7 +282,7 @@ void action_event(char *topicElement, byte *payload)
 void ping_event(byte *payload)
 {
   Serial.print("Ping event received & ");
-  if ((char)payload[0] == '1')
+  if (payload[0] == 1)
   {
     client.publish(("unity/device/" + clientIDstr + "/ping").c_str(), "1");
     Serial.print("returned.\n");
@@ -297,7 +309,6 @@ void reconnect()
       client.publish(("unity/connect/" + clientIDstr + "/" + configID).c_str(), "1");
       // Then Subcribe to everything client-id/#
       client.subscribe((clientIDstr + "/#").c_str());
-      lightsConnected(50);
     }
     else
     {
@@ -369,12 +380,12 @@ void printIMUData(void)
   int pitch = (pitchAngle + 1) * 180;
   int yaw = (yawAngle + 1) * 180;
   */
-  rotation[0] = (int)rollAngle +180 & 0xFF;
-  rotation[1] = ((int)rollAngle+180 >> 8) & 0xFF;
-  rotation[2] = (int)pitchAngle+180 & 0xFF;
-  rotation[3] = ((int)pitchAngle+180 >> 8) & 0xFF;
-  rotation[4] = (int)yawAngle+180 & 0xFF;
-  rotation[5] = ((int)yawAngle+180 >> 8) & 0xFF;
+  rotation[0] = (int)rollAngle + 180 & 0xFF;
+  rotation[1] = ((int)rollAngle + 180 >> 8) & 0xFF;
+  rotation[2] = (int)pitchAngle + 180 & 0xFF;
+  rotation[3] = ((int)pitchAngle + 180 >> 8) & 0xFF;
+  rotation[4] = (int)yawAngle + 180 & 0xFF;
+  rotation[5] = ((int)yawAngle + 180 >> 8) & 0xFF;
 
   /*
    if (first_reading) {
@@ -415,14 +426,14 @@ void pixelBar(Adafruit_NeoPixel *ringLightBar, int noOfPixelsOn, uint32_t color)
 
 void lightsOn()
 {
-  for (int i = 0; i < NUMPIXELS; i++)
+  for (int i = 0; i < numberOfActiveLeds; i++)
   {
     int red = individualLedColors[(i * 3)];
     int green = individualLedColors[(i * 3) + 1];
     int blue = individualLedColors[(i * 3) + 2];
     // pixels.Color takes RGB values, from 0,0,0 up to 255,255,255
     ringLight.setPixelColor(i, ringLight.Color(red, green, blue)); // Moderately bright green color.
-    ringLight.show();                                    // This sends the updated pixel color to the hardware.
+    ringLight.show();                                              // This sends the updated pixel color to the hardware.
   }
 } //End of lightsOn
 
@@ -432,7 +443,7 @@ void lightsOff()
   {
     // pixels.Color takes RGB values, from 0,0,0 up to 255,255,255
     ringLight.setPixelColor(i, ringLight.Color(0, 0, 0)); // Moderately bright green color.
-    ringLight.show();                                  // This sends the updated pixel color to the hardware.
+    ringLight.show();                                     // This sends the updated pixel color to the hardware.
   }
 } //End of lightsOff
 
@@ -442,7 +453,7 @@ void lightsConnected(int delayval)
   {
     // pixels.Color takes RGB values, from 0,0,0 up to 255,255,255
     ringLight.setPixelColor(i, ringLight.Color(0, 50, 25)); // Moderately bright green color.
-    ringLight.show();                                    // This sends the updated pixel color to the hardware.
+    ringLight.show();                                       // This sends the updated pixel color to the hardware.
     //tone(BUZZERPIN, 200, 20);
     delay(delayval); // Delay for a period of time (in milliseconds).
   }
@@ -450,7 +461,7 @@ void lightsConnected(int delayval)
   {
     // pixels.Color takes RGB values, from 0,0,0 up to 255,255,255
     ringLight.setPixelColor(i, ringLight.Color(0, 0, 0)); // Moderately bright green color.
-    ringLight.show();                                  // This sends the updated pixel color to the hardware.
+    ringLight.show();                                     // This sends the updated pixel color to the hardware.
     //tone(BUZZERPIN, 200, 20);
     delay(delayval); // Delay for a period of time (in milliseconds).
   }
