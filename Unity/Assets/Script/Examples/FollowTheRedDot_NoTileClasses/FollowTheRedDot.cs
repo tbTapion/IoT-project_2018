@@ -1,13 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Timers;
-using System.Threading;
 
 public class FollowTheRedDot : MonoBehaviour
 {
 
-    //private MQTTHandler mqttHandler;
+    private MQTTHandler mqttHandler;
 
     public List<TwinObject> tileList = new List<TwinObject>(); //List of all tiles
     public TwinObject activatedObject; //Activated object variable
@@ -18,7 +16,7 @@ public class FollowTheRedDot : MonoBehaviour
     void Start()
     {
         //MQTT handler. Takes care of the connection to the RPI and sending/receiving messages.
-        //mqttHandler = new MQTTHandler("129.241.105.187");
+        mqttHandler = new MQTTHandler(""); //Enter IP here
 
         //Test object
         for (int i = 0; i < 2; i++)
@@ -28,7 +26,7 @@ public class FollowTheRedDot : MonoBehaviour
             RedTile redTile = redObj.AddComponent<RedTile>();
             redTile.setName("RedTile" + i);
             tileList.Add(redTile);
-            //mqttHandler.addTwinObject(redTile);
+            mqttHandler.addTwinObject(redTile);
         }
 
         for (int i = 2; i < 4; i++)
@@ -38,16 +36,16 @@ public class FollowTheRedDot : MonoBehaviour
             BlueTile blueTile = blueObj.AddComponent<BlueTile>();
             blueTile.setName("BlueTile" + i);
             tileList.Add(blueTile);
-            //mqttHandler.addTwinObject(blueTile);
+            mqttHandler.addTwinObject(blueTile);
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-        //mqttHandler.update(); //MQTT handler's update function. Handles updating all the objects based on incoming messages.
-        //if (mqttHandler.allDevicesConnected()) //Checks to see if all devices are connected.
-        //{
+        mqttHandler.update(); //MQTT handler's update function. Handles updating all the objects based on incoming messages.
+        if (mqttHandler.allDevicesConnected()) //Checks to see if all devices are connected.
+        {
             switch (state)
             {
                 case 1:
@@ -57,7 +55,7 @@ public class FollowTheRedDot : MonoBehaviour
                     waitAndPickTile(); //setup mode state function
                     break;
             }
-        //}
+        }
     }
 
     private void redDotPlay()
