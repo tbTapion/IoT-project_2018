@@ -22,6 +22,7 @@ public class MQTTHandler{
         client.MqttMsgPublishReceived += handleMQTTMessage; //Setting up the function triggered on received messages
         client.Connect("Unity02"); //Connecting to the MQTT broker specified on the ip in the client init - String: client ID
         client.Subscribe(new string[] {"unity/#"}, new byte[] { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE }); //Subscribing to the topic
+        client.Publish("esp8266/hello", new byte[]{0});
     }
     /*
     Sends a message to the MQTT server. Message built on TwinObject.
@@ -29,6 +30,7 @@ public class MQTTHandler{
 
     internal void sendDeviceMessage(string tempMessageTopic, byte[] payload){
         client.Publish(tempMessageTopic, payload);
+        System.Threading.Thread.Sleep(20);
     }
 
     /*
@@ -70,6 +72,35 @@ public class MQTTHandler{
                     {
                         devicePing(topicSplit[2]);
                     }
+                }
+            }
+        }
+        foreach(TwinObject obj in twinObjects){
+            if(obj.getLinkStatus()){
+                if(obj.actionMsgBuffer.Count > 0){
+                    string actionMessageString = "";
+                    List<byte> payloads = new List<byte>();
+                    actionMessageString += obj.getDeviceID() + "/action";
+                    foreach(MessagePair mp in obj.actionMsgBuffer){
+                        actionMessageString += "/" + mp.topic;
+                        payloads.AddRange(mp.payload);
+                    }
+                    obj.actionMsgBuffer = new List<MessagePair>();
+                    sendDeviceMessage(actionMessageString, payloads.ToArray());
+                    Debug.Log(actionMessageString);
+                    foreach(byte b in payloads.ToArray()){
+                        Debug.Log((int)b);
+                    }
+                }
+                if(obj.getMsgBuffer.Count > 0){
+                    string getMessageString = "";
+                    getMessageString += obj.getDeviceID() + "/get";
+                    foreach(MessagePair mp in obj.getMsgBuffer){
+                        getMessageString += "/" + mp.topic;
+                        obj.getMsgBuffer.Remove(mp);
+                    }
+                    obj.getMsgBuffer = new List<MessagePair>();
+                    sendDeviceMessage(getMessageString, new byte[]{0});
                 }
             }
         }

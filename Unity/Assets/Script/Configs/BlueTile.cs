@@ -8,7 +8,7 @@ public class BlueTile : TwinObject
     private bool debug = true;
 
     protected RingLight ringLight;
-    protected TimeOfFlight timeOfFlight;
+    public TimeOfFlight timeOfFlight;
     protected TonePlayer tonePlayer;
     protected IMU imu;
 
@@ -58,6 +58,7 @@ public class BlueTile : TwinObject
         if (e.component == "timeofflight")
         {
             timeOfFlight.setDistance(e.value);
+            Debug.Log(e.value);
         }
         else if (e.component == "ringlight")
         {

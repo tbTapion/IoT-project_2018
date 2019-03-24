@@ -13,7 +13,10 @@ public class TonePlayer : DeviceComponent
     }
 
     public void playTone(int frequency){
+        List<byte> bytesArray = new List<byte>();
         byte[] freqbytes = BitConverter.GetBytes(frequency);
+        bytesArray.Add(0);
+        bytesArray.AddRange(freqbytes);
         device.sendActionMessage("toneplayer/play", freqbytes);
     }
 

@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class TimeOfFlight : DeviceComponent
 {
-    private int distance;
+    public int distance;
 
     public TimeOfFlight(TwinObject device){
         this.device = device;
-        distance = 0;
+        distance = 9999;
     }
     public override void update () {
 	}

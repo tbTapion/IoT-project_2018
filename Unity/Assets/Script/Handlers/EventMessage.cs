@@ -29,7 +29,7 @@ public class EventMessage
                 handleRingLight(name, payload);
                 break;
             case "timeofflight":
-                handleTimeOfFlight(name, payload);
+                handleTimeOfFlight(payload);
                 break;
             case "imu":
                 handleIMU(name, payload);
@@ -41,7 +41,8 @@ public class EventMessage
     {
         int parsedValue = 0;
         for(int i = 0; i<payload.Length; i++){
-            parsedValue = payload[i] * (int)Mathf.Pow(256, i);
+            Debug.Log("payload value " + (int)payload[i]);
+            parsedValue += (int)payload[i] * (int)Mathf.Pow(256, i);
         }
         value = parsedValue;
     }
@@ -99,12 +100,9 @@ public class EventMessage
         }
     }
 
-    private void handleTimeOfFlight(string type, byte[] payload)
+    private void handleTimeOfFlight(byte[] payload)
     {
-        if (type == "value")
-        {
-            parsevalue(payload);
-        }
+        parsevalue(payload);
     }
 
     private void handleIMU(string type, byte[] payload){

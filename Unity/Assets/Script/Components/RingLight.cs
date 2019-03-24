@@ -85,7 +85,7 @@ public class RingLight : DeviceComponent
         foreach(RingLightLed led in ledList){
             led.setColor(color);
         }
-        byte[] colorBytes = new byte[] { (byte)(color.r * 255), (byte)(color.g * 255), (byte)(color.b * 255) };
+        byte[] colorBytes = new byte[] {(byte)(color.r * 255), (byte)(color.g * 255), (byte)(color.b * 255) };
         device.sendActionMessage("ringlight/color", colorBytes);
     }
 
@@ -109,8 +109,9 @@ public class RingLight : DeviceComponent
             {
                 c = Color.black;
             }
-            byte[] colors = new byte[] { (byte)(c.r * 256), (byte)(c.g * 256), (byte)(c.b * 256) };
-            colorBytes.AddRange(colors);
+            colorBytes.Add((byte)(c.r*256));
+            colorBytes.Add((byte)(c.g*256));
+            colorBytes.Add((byte)(c.b*256));
         }
         device.sendActionMessage("ringlight/all_colors", colorBytes.ToArray());
     }

@@ -24,18 +24,7 @@ public class RingLightLed : MonoBehaviour
     public void setState(bool state)
     {
         this.state = state;
-        Renderer r = GetComponent<Renderer>();
-        if (r != null)
-        {
-            if (state)
-            {
-                r.material.SetColor("_Color", Color.red);
-            }
-            else
-            {
-                r.material.SetColor("_Color", Color.black);
-            }
-        }
+        updateTransformColor();
     }
 
     public bool getState()
@@ -46,10 +35,26 @@ public class RingLightLed : MonoBehaviour
     public void setColor(Color color)
     {
         this.color = color;
+        updateTransformColor();
     }
 
     public Color getColor()
     {
         return color;
+    }
+
+    private void updateTransformColor(){
+       Renderer r = GetComponent<Renderer>();
+        if (r != null)
+        {
+            if (state)
+            {
+                r.material.SetColor("_Color", color);
+            }
+            else
+            {
+                r.material.SetColor("_Color", Color.black);
+            }
+        }
     }
 }

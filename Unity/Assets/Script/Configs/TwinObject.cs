@@ -18,6 +18,9 @@ public abstract class TwinObject : MonoBehaviour
 
     private string name;
 
+    public List<MessagePair> actionMsgBuffer = new List<MessagePair>();
+    public List<MessagePair> getMsgBuffer = new List<MessagePair>();
+
     // Use this for initialization
     public virtual void Start()
     {
@@ -37,7 +40,7 @@ public abstract class TwinObject : MonoBehaviour
                 {
                     linked = false;
                     Debug.Log("Tile " + deviceID + " disconnected...");
-                    //deviceLink = false;
+                    deviceLink = false;
                 }
                 else
                 {
@@ -70,7 +73,7 @@ public abstract class TwinObject : MonoBehaviour
     {
         if (mqttHandler != null)
         {
-            mqttHandler.sendDeviceMessage(tempMessageTopic, new byte[] { (byte)payload });
+            mqttHandler.sendDeviceMessage(tempMessageTopic, new byte[] {(byte)payload });
         }
     }
 
@@ -83,31 +86,56 @@ public abstract class TwinObject : MonoBehaviour
     {
         if (mqttHandler != null)
         {
-            mqttHandler.sendDeviceMessage(tempMessageTopic, new byte[] { (byte)(payload ? 1 : 0) });
+            if(payload == true){
+                mqttHandler.sendDeviceMessage(tempMessageTopic, new byte[] {(byte)1});
+            }else{
+                mqttHandler.sendDeviceMessage(tempMessageTopic, new byte[] {(byte)0});
+            }
         }
     }
 
     public void sendActionMessage(string componentName, string payload)
     {
-        sendDeviceMessage(deviceID + "/action/" + componentName, payload);
+        //sendDeviceMessage(deviceID + "/action/" + componentName, payload);
+        List<byte> temp = new List<byte>();
+        temp.Add((byte)payload.Length);
+        temp.AddRange(System.Text.Encoding.Default.GetBytes(payload));
+        addActionMessageToBuffer(componentName, temp.ToArray());
     }
 
     public void sendActionMessage(string componentName, int payload)
     {
-        sendDeviceMessage(deviceID + "/action/" + componentName, payload);
+        //sendDeviceMessage(deviceID + "/action/" + componentName, payload);
+        addActionMessageToBuffer(componentName, new byte[] {1, (byte)payload });
     }
 
     public void sendActionMessage(string componentName, bool payload)
     {
-        sendDeviceMessage(deviceID + "/action/" + componentName, payload);
+        if (mqttHandler != null)
+        {
+            if(payload == true){
+                addActionMessageToBuffer(componentName, new byte[] {1, (byte)1});
+            }else{
+                addActionMessageToBuffer(componentName, new byte[] {1,  (byte)0});
+            }
+        }
+        //sendDeviceMessage(deviceID + "/action/" + componentName, payload);
     }
 
     public void sendActionMessage(string componentName, byte[] payload)
     {
         if (mqttHandler != null)
         {
-            mqttHandler.sendDeviceMessage(deviceID + "/action/" + componentName, payload);
+            //mqttHandler.sendDeviceMessage(deviceID + "/action/" + componentName, payload);
+            List<byte> temp = new List<byte>();
+            temp.Add((byte)payload.Length);
+            temp.AddRange(payload);
+            addActionMessageToBuffer(componentName, temp.ToArray());
         }
+    }
+
+    private void addActionMessageToBuffer(string componentName, byte[] payload){
+        actionMsgBuffer.Add(new MessagePair(componentName, payload));
     }
 
     public void sendPingMessage()
@@ -117,7 +145,10 @@ public abstract class TwinObject : MonoBehaviour
 
     public void sendGetMessage(string componentName)
     {
-        sendDeviceMessage(deviceID + "/get/" + componentName, 1);
+        //sendDeviceMessage(deviceID + "/get/" + componentName, 1);
+        if(mqttHandler != null){
+            getMsgBuffer.Add(new MessagePair(componentName, new byte[]{0}));
+        }
     }
 
     public void sendGetConfigMessage()
