@@ -13,7 +13,7 @@
 
 #define NEOPIXELPIN 2
 #define BUZZERPIN 13
-#define NUMPIXELS 12
+#define NUMPIXELS 24
 
 // Update these with values suitable for your network.
 //WiFi
@@ -32,7 +32,7 @@ String HOSTNAME;      //String containing HOSTNAME.
 String configID = "redtile";
 //Neopixel vars
 byte individualLedColors[NUMPIXELS * 3];
-int numberOfActiveLeds = NUMPIXELS;
+int numberOfActiveLeds = 12;
 
 //Communication Objects
 WiFiClient espClient;
@@ -138,6 +138,7 @@ void setup_wifi()
 }
 
 int payloadIndex = 0;
+bool ringLightState = false;
 
 void callback(char *topic, byte *payload, unsigned int length)
 {
@@ -430,6 +431,10 @@ void lightsOn()
     // pixels.Color takes RGB values, from 0,0,0 up to 255,255,255
     ringLight.setPixelColor(i, ringLight.Color(red, green, blue)); // Moderately bright green color.
     ringLight.show();                                              // This sends the updated pixel color to the hardware.
+  }
+  for(int i = numberOfActiveLeds; i < NUMPIXELS; i++){
+    ringLight.setPixelColor(i, ringLight.Color(0, 0, 0)); // Moderately bright green color.
+    ringLight.show();                                     // This sends the updated pixel color to the hardware.
   }
 } //End of lightsOn
 
