@@ -13,7 +13,7 @@ public class FollowTheRedDotWithClasses : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        mqttHandler = new MQTTHandler("");
+        mqttHandler = new MQTTHandler("129.241.104.227");
 
         for (int i = 0; i < 2; i++)
         {

@@ -143,13 +143,14 @@ void setup_wifi()
 }
 
 int payloadIndex = 0;
+bool ringLightState = false;
 
 void callback(char *topic, byte *payload, unsigned int length)
 {
   Serial.print("New message arrived [");
   Serial.print(topic);
   Serial.print("] ");
-
+  
   payloadIndex = 0;
 
   char *topicElement;
@@ -307,7 +308,7 @@ void reconnect()
   }
 }
 
-bool firstTimeOff = false;
+bool sendingRanges = false;
 uint8_t sensorStatus = -1;
 uint8_t lastrange = -1;
 
@@ -319,7 +320,7 @@ bool rangeCode()
   if (sensorStatus == VL6180X_ERROR_NONE)
   { // Range between 0 and approx. 160
     //needs more than a quarter cm change in one direction for it to send a message
-    if (range + 4 <= lastrange || range - 4 >= lastrange)
+    if (range +1 <= lastrange || range -1 >= lastrange)
     {
       lastrange = range;
       Serial.print("Range: ");
@@ -327,7 +328,10 @@ bool rangeCode()
       char rangestr[2];
       rangestr[0] = (char)range;
       rangestr[1] = '\0';
-      client.publish(("unity/device/" + clientIDstr + "/event/timeofflight/").c_str(), rangestr);
+      client.publish(("unity/device/" + clientIDstr + "/event/timeofflight/value").c_str(), rangestr);
+    }
+    if(sendingRanges == false){
+      sendingRanges = true;
     }
 
     /*int pixels = map(range, 15, 160, no_of_Pixels, 0);
@@ -336,8 +340,13 @@ bool rangeCode()
     // int green = map(range, 0, 160, 0, 255);
     pixelBar(&ringLight, pixels, ringLight.Color(red, 0, blue));*/
     //firstTimeOff = true;
-
+    
     return true;
+  }else{
+    if(sendingRanges == true){
+      client.publish(("unity/device/" + clientIDstr + "/event/timeofflight/off").c_str(), "0");
+      sendingRanges = false;
+    }
   }
 
   /*else
@@ -360,28 +369,6 @@ void loop()
     reconnect();
   }
   client.loop();
-  if (rangeTime == -1)
-  {
-    rangeTime = millis();
-  }
-  else
-  {
-    if (millis() > (rangeTime + rangeDelay))
-    {
-      rangeCode();
-      rangeTime = -1;
-    }
-  }
-
-  if (sensorStatus == VL6180X_ERROR_NONE)
-  {
-    rangeDelay = 10;
-    return;
-  }
-  else
-  {
-    rangeDelay = 300;
-  }
   // Check for new data in the FIFO
   if (imu.fifoAvailable())
   {
@@ -400,6 +387,28 @@ void loop()
         }
       }
     }
+  }
+    if (rangeTime == -1)
+  {
+    rangeTime = millis();
+  }
+  else
+  {
+    if (millis() > (rangeTime + rangeDelay))
+    {
+      rangeCode();
+      rangeTime = -1;
+    }
+  }
+
+  if (sensorStatus == VL6180X_ERROR_NONE)
+  {
+    rangeDelay = 20;
+    return;
+  }
+  else
+  {
+    rangeDelay = 300;
   }
 }
 
@@ -435,6 +444,10 @@ void lightsOn()
     // pixels.Color takes RGB values, from 0,0,0 up to 255,255,255
     ringLight.setPixelColor(i, ringLight.Color(red, green, blue)); // Moderately bright green color.
     ringLight.show();                                              // This sends the updated pixel color to the hardware.
+  }
+  for(int i = numberOfActiveLeds; i < NUMPIXELS; i++){
+    ringLight.setPixelColor(i, ringLight.Color(0, 0, 0)); // Moderately bright green color.
+    ringLight.show();                                     // This sends the updated pixel color to the hardware.
   }
 } //End of lightsOn
 

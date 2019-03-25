@@ -15,6 +15,10 @@ public class IMU : DeviceComponent
         tapped = false;
     }
 
+    public void requestRotation(){
+        device.sendGetMessage("imu/rotation");
+    }
+
     public Rotation getRotation(){
         return rotation;
     }
@@ -29,6 +33,7 @@ public class IMU : DeviceComponent
 
     public void setTapped(){
         tapped = true;
+        UnityEngine.Debug.Log("Device tapped!");
     }
 
     public bool justTapped(){

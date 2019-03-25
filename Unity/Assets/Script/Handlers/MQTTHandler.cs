@@ -7,30 +7,39 @@ using uPLibrary.Networking.M2Mqtt;
 using uPLibrary.Networking.M2Mqtt.Messages;
 using System;
 
-public class MQTTHandler{
+public class MQTTHandler
+{
 
     //MQTT Client class
     private MqttClient client;
     private List<TwinObject> twinObjects = new List<TwinObject>();
     private List<MessagePair> msgBuffer = new List<MessagePair>();
 
+    private int delay = 0;
+
     /*
     Initialization of the MQTTHandler object.
      */
-    public MQTTHandler (string hostaddress="127.0.0.1", int port=1883) {
+    public MQTTHandler(string hostaddress = "127.0.0.1", int port = 1883)
+    {
         client = new MqttClient(IPAddress.Parse(hostaddress), port, false, null); //Initializing the MQTT Class with ip, port, SSL level.
         client.MqttMsgPublishReceived += handleMQTTMessage; //Setting up the function triggered on received messages
         client.Connect("Unity02"); //Connecting to the MQTT broker specified on the ip in the client init - String: client ID
-        client.Subscribe(new string[] {"unity/#"}, new byte[] { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE }); //Subscribing to the topic
-        client.Publish("esp8266/hello", new byte[]{0});
+        client.Subscribe(new string[] { "unity/#" }, new byte[] { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE }); //Subscribing to the topic
+        client.Publish("esp8266/hello", new byte[] { 0 });
     }
     /*
     Sends a message to the MQTT server. Message built on TwinObject.
      */
 
-    internal void sendDeviceMessage(string tempMessageTopic, byte[] payload){
+    internal void sendDeviceMessage(string tempMessageTopic, byte[] payload)
+    {
         client.Publish(tempMessageTopic, payload);
-        System.Threading.Thread.Sleep(20);
+        if (delay != 0)
+        {
+            System.Threading.Thread.Sleep(delay);
+            delay = 0;
+        }
     }
 
     /*
@@ -47,6 +56,43 @@ public class MQTTHandler{
      */
     public void update()
     {
+        if (allDevicesConnected())
+        {
+            foreach (TwinObject obj in twinObjects)
+            {
+                if (obj.getLinkStatus())
+                {
+                    if (obj.actionMsgBuffer.Count > 0)
+                    {
+                        delay = obj.actionMsgBuffer.Count * 50;
+                        string actionMessageString = "";
+                        List<byte> payloads = new List<byte>();
+                        actionMessageString += obj.getDeviceID() + "/action";
+                        foreach (MessagePair mp in obj.actionMsgBuffer)
+                        {
+                            actionMessageString += "/" + mp.topic;
+                            payloads.AddRange(mp.payload);
+                        }
+                        obj.actionMsgBuffer = new List<MessagePair>();
+                        sendDeviceMessage(actionMessageString, payloads.ToArray());
+                    }
+                    if (obj.getMsgBuffer.Count > 0)
+                    {
+                        delay = obj.getMsgBuffer.Count * 20;
+                        string getMessageString = "";
+                        getMessageString += obj.getDeviceID() + "/get";
+                        foreach (MessagePair mp in obj.getMsgBuffer)
+                        {
+                            getMessageString += "/" + mp.topic;
+                            obj.getMsgBuffer.Remove(mp);
+                        }
+                        obj.getMsgBuffer = new List<MessagePair>();
+                        sendDeviceMessage(getMessageString, new byte[] { 0 });
+                    }
+                }
+            }
+        }
+
         while (msgBuffer.Count != 0)
         {
             MessagePair message = msgBuffer[0];
@@ -75,63 +121,38 @@ public class MQTTHandler{
                 }
             }
         }
-        foreach(TwinObject obj in twinObjects){
-            if(obj.getLinkStatus()){
-                if(obj.actionMsgBuffer.Count > 0){
-                    string actionMessageString = "";
-                    List<byte> payloads = new List<byte>();
-                    actionMessageString += obj.getDeviceID() + "/action";
-                    foreach(MessagePair mp in obj.actionMsgBuffer){
-                        actionMessageString += "/" + mp.topic;
-                        payloads.AddRange(mp.payload);
-                    }
-                    obj.actionMsgBuffer = new List<MessagePair>();
-                    sendDeviceMessage(actionMessageString, payloads.ToArray());
-                    Debug.Log(actionMessageString);
-                    foreach(byte b in payloads.ToArray()){
-                        Debug.Log((int)b);
-                    }
-                }
-                if(obj.getMsgBuffer.Count > 0){
-                    string getMessageString = "";
-                    getMessageString += obj.getDeviceID() + "/get";
-                    foreach(MessagePair mp in obj.getMsgBuffer){
-                        getMessageString += "/" + mp.topic;
-                        obj.getMsgBuffer.Remove(mp);
-                    }
-                    obj.getMsgBuffer = new List<MessagePair>();
-                    sendDeviceMessage(getMessageString, new byte[]{0});
-                }
-            }
+    }
+
+    private void deviceValue(string[] topicSplit, byte[] payload)
+    {
+        TwinObject to = getObjectByID(topicSplit[2]);
+        if (to != null)
+        {
+            to.valueMessage(topicSplit, payload);
         }
     }
 
-	private void deviceValue(string[] topicSplit, byte[] payload)
+    private void deviceEvent(string[] topicSplit, byte[] payload)
     {
-		TwinObject to = getObjectByID (topicSplit [2]);
-		if (to != null) {
-			to.valueMessage (topicSplit, payload);
-		}
+        TwinObject to = getObjectByID(topicSplit[2]);
+        if (to != null)
+        {
+            to.eventMessage(topicSplit, payload);
+        }
     }
 
-	private void deviceEvent(string[] topicSplit, byte[] payload)
+    private void devicePing(string deviceID)
     {
-		TwinObject to = getObjectByID (topicSplit [2]);
-		if (to  != null) {
-			to.eventMessage (topicSplit, payload);
-		}
-    }
-
-	private void devicePing(string deviceID)
-	{	
-		TwinObject to = getObjectByID (deviceID);
-		if (to != null) {
-            if(!to.getLinkStatus()){
-                to.setLinkStatus (true);
+        TwinObject to = getObjectByID(deviceID);
+        if (to != null)
+        {
+            if (!to.getLinkStatus())
+            {
+                to.setLinkStatus(true);
             }
             to.pingResponse();
-		}
-	}
+        }
+    }
 
     private void deviceConnect(string[] topicSplit)
     {
@@ -139,11 +160,13 @@ public class MQTTHandler{
         bool linkPossible = false;
         foreach (TwinObject obj in twinObjects)
         {
-            if(obj.getDeviceID() == topicSplit[2]){
+            if (obj.getDeviceID() == topicSplit[2])
+            {
                 obj.setLinkStatus(true);
                 linkPossible = true;
                 break;
-            }else if (obj.getConfigName() == topicSplit[3])
+            }
+            else if (obj.getConfigName() == topicSplit[3] && obj.getLinkStatus() == false)
             {
                 obj.linkDevice(topicSplit[2]);
                 linkPossible = true;
@@ -152,28 +175,34 @@ public class MQTTHandler{
         }
         if (!linkPossible)
         {
-            sendDeviceMessage(topicSplit[2] + "/ping", new byte[]{0});
+            sendDeviceMessage(topicSplit[2] + "/ping", new byte[] { 0 });
         }
     }
 
-	private TwinObject getObjectByID(string deviceID){
-		foreach (TwinObject obj in twinObjects) {
-			if (obj.getDeviceID() == deviceID) {
-				return obj;
-			}
-		}
-		return null;
-	}
+    private TwinObject getObjectByID(string deviceID)
+    {
+        foreach (TwinObject obj in twinObjects)
+        {
+            if (obj.getDeviceID() == deviceID)
+            {
+                return obj;
+            }
+        }
+        return null;
+    }
 
     public List<TwinObject> getTwinObjectList()
     {
         return twinObjects;
     }
 
-    public List<TwinObject> getConnectedTwinObjects(){
+    public List<TwinObject> getConnectedTwinObjects()
+    {
         List<TwinObject> temp = new List<TwinObject>();
-        foreach(TwinObject obj in twinObjects){
-            if(obj.getLinkStatus()){
+        foreach (TwinObject obj in twinObjects)
+        {
+            if (obj.getLinkStatus())
+            {
                 temp.Add(obj);
             }
         }
@@ -186,10 +215,13 @@ public class MQTTHandler{
         twinObjects.Add(obj);
     }
 
-    public Boolean allDevicesConnected(){
+    public Boolean allDevicesConnected()
+    {
         bool connected = true;
-        foreach(TwinObject obj in twinObjects){
-            if(!obj.getLinkStatus()){
+        foreach (TwinObject obj in twinObjects)
+        {
+            if (obj.getLinkStatus() == false)
+            {
                 connected = false;
                 break;
             }

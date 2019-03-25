@@ -29,7 +29,7 @@ public class EventMessage
                 handleRingLight(name, payload);
                 break;
             case "timeofflight":
-                handleTimeOfFlight(payload);
+                handleTimeOfFlight(name, payload);
                 break;
             case "imu":
                 handleIMU(name, payload);
@@ -100,9 +100,14 @@ public class EventMessage
         }
     }
 
-    private void handleTimeOfFlight(byte[] payload)
-    {
-        parsevalue(payload);
+    private void handleTimeOfFlight(string type, byte[] payload)
+    {   
+        if(type == "value"){
+            parsevalue(payload);
+            state = true;
+        }else if(type == "off"){
+            state = false;
+        }
     }
 
     private void handleIMU(string type, byte[] payload){

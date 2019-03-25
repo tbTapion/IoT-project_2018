@@ -16,7 +16,7 @@ public class FollowTheRedDot : MonoBehaviour
     void Start()
     {
         //MQTT handler. Takes care of the connection to the RPI and sending/receiving messages.
-        mqttHandler = new MQTTHandler(""); //Enter IP here
+        mqttHandler = new MQTTHandler("129.241.104.227"); //Enter IP here
 
         //Test object
         for (int i = 0; i < 2; i++)

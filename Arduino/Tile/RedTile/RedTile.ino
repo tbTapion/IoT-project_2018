@@ -13,7 +13,7 @@
 
 #define NEOPIXELPIN 2
 #define BUZZERPIN 13
-#define NUMPIXELS 24
+#define NUMPIXELS 12
 
 // Update these with values suitable for your network.
 //WiFi
@@ -176,20 +176,16 @@ void get_event(char *topicElement)
   {
     if (strcmp(topicElement, "imu") == 0)
     {
-      Serial.println(topicElement);
       topicElement = strtok(NULL, "/");
       if (strcmp(topicElement, "rotation") == 0)
       {
-        Serial.println(topicElement);
         char payload[sizeof(rotation) + 1];
         for (int i = 0; i < 6; i++)
         {
           payload[i] = (char)rotation[i];
-          Serial.println(rotation[i]);
         }
         payload[sizeof(rotation)] = '\0';
         client.publish(("unity/device/" + clientIDstr + "/value/imu/rotation").c_str(), payload);
-        Serial.println("Value sent!");
       }
     }
     topicElement = strtok(NULL, "/");

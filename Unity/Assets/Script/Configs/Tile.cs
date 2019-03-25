@@ -15,7 +15,7 @@ public class Tile : TwinObject
     {
         base.Start();
         configName = "tile";
-        ringLight = new RingLight(this, transform);
+        ringLight = new RingLight(this, 12, transform);
         timeOfFlight = new TimeOfFlight(this);
         tonePlayer = new TonePlayer(this);
         imu = new IMU(this);

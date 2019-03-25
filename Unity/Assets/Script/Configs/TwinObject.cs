@@ -7,8 +7,8 @@ public abstract class TwinObject : MonoBehaviour
 
     //MQTT variables
     private MQTTHandler mqttHandler; //Handler for messages
-    private string deviceID; //ID of the device
-    private bool linked; //Linked to both object and device
+    public string deviceID; //ID of the device
+    public bool linked; //Linked to both object and device
     private bool deviceLink; // Linked to device
     private bool objectLink; // Linked to object
     protected string configName;
@@ -25,7 +25,7 @@ public abstract class TwinObject : MonoBehaviour
     public virtual void Start()
     {
         pingCount = 0;
-        pingTime = 30 * 60;
+        pingTime = 60 * 60;
     }
 
     // Update is called once per frame
@@ -47,7 +47,7 @@ public abstract class TwinObject : MonoBehaviour
                     sendPingMessage();
                     pingCount++;
                 }
-                pingTime = 30 * 60;
+                pingTime = 60 * 60;
             }
         }
     }
@@ -204,13 +204,15 @@ public abstract class TwinObject : MonoBehaviour
     }
 
     public virtual void eventMessage(string[] topic, byte[] payload)
-    {
+    {   
+        pingTime = 60*60;
         EventMessage msg = new EventMessage(topic[4], topic[5], payload);
         updateComponent(msg);
         onEvent(msg);
     }
     public virtual void valueMessage(string[] topic, byte[] payload)
     {
+        pingTime = 60*60;
         EventMessage msg = new EventMessage(topic[4], topic[5], payload);
         updateComponent(new EventMessage(topic[4], topic[5], payload));
     }

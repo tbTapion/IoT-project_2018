@@ -16,7 +16,7 @@ public class RedTile : TwinObject
     {
         base.Start();
         configName = "redtile";
-        ringLight = new RingLight(this, transform);
+        ringLight = new RingLight(this, 12, transform);
         tonePlayer = new TonePlayer(this);
         imu = new IMU(this);
         if (transform != null)

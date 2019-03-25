@@ -17,7 +17,7 @@ public class BlueTile : TwinObject
     {
         base.Start();
         configName = "bluetile";
-        ringLight = new RingLight(this, transform);
+        ringLight = new RingLight(this, 24, transform);
         timeOfFlight = new TimeOfFlight(this);
         tonePlayer = new TonePlayer(this);
         imu = new IMU(this);
@@ -58,7 +58,7 @@ public class BlueTile : TwinObject
         if (e.component == "timeofflight")
         {
             timeOfFlight.setDistance(e.value);
-            Debug.Log(e.value);
+            timeOfFlight.setMeasuring(e.state);
         }
         else if (e.component == "ringlight")
         {

@@ -9,15 +9,17 @@ public class RingLight : DeviceComponent
 
     private bool state;
 
+    private int maxNumLeds;
     private int numOfLeds;
 
     private List<RingLightLed> ledList;
 
-    public RingLight(TwinObject device, Transform transform)
+    public RingLight(TwinObject device, int numOfLeds, Transform transform)
     {
         this.device = device;
         color = new Color(0, 0, 0);
-        numOfLeds = 24;
+        this.numOfLeds = numOfLeds;
+        maxNumLeds = numOfLeds;
         ledList = new List<RingLightLed>();
         if (transform != null)
         {
@@ -56,20 +58,7 @@ public class RingLight : DeviceComponent
         this.state = state;
         if (ledList != null)
         {
-            if (state == false)
-            {
-                for (int i = 0; i < ledList.Count; i++)
-                {
-                    ledList[i].setState(false);
-                }
-            }
-            else
-            {
-                for (int i = 0; i < numOfLeds; i++)
-                {
-                    ledList[i].setState(state);
-                }
-            }
+            updateLeds();
         }
         device.sendActionMessage("ringlight/state", state);
     }
@@ -82,36 +71,31 @@ public class RingLight : DeviceComponent
     public void setColor(Color color)
     {
         this.color = color;
-        foreach(RingLightLed led in ledList){
+        foreach (RingLightLed led in ledList)
+        {
             led.setColor(color);
         }
-        byte[] colorBytes = new byte[] {(byte)(color.r * 255), (byte)(color.g * 255), (byte)(color.b * 255) };
+        byte[] colorBytes = new byte[] { (byte)(color.r * 255), (byte)(color.g * 255), (byte)(color.b * 255) };
         device.sendActionMessage("ringlight/color", colorBytes);
     }
 
-	public void setColor(Color color, int i){
-		if(i>= 0 && i < ledList.Count){
-			ledList[i].setColor(color);
-		}
-	}
+    public void setColor(Color color, int i)
+    {
+        if (i >= 0 && i < ledList.Count)
+        {
+            ledList[i].setColor(color);
+        }
+    }
 
     public void setAllLedsColor()
     {
         List<byte> colorBytes = new List<byte>();
         foreach (RingLightLed led in ledList)
         {
-            Color c;
-            if (led.getState())
-            {
-                c = led.getColor();
-            }
-            else
-            {
-                c = Color.black;
-            }
-            colorBytes.Add((byte)(c.r*256));
-            colorBytes.Add((byte)(c.g*256));
-            colorBytes.Add((byte)(c.b*256));
+            Color c = led.getColor();
+            colorBytes.Add((byte)(c.r * 255));
+            colorBytes.Add((byte)(c.g * 255));
+            colorBytes.Add((byte)(c.b * 255));
         }
         device.sendActionMessage("ringlight/all_colors", colorBytes.ToArray());
     }
@@ -124,6 +108,7 @@ public class RingLight : DeviceComponent
     public void setNumOfLeds(int numOfLeds)
     {
         this.numOfLeds = numOfLeds;
+        updateLeds();
         device.sendActionMessage("ringlight/number_of_leds", numOfLeds);
     }
 
@@ -135,6 +120,11 @@ public class RingLight : DeviceComponent
     public RingLightLed[] getLedList()
     {
         return ledList.ToArray();
+    }
+
+    public int getMaxNumLeds()
+    {
+        return maxNumLeds;
     }
 
     private string buildNumberString(int color)
@@ -149,5 +139,25 @@ public class RingLight : DeviceComponent
             temp += "0";
         }
         return temp += color;
+    }
+
+    private void updateLeds()
+    {
+        if (state)
+        {
+            for (int i = 0; i < numOfLeds; i++)
+            {
+                ledList[i].setState(true);
+            }
+            for (int i = numOfLeds; i < maxNumLeds; i++)
+            {
+                ledList[i].setState(false);
+            }
+        }else{
+            for (int i = 0; i < maxNumLeds; i++)
+            {
+                ledList[i].setState(false);
+            }
+        }
     }
 }
