@@ -45,7 +45,6 @@ public class BlueTile : TwinObject
                 {
                     if (hit.transform == transform)
                     {
-                        Debug.Log("A Blue Tile tapped");
                         imu.setTapped();
                     }
                 }

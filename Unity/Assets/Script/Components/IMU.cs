@@ -33,7 +33,6 @@ public class IMU : DeviceComponent
 
     public void setTapped(){
         tapped = true;
-        UnityEngine.Debug.Log("Device tapped!");
     }
 
     public bool justTapped(){

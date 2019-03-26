@@ -16,7 +16,6 @@ public class Potmeter : DeviceComponent{
 
     public void setValue(int value)
     {
-        Debug.Log("Heartbeat value: " + value);
         this.value = value;
     }
 

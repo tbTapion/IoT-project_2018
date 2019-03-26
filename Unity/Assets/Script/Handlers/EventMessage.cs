@@ -41,7 +41,6 @@ public class EventMessage
     {
         int parsedValue = 0;
         for(int i = 0; i<payload.Length; i++){
-            Debug.Log("payload value " + (int)payload[i]);
             parsedValue += (int)payload[i] * (int)Mathf.Pow(256, i);
         }
         value = parsedValue;

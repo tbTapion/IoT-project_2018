@@ -13,7 +13,7 @@ public class SampleTile : BlueTile
     public override void Start()
     {
         base.Start();
-        mqttHandler = new MQTTHandler("129.241.104.227");
+        mqttHandler = new MQTTHandler("129.241.104.227"); // May need to change. 
         mqttHandler.addTwinObject(this);
     }
 
@@ -27,7 +27,6 @@ public class SampleTile : BlueTile
 
             if (imu.justTapped())
             {
-                Debug.Log("tap");
                 ringLight.setColor(Color.green);
                 ringLight.setNumOfLeds(ringLight.getMaxNumLeds());
                 ringLight.setState(true);
@@ -35,7 +34,6 @@ public class SampleTile : BlueTile
             }
             else if (timeOfFlight.getMeasuring())
             {
-                Debug.Log("Range!");
                 ringLight.setColor(Color.blue);
                 int calcLeds = (int)((timeOfFlight.getDistance() / 200f) * ringLight.getMaxNumLeds());
                 ringLight.setNumOfLeds(calcLeds);

@@ -27,7 +27,6 @@ public class RingLight : DeviceComponent
             Debug.Log(ledList[0]);
             if (ledList != null)
             {
-                Debug.Log("Found leds");
                 foreach (RingLightLed led in ledList)
                 {
                     this.ledList.Add(led);
@@ -107,9 +106,9 @@ public class RingLight : DeviceComponent
 
     public void setNumOfLeds(int numOfLeds)
     {
-        this.numOfLeds = numOfLeds;
+        this.numOfLeds = Mathf.Min(Mathf.Max(numOfLeds,0), maxNumLeds);
         updateLeds();
-        device.sendActionMessage("ringlight/number_of_leds", numOfLeds);
+        device.sendActionMessage("ringlight/number_of_leds", this.numOfLeds);
     }
 
     public int getNumOfLeds()

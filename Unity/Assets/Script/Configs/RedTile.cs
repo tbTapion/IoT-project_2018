@@ -43,7 +43,6 @@ public class RedTile : TwinObject
                 {
                     if (hit.transform == transform)
                     {
-                        Debug.Log("A Red Tile tapped");
                         imu.setTapped();
                     }
                 }
