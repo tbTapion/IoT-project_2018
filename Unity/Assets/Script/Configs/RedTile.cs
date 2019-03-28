@@ -12,13 +12,13 @@ public class RedTile : TwinObject
     protected IMU imu;
 
     // Start is called before the first frame update
-    public override void Start()
+    private void Start()
     {
-        base.Start();
         configName = "redtile";
-        ringLight = new RingLight(this, 12, transform);
-        tonePlayer = new TonePlayer(this);
-        imu = new IMU(this);
+        ringLight = gameObject.AddComponent<RingLight>();
+        ringLight.Init(12);
+        tonePlayer = gameObject.AddComponent<TonePlayer>();
+        imu = gameObject.AddComponent<IMU>();
         if (transform != null)
         {
             GetComponent<Renderer>().material.SetColor("_Color", Color.red);
@@ -26,12 +26,8 @@ public class RedTile : TwinObject
     }
 
     // Update is called once per frame
-    public override void Update()
+    private void Update()
     {
-        base.Update();
-        ringLight.update();
-        imu.update();
-
         if (debug)
         {
             if (Input.GetMouseButtonDown(0))
@@ -43,29 +39,29 @@ public class RedTile : TwinObject
                 {
                     if (hit.transform == transform)
                     {
-                        imu.setTapped();
+                        SendMessage("OnTapped");
                     }
                 }
             }
         }
     }
 
-    protected override void updateComponent(EventMessage e)
+    protected override void UpdateComponent(EventMessage e)
     {
         if (e.component == "ringlight")
         {
             if (e.name == "state")
             {
-                ringLight.setState(e.state);
+                ringLight.SetState(e.state);
             }
             else if (e.name == "color")
             {
                 Color tempColor = new Color(e.payload[0] / 256.0f, e.payload[1] / 256.0f, e.payload[2] / 256.0f);
-                ringLight.setColor(tempColor);
+                ringLight.SetColor(tempColor);
             }
             else if (e.name == "numOfLeds")
             {
-                ringLight.setNumOfLeds(e.value);
+                ringLight.SetNumOfLeds(e.value);
             }
         }
         else if (e.component == "imu")
@@ -75,27 +71,12 @@ public class RedTile : TwinObject
                 int roll = e.payload[0] + e.payload[1];
                 int pitch = e.payload[2] + e.payload[3];
                 int yaw = e.payload[4] + e.payload[5];
-                imu.setRotation(roll, pitch, yaw);
+                imu.SetRotation(roll, pitch, yaw);
             }
             else if (e.name == "tapped")
             {
-                imu.setTapped();
+                SendMessage("OnTapped");
             }
         }
-    }
-
-    public RingLight getRingLight()
-    {
-        return ringLight;
-    }
-
-    public TonePlayer getTonePlayer()
-    {
-        return tonePlayer;
-    }
-
-    public IMU getIMU()
-    {
-        return imu;
     }
 }

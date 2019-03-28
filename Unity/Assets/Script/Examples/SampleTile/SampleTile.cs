@@ -10,43 +10,41 @@ public class SampleTile : BlueTile
     Color[] colors = new Color[] { Color.red, Color.green, Color.blue };
 
     // Start is called before the first frame update
-    public override void Start()
+    private void Start()
     {
-        base.Start();
         mqttHandler = new MQTTHandler("129.241.104.227"); // May need to change. 
-        mqttHandler.addTwinObject(this);
+        mqttHandler.AddTwinObject(this);
     }
 
     // Update is called once per frame
-    public override void Update()
+    private void Update()
     {
-        base.Update();
-        mqttHandler.update();
-        if (getLinkStatus())
+        mqttHandler.Update();
+        if (linked)
         {
 
-            if (imu.justTapped())
+            if (imu.JustTapped())
             {
-                ringLight.setColor(Color.green);
-                ringLight.setNumOfLeds(ringLight.getMaxNumLeds());
-                ringLight.setState(true);
+                ringLight.SetColor(Color.green);
+                ringLight.SetNumOfLeds(ringLight.GetMaxNumLeds());
+                ringLight.SetState(true);
                 //tonePlayer.playTone(300,100);
             }
-            else if (timeOfFlight.getMeasuring())
+            else if (timeOfFlight.GetMeasuring())
             {
-                ringLight.setColor(Color.blue);
-                int calcLeds = (int)((timeOfFlight.getDistance() / 200f) * ringLight.getMaxNumLeds());
-                ringLight.setNumOfLeds(calcLeds);
-                if (ringLight.getState() == false)
+                ringLight.SetColor(Color.blue);
+                int calcLeds = (int)((timeOfFlight.GetDistance() / 200f) * ringLight.GetMaxNumLeds());
+                ringLight.SetNumOfLeds(calcLeds);
+                if (ringLight.GetState() == false)
                 {
-                    ringLight.setState(true);
+                    ringLight.SetState(true);
                 }
             }
             else
             {
-                if (ringLight.getState())
+                if (ringLight.GetState())
                 {
-                    ringLight.setState(false);
+                    ringLight.SetState(false);
                 }
             }
         }

@@ -6,7 +6,7 @@ public class FollowTheRedDotWithClasses : MonoBehaviour
 {
     private MQTTHandler mqttHandler;
 
-    List<TwinObject> tileList = new List<TwinObject>();
+    List<IGameTile> tileList = new List<IGameTile>();
 
     private bool gameSetupDone;
 
@@ -18,24 +18,24 @@ public class FollowTheRedDotWithClasses : MonoBehaviour
         for (int i = 0; i < 2; i++)
         {
             GameObject redObj = Instantiate(Resources.Load("Prefabs/TilePrefab"), new Vector3(-1.6f + (i * 1.05f), 0.0f, 0.0f), Quaternion.identity) as GameObject;
-            RedTile redTile = redObj.AddComponent<Red>();
-            redTile.setName("RedTile" + i);
+            Red redTile = redObj.AddComponent<Red>();
+            redTile.SetName("RedTile" + i);
             tileList.Add(redTile);
-            mqttHandler.addTwinObject(redTile);
+            mqttHandler.AddTwinObject(redTile);
 
             GameObject blueObj = Instantiate(Resources.Load("Prefabs/TilePrefab"), new Vector3(-1.6f + ((2 + i) * 1.05f), 0.0f, 0.0f), Quaternion.identity) as GameObject;
-            BlueTile blueTile = blueObj.AddComponent<Blue>();
-            blueTile.setName("BlueTile" + i);
+            Blue blueTile = blueObj.AddComponent<Blue>();
+            blueTile.SetName("BlueTile" + i);
             tileList.Add(blueTile);
-            mqttHandler.addTwinObject(blueTile);
+            mqttHandler.AddTwinObject(blueTile);
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-        mqttHandler.update();
-        if (mqttHandler.allDevicesConnected())
+        mqttHandler.Update();
+        if (mqttHandler.AllDevicesConnected())
         {
             if (gameSetupDone == false)
             {
@@ -47,27 +47,13 @@ public class FollowTheRedDotWithClasses : MonoBehaviour
     private void setupAndPickTile()
     {
         //Giving all tiles a tile list.
-        foreach (TwinObject to in tileList)
+        foreach (IGameTile gameTile in tileList)
         {
-            if (to.GetType() == typeof(Red))
-            {
-                (to as Red).setOtherTileList(tileList);
-            }
-            else if (to.GetType() == typeof(Blue))
-            {
-                (to as Blue).setOtherTileList(tileList);
-            }
+            gameTile.SetOtherTileList(tileList);
         }
         //Picking a random tile to start with
-        TwinObject startTile = tileList[Random.Range(0, tileList.Count)];
-        if (startTile.GetType() == typeof(Red))
-        {
-            (startTile as Red).setActive(true);
-        }
-        else if (startTile.GetType() == typeof(Blue))
-        {
-            (startTile as Blue).setActive(true);
-        }
+        IGameTile startTile = tileList[Random.Range(0, tileList.Count)];
+        startTile.SetActive();
         //Setting game setup bool to true so we don't enter this function again. 
         gameSetupDone = true;
     }

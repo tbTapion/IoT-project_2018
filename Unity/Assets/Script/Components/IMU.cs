@@ -10,32 +10,39 @@ public class IMU : DeviceComponent
         tapped = false;
     }
 
-    public override void update()
+    private void Start()
+    {
+        rotation = new Rotation(0.0f, 0.0f, 0.0f);
+        tapped = false;
+    }
+
+    private void Update()
     {
         tapped = false;
     }
 
-    public void requestRotation(){
-        device.sendGetMessage("imu/rotation");
-    }
-
-    public Rotation getRotation(){
-        return rotation;
-    }
-
-    public void setRotation(Rotation rotation){
-        rotation.setRotation(rotation);
-    }
-
-    public void setRotation(float roll, float pitch, float yaw){
-        rotation.setRotation(roll, pitch, yaw);
-    }
-
-    public void setTapped(){
+    void OnTapped()
+    {
         tapped = true;
     }
 
-    public bool justTapped(){
+    public void RequestRotation(){
+        device.SendGetMessage("imu/rotation");
+    }
+
+    public Rotation GetRotation(){
+        return rotation;
+    }
+
+    public void SetRotation(Rotation rotation){
+        rotation.SetRotation(rotation);
+    }
+
+    public void SetRotation(float roll, float pitch, float yaw){
+        rotation.SetRotation(roll, pitch, yaw);
+    }
+
+    public bool JustTapped(){
         return tapped;
     }
 }

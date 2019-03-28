@@ -4,9 +4,8 @@ using UnityEngine;
 
 public class RGBLed : Led {
 
-	
-	// Use this for initialization
-	public RGBLed(TwinObject device) : base(device)
-	{
-	}
+    private void Start()
+    {
+        
+    }
 }

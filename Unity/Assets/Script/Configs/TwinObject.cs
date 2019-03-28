@@ -8,9 +8,7 @@ public abstract class TwinObject : MonoBehaviour
     //MQTT variables
     private MQTTHandler mqttHandler; //Handler for messages
     public string deviceID; //ID of the device
-    public bool linked; //Linked to both object and device
-    private bool deviceLink; // Linked to device
-    private bool objectLink; // Linked to object
+    public bool linked; //Link bool for the link between Digital Twin Object(this) and physical device
     protected string configName;
 
     private int pingCount;
@@ -22,14 +20,14 @@ public abstract class TwinObject : MonoBehaviour
     public List<MessagePair> getMsgBuffer = new List<MessagePair>();
 
     // Use this for initialization
-    public virtual void Start()
+    private void Start()
     {
         pingCount = 0;
         pingTime = 60 * 60;
     }
 
     // Update is called once per frame
-    public virtual void Update()
+    private void Update()
     {
         if (linked)
         {
@@ -40,11 +38,10 @@ public abstract class TwinObject : MonoBehaviour
                 {
                     linked = false;
                     Debug.Log("Tile " + deviceID + " disconnected...");
-                    deviceLink = false;
                 }
                 else
                 {
-                    sendPingMessage();
+                    SendPingMessage();
                     pingCount++;
                 }
                 pingTime = 60 * 60;
@@ -55,74 +52,74 @@ public abstract class TwinObject : MonoBehaviour
     /*
     Sets the mqttHandler object-link in the class. 
      */
-    public void setMQTTHandler(MQTTHandler mqttHandler)
+    public void SetMQTTHandler(MQTTHandler mqttHandler)
     {
         this.mqttHandler = mqttHandler;
     }
     
     //Sends the device message. Takes topic string and string payload. Converts payload to bytes.
-    internal void sendDeviceMessage(string tempMessageTopic, string payload)
+    internal void SendDeviceMessage(string tempMessageTopic, string payload)
     {
         if (mqttHandler != null)
         {
-            mqttHandler.sendDeviceMessage(tempMessageTopic, System.Text.Encoding.Default.GetBytes(payload));
+            mqttHandler.SendDeviceMessage(tempMessageTopic, System.Text.Encoding.Default.GetBytes(payload));
         }
     }
 
-    internal void sendDeviceMessage(string tempMessageTopic, int payload)
+    internal void SendDeviceMessage(string tempMessageTopic, int payload)
     {
         if (mqttHandler != null)
         {
-            mqttHandler.sendDeviceMessage(tempMessageTopic, new byte[] {(byte)payload });
+            mqttHandler.SendDeviceMessage(tempMessageTopic, new byte[] {(byte)payload });
         }
     }
 
-    internal void sendDeviceMessage(string tempMessageTopic, int[] payload)
+    internal void SendDeviceMessage(string tempMessageTopic, int[] payload)
     {
 
     }
 
-    internal void sendDeviceMessage(string tempMessageTopic, bool payload)
+    internal void SendDeviceMessage(string tempMessageTopic, bool payload)
     {
         if (mqttHandler != null)
         {
             if(payload == true){
-                mqttHandler.sendDeviceMessage(tempMessageTopic, new byte[] {(byte)1});
+                mqttHandler.SendDeviceMessage(tempMessageTopic, new byte[] {(byte)1});
             }else{
-                mqttHandler.sendDeviceMessage(tempMessageTopic, new byte[] {(byte)0});
+                mqttHandler.SendDeviceMessage(tempMessageTopic, new byte[] {(byte)0});
             }
         }
     }
 
-    public void sendActionMessage(string componentName, string payload)
+    public void SendActionMessage(string componentName, string payload)
     {
         //sendDeviceMessage(deviceID + "/action/" + componentName, payload);
         List<byte> temp = new List<byte>();
         temp.Add((byte)payload.Length);
         temp.AddRange(System.Text.Encoding.Default.GetBytes(payload));
-        addActionMessageToBuffer(componentName, temp.ToArray());
+        AddActionMessageToBuffer(componentName, temp.ToArray());
     }
 
-    public void sendActionMessage(string componentName, int payload)
+    public void SendActionMessage(string componentName, int payload)
     {
         //sendDeviceMessage(deviceID + "/action/" + componentName, payload);
-        addActionMessageToBuffer(componentName, new byte[] {1, (byte)payload });
+        AddActionMessageToBuffer(componentName, new byte[] {1, (byte)payload });
     }
 
-    public void sendActionMessage(string componentName, bool payload)
+    public void SendActionMessage(string componentName, bool payload)
     {
         if (mqttHandler != null)
         {
             if(payload == true){
-                addActionMessageToBuffer(componentName, new byte[] {1, (byte)1});
+                AddActionMessageToBuffer(componentName, new byte[] {1, (byte)1});
             }else{
-                addActionMessageToBuffer(componentName, new byte[] {1,  (byte)0});
+                AddActionMessageToBuffer(componentName, new byte[] {1,  (byte)0});
             }
         }
         //sendDeviceMessage(deviceID + "/action/" + componentName, payload);
     }
 
-    public void sendActionMessage(string componentName, byte[] payload)
+    public void SendActionMessage(string componentName, byte[] payload)
     {
         if (mqttHandler != null)
         {
@@ -130,20 +127,20 @@ public abstract class TwinObject : MonoBehaviour
             List<byte> temp = new List<byte>();
             temp.Add((byte)payload.Length);
             temp.AddRange(payload);
-            addActionMessageToBuffer(componentName, temp.ToArray());
+            AddActionMessageToBuffer(componentName, temp.ToArray());
         }
     }
 
-    private void addActionMessageToBuffer(string componentName, byte[] payload){
+    private void AddActionMessageToBuffer(string componentName, byte[] payload){
         actionMsgBuffer.Add(new MessagePair(componentName, payload));
     }
 
-    public void sendPingMessage()
+    public void SendPingMessage()
     {
-        sendDeviceMessage(deviceID + "/ping", true);
+        SendDeviceMessage(deviceID + "/ping", true);
     }
 
-    public void sendGetMessage(string componentName)
+    public void SendGetMessage(string componentName)
     {
         //sendDeviceMessage(deviceID + "/get/" + componentName, 1);
         if(mqttHandler != null){
@@ -151,85 +148,66 @@ public abstract class TwinObject : MonoBehaviour
         }
     }
 
-    public void sendGetConfigMessage()
+    public void SendGetConfigMessage()
     {
-        sendDeviceMessage(deviceID + "/getconfg", 1);
+        SendDeviceMessage(deviceID + "/getconfg", 1);
     }
 
-    public string getDeviceID()
+    public string GetDeviceID()
     {
         return deviceID;
     }
 
-    public bool getLinkStatus()
+    public bool GetLinkStatus()
     {
         return linked;
     }
 
-    public bool getDeviceLinkStatus()
-    {
-        return deviceLink;
-    }
-
-    public bool getObjectLinkStatus()
-    {
-        return objectLink;
-    }
-
-    public void setLinkStatus(bool linked)
+    public void SetLinkStatus(bool linked)
     {
         this.linked = linked;
     }
 
-    public void setDeviceLinkStatus(bool deviceLink)
-    {
-        this.deviceLink = deviceLink;
-    }
-
-    public void setObjectLinkStatus(bool objectLink)
-    {
-        this.objectLink = objectLink;
-    }
-
-    public void linkDevice(string deviceID)
+    public void LinkDevice(string deviceID)
     {
         this.deviceID = deviceID;
-        this.linked = true;
-        sendPingMessage();
+        SetLinkStatus(true);
+        SendPingMessage();
     }
 
-    public string getConfigName()
+    public string GetConfigName()
     {
         return configName;
     }
 
-    public virtual void eventMessage(string[] topic, byte[] payload)
+    public virtual void EventMessage(string[] topic, byte[] payload)
     {   
         pingTime = 60*60;
         EventMessage msg = new EventMessage(topic[4], topic[5], payload);
-        updateComponent(msg);
-        onEvent(msg);
+        UpdateComponent(msg);
+        OnEvent(msg);
     }
-    public virtual void valueMessage(string[] topic, byte[] payload)
+
+    public virtual void ValueMessage(string[] topic, byte[] payload)
     {
         pingTime = 60*60;
         EventMessage msg = new EventMessage(topic[4], topic[5], payload);
-        updateComponent(new EventMessage(topic[4], topic[5], payload));
+        UpdateComponent(new EventMessage(topic[4], topic[5], payload));
     }
 
-    public void pingResponse()
+    public void PingResponse()
     {
         pingCount = 0;
     }
 
-    public void setName(string name){
+    public void SetName(string name){
         if(transform != null){
             transform.name = name;
         }
         this.name = name;
     }
 
-    protected virtual void onEvent(EventMessage e) { }
+    protected virtual void OnEvent(EventMessage e) { }
 
-    protected abstract void updateComponent(EventMessage e);
+    protected abstract void UpdateComponent(EventMessage e);
 }

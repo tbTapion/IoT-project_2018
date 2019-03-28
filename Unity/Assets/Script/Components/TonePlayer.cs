@@ -5,31 +5,24 @@ using UnityEngine;
 
 public class TonePlayer : DeviceComponent
 {
-    public TonePlayer(TwinObject device){
-        this.device = device;
-    }
-
-    public override void update(){
-    }
-
-    public void playTone(int frequency){
+    public void PlayTone(int frequency){
         List<byte> bytesArray = new List<byte>();
         byte[] freqbytes = BitConverter.GetBytes(frequency);
         bytesArray.Add(0);
         bytesArray.AddRange(freqbytes);
-        device.sendActionMessage("toneplayer/play", freqbytes);
+        device.SendActionMessage("toneplayer/play", freqbytes);
     }
 
-    public void playTone(int frequency, int duration){
+    public void PlayTone(int frequency, int duration){
         byte[] freqbytes = BitConverter.GetBytes(frequency);
         byte[] durbytes = BitConverter.GetBytes(duration);
         List<byte> bytesArray = new List<byte>();
         bytesArray.AddRange(freqbytes);
         bytesArray.AddRange(durbytes);
-        device.sendActionMessage("toneplayer/frequency_duration", bytesArray.ToArray());
+        device.SendActionMessage("toneplayer/frequency_duration", bytesArray.ToArray());
     }
 
-    public void stopTone(){
-        device.sendActionMessage("toneplayer/stop", 0);
+    public void StopTone(){
+        device.SendActionMessage("toneplayer/stop", 0);
     }
 }

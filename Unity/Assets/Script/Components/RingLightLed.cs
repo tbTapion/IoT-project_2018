@@ -16,35 +16,35 @@ public class RingLightLed : MonoBehaviour
     {
     }
 
-    public void toggle()
+    public void Toggle()
     {
-        setState(!state);
+        SetState(!state);
     }
 
-    public void setState(bool state)
+    public void SetState(bool state)
     {
         this.state = state;
-        updateTransformColor();
+        UpdateTransformColor();
     }
 
-    public bool getState()
+    public bool GetState()
     {
         return state;
     }
 
-    public void setColor(Color color)
+    public void SetColor(Color color)
     {
         this.color = color;
-        updateTransformColor();
+        UpdateTransformColor();
     }
 
-    public Color getColor()
+    public Color GetColor()
     {
         return color;
     }
 
-    private void updateTransformColor(){
-       Renderer r = GetComponent<Renderer>();
+    private void UpdateTransformColor(){
+        Renderer r = GetComponent<Renderer>();
         if (r != null)
         {
             if (state)
@@ -53,7 +53,7 @@ public class RingLightLed : MonoBehaviour
             }
             else
             {
-                r.material.SetColor("_Color", Color.black);
+                r.material.SetColor("_Color", Color.clear);
             }
         }
     }

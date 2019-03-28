@@ -8,37 +8,33 @@ public class Led : DeviceComponent {
     protected bool heartbeat;
     protected int heartbeatTime;
 
-    public Led(TwinObject device){
-        this.device = device;
+    private void Start()
+    {
         state = false;
     }
 
-    public override void update(){
-
-    }
-
-    public void toggle()
+    public void Toggle()
     {
-        setState(!state);
+        SetState(!state);
     }
 
-    public void setState(bool state)
+    public void SetState(bool state)
     {
         this.state = state;
-        device.sendActionMessage("led", (state ? 1 : 0).ToString());
+        device.SendActionMessage("led", (state ? 1 : 0).ToString());
     }
 
-    public bool getState(){
+    public bool GetState(){
         return state;
     }
 
-    public void setHeartbeatTime(int heartbeatTime)
+    public void SetHeartbeatTime(int heartbeatTime)
     {
         int tempHeartbeatTime = Mathf.Min(heartbeatTime, 70);
         tempHeartbeatTime = Mathf.RoundToInt((tempHeartbeatTime / 70.0f)*4);
         if(tempHeartbeatTime != this.heartbeatTime){
             this.heartbeatTime = tempHeartbeatTime;
-            device.sendActionMessage("led/heartbeat",this.heartbeatTime.ToString());
+            device.SendActionMessage("led/heartbeat",this.heartbeatTime.ToString());
             if(this.heartbeatTime > 0){
                 this.heartbeat = true;
             }else{
@@ -47,12 +43,12 @@ public class Led : DeviceComponent {
         }
     }
 
-    public int getHeartbeatTime()
+    public int GetHeartbeatTime()
     {
         return heartbeatTime;
     }
 
-    public bool getHeartbeatState(){
+    public bool GetHeartbeatState(){
         return heartbeat;
     }
 }

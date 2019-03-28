@@ -8,13 +8,13 @@ public class Rotation {
         this.pitch = pitch;
     }
 
-    public void setRotation(float roll, float pitch, float yaw){
+    public void SetRotation(float roll, float pitch, float yaw){
         this.yaw = yaw;
         this.roll = roll;
         this.pitch = pitch;
     }
 
-    public void setRotation(Rotation rotation){
-        setRotation(rotation.roll, rotation.pitch, rotation.yaw);
+    public void SetRotation(Rotation rotation){
+        SetRotation(rotation.roll, rotation.pitch, rotation.yaw);
     }
 }

@@ -8,19 +8,19 @@ public class BlueTile : TwinObject
     private bool debug = true;
 
     protected RingLight ringLight;
-    public TimeOfFlight timeOfFlight;
+    protected TimeOfFlight timeOfFlight;
     protected TonePlayer tonePlayer;
     protected IMU imu;
 
     // Start is called before the first frame update
-    public override void Start()
+    private void Start()
     {
-        base.Start();
         configName = "bluetile";
-        ringLight = new RingLight(this, 24, transform);
-        timeOfFlight = new TimeOfFlight(this);
-        tonePlayer = new TonePlayer(this);
-        imu = new IMU(this);
+        ringLight = gameObject.AddComponent<RingLight>();
+        ringLight.Init(24);
+        timeOfFlight = gameObject.AddComponent<TimeOfFlight>();
+        tonePlayer = gameObject.AddComponent<TonePlayer>();
+        imu = gameObject.AddComponent<IMU>();
         if (transform != null)
         {
             GetComponent<Renderer>().material.SetColor("_Color", Color.blue);
@@ -28,11 +28,8 @@ public class BlueTile : TwinObject
     }
 
     // Update is called once per frame
-    public override void Update()
+    private void Update()
     {
-        base.Update();
-        ringLight.update();
-        imu.update();
 
         if (debug)
         {
@@ -45,62 +42,42 @@ public class BlueTile : TwinObject
                 {
                     if (hit.transform == transform)
                     {
-                        imu.setTapped();
+                        SendMessage("OnTapped");
                     }
                 }
             }
         }
     }
 
-    protected override void updateComponent(EventMessage e)
+    protected override void UpdateComponent(EventMessage e)
     {
         if (e.component == "timeofflight")
         {
-            timeOfFlight.setDistance(e.value);
-            timeOfFlight.setMeasuring(e.state);
+            timeOfFlight.SetDistance(e.value);
+            timeOfFlight.SetMeasuringDistance(e.state);
         }
         else if (e.component == "ringlight")
         {
             if (e.name == "state")
             {
-                ringLight.setState(e.state);
+                ringLight.SetState(e.state);
             }
             else if (e.name == "color")
             {
                 Color tempColor = new Color(e.payload[0] / 256.0f, e.payload[1] / 256.0f, e.payload[2] / 256.0f);
-                ringLight.setColor(tempColor);
+                ringLight.SetColor(tempColor);
             }
             else if (e.name == "numOfLeds")
             {
-                ringLight.setNumOfLeds(e.value);
+                ringLight.SetNumOfLeds(e.value);
             }
         }
         else if (e.component == "imu")
         {
             if (e.name == "tapped")
             {
-                imu.setTapped();
+                SendMessage("OnTapped");
             }
         }
-    }
-
-    public RingLight getRingLight()
-    {
-        return ringLight;
-    }
-
-    public TimeOfFlight getTimeOfFlight()
-    {
-        return timeOfFlight;
-    }
-
-    public TonePlayer getTonePlayer()
-    {
-        return tonePlayer;
-    }
-
-    public IMU getIMU()
-    {
-        return imu;
     }
 }

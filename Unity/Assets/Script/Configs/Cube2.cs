@@ -4,39 +4,33 @@ using UnityEngine;
 
 public class Cube2 : TwinObject {
 
-    private Button button;
-    private Potmeter potmeter;
+    protected Button button;
+    protected Potmeter potmeter;
 
 
 	// Use this for initialization
-	public override void Start () {
-        base.Start();
+	private void Start () {
         configName = "cube2";
-        button = new Button(this);
-        potmeter = new Potmeter(this);
+        button = gameObject.AddComponent<Button>();
+        potmeter = gameObject.AddComponent<Potmeter>();
 	}
 
 	// Update is called once per frame
-	public override void Update () {
-		base.Update ();
-		button.update();
+	private void Update () {
 	}
 
-	protected override void updateComponent(EventMessage e){
+	protected override void UpdateComponent(EventMessage e){
 		if (e.component == "button") {
-			button.setPressed(e.state);
+            if (e.state)
+            {
+                SendMessage("OnButtonPressed");
+            }
+            else
+            {
+                SendMessage("OnButtonReleased");
+            }
 		} else if (e.component == "potmeter") {
-			potmeter.setValue(e.value);
+			potmeter.SetValue(e.value);
 		}
 	}
-
-    public Button getButton()
-    {
-        return button;
-    }
-
-    public Potmeter getPotmeter()
-    {
-        return potmeter;
-    }
 }

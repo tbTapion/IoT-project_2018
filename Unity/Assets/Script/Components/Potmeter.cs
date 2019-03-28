@@ -5,21 +5,18 @@ using UnityEngine;
 public class Potmeter : DeviceComponent{
 
     private int value;
-    
-    public Potmeter(TwinObject device){
-        this.device = device;
+
+    private void Start()
+    {
         value = 0;
     }
-	
-	public override void update () {
-	}
 
-    public void setValue(int value)
+    public void SetValue(int value)
     {
         this.value = value;
     }
 
-    public int getValue()
+    public int GetValue()
     {
         return value;
     }

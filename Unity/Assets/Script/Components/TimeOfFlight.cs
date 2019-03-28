@@ -5,29 +5,31 @@ using UnityEngine;
 public class TimeOfFlight : DeviceComponent
 {
     private int distance;
-    private bool measuringRange;
+    private bool measuringDistance;
 
-    public TimeOfFlight(TwinObject device){
-        this.device = device;
+    private void Start()
+    {
         distance = 9999;
     }
-    public override void update () {
-	}
 
-    public void setDistance(int distance){
+    public void SetDistance(int distance){
         this.distance = distance;
     }
 
-    public int getDistance(){
+    public int GetDistance(){
         return distance;
     }
 
-    public void setMeasuring(bool measuringRange)
+    public void SetMeasuringDistance(bool measuringDistance)
     {
-        this.measuringRange = measuringRange;
+        this.measuringDistance = measuringDistance;
+        if (measuringDistance)
+        {
+            SendMessage("OnMeasuredDistance");
+        }
     }
 
-    public bool getMeasuring(){
-        return measuringRange;
+    public bool GetMeasuring(){
+        return measuringDistance;
     }
 }

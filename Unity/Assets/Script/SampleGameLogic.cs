@@ -16,9 +16,10 @@ public class SampleGameLogic : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        mqttHandler.update(); //MQTT handler's update function. Handles updating all the objects based on incoming messages.
-        if (mqttHandler.allDevicesConnected()) //Checks to see if all devices are connected.
+        mqttHandler.Update(); //MQTT handler's update function. Handles updating all the objects based on incoming messages.
+        if (mqttHandler.AllDevicesConnected()) //Checks to see if all devices are connected.
         {
+            Debug.Log("Main Update of Logic class");
         }
     }
 }

@@ -4,23 +4,19 @@ using UnityEngine;
 
 public class Cube3 : TwinObject {
 
-	private Led led;
-	private Button button;
+	protected Led led;
+	protected Button button;
 
 	// Use this for initialization
-	public override void Start () {
-		base.Start();
+	private void Start () {
 		configName = "cube3";
-		button = new Button(this);
-		led = new Led(this);
+        button = gameObject.AddComponent<Button>();
+        led = gameObject.AddComponent<Led>();
 	}
 	
 	// Update is called once per frame
-	public override void Update () {
-		base.Update();
-		button.update();
-
-		if(led.getState()){
+	private void Update () {
+		if(led.GetState()){
 			//GetComponent<Renderer>().material.shader = Shader.Find("_Color");
 			GetComponent<Renderer>().material.SetColor("_Color", Color.blue);
 		}
@@ -31,23 +27,22 @@ public class Cube3 : TwinObject {
         }
 	}
 
-	protected override void updateComponent(EventMessage e){
+	protected override void UpdateComponent(EventMessage e){
 		if (e.component == "button") {
-			button.setPressed(e.state);
+            if (e.state)
+            {
+                SendMessage("OnButtonPressed");
+            }
+            else
+            {
+                SendMessage("OnButtonReleased");
+            }
 		}else if (e.component == "led") {
 			if(e.name == "state"){
-				led.setState(e.state);
+				led.SetState(e.state);
 			}else if(e.name == "heartbeat"){
-				led.setHeartbeatTime(e.value);
+				led.SetHeartbeatTime(e.value);
 			}
 		}
-	}
-
-	public Led getLed(){
-		return led;
-	}
-
-	public Button getButton(){
-		return button;
 	}
 }

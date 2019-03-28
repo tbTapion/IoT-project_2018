@@ -11,72 +11,48 @@ public class Tile : TwinObject
     protected IMU imu;
 
     // Start is called before the first frame update
-    public override void Start()
+    private void Start()
     {
-        base.Start();
         configName = "tile";
-        ringLight = new RingLight(this, 12, transform);
-        timeOfFlight = new TimeOfFlight(this);
-        tonePlayer = new TonePlayer(this);
-        imu = new IMU(this);
+        ringLight = gameObject.AddComponent<RingLight>();
+        ringLight.Init(24);
+        timeOfFlight = gameObject.AddComponent<TimeOfFlight>();
+        tonePlayer = gameObject.AddComponent<TonePlayer>();
+        imu = gameObject.AddComponent<IMU>();
     }
 
-    // Update is called once per frame
-    public override void Update()
-    {
-        base.Update();
-        ringLight.update();
-        imu.update();
-    }
-
-    protected override void updateComponent(EventMessage e)
+    protected override void UpdateComponent(EventMessage e)
     {
         if (e.component == "timeofflight")
         {
-            timeOfFlight.setDistance(e.value);
+            timeOfFlight.SetDistance(e.value);
         }
         else if (e.component == "ringlight")
         {
             if (e.name == "state")
             {
-                ringLight.setState(e.state);
+                ringLight.SetState(e.state);
             }
             else if (e.name == "color")
             {   
                 Color tempColor = new Color(e.payload[0]/256.0f,e.payload[1]/256.0f,e.payload[2]/256.0f);
-                ringLight.setColor(tempColor);
+                ringLight.SetColor(tempColor);
             }
             else if (e.name == "numOfLeds")
             {
-                ringLight.setNumOfLeds(e.value);
+                ringLight.SetNumOfLeds(e.value);
             }
         }
         else if (e.component == "imu")
         {
             if(e.name == "tapped"){
-                imu.setTapped();
+                SendMessage("OnTapped");
             }else if(e.name == "rotation"){
                 int roll = e.payload[0]+(e.payload[1]*256);
                 int pitch = e.payload[2]+(e.payload[3]*256);
                 int yaw = e.payload[4]+(e.payload[5]*256);
-                imu.setRotation(roll,pitch,yaw);
+                imu.SetRotation(roll,pitch,yaw);
             }
         }
-    }
-
-    public RingLight getRingLight(){
-        return ringLight;
-    }
-
-    public TimeOfFlight getTimeOfFlight(){
-        return timeOfFlight;
-    }
-
-    public TonePlayer getTonePlayer(){
-        return tonePlayer;
-    }
-
-    public IMU getIMU(){
-        return imu;
     }
 }

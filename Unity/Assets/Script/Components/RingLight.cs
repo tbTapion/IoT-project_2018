@@ -1,7 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(DeviceComponent))]
 public class RingLight : DeviceComponent
 {
 
@@ -14,119 +14,113 @@ public class RingLight : DeviceComponent
 
     private List<RingLightLed> ledList;
 
-    public RingLight(TwinObject device, int numOfLeds, Transform transform)
+    private void Start()
     {
-        this.device = device;
-        color = new Color(0, 0, 0);
-        this.numOfLeds = numOfLeds;
-        maxNumLeds = numOfLeds;
+        color = new Color(0, 1f, 0);
         ledList = new List<RingLightLed>();
+    }
+
+    public void Init(int numberOfLeds)
+    {
         if (transform != null)
         {
             RingLightLed[] ledList = transform.Find("RingLight").GetComponentsInChildren<RingLightLed>();
-            Debug.Log(ledList[0]);
             if (ledList != null)
             {
-                foreach (RingLightLed led in ledList)
-                {
-                    this.ledList.Add(led);
-                    led.setColor(color);
-                }
+                this.ledList.AddRange(ledList);
             }
         }
         else
         {
-            for (int i = 0; i < numOfLeds; i++)
+            for (int i = 0; i < maxNumLeds; i++)
             {
-                this.ledList.Add(new RingLightLed());
+                RingLightLed led = gameObject.AddComponent<RingLightLed>();
+                led.SetColor(color);
+                ledList.Add(led);
             }
         }
     }
 
-    public override void update()
+    public void Toggle()
     {
+        SetState(!state);
     }
 
-    public void toggle()
-    {
-        setState(!state);
-    }
-
-    public void setState(bool state)
+    public void SetState(bool state)
     {
         this.state = state;
         if (ledList != null)
         {
-            updateLeds();
+            UpdateLeds();
         }
-        device.sendActionMessage("ringlight/state", state);
+        device.SendActionMessage("ringlight/state", state);
     }
 
-    public bool getState()
+    public bool GetState()
     {
         return state;
     }
 
-    public void setColor(Color color)
+    public void SetColor(Color color)
     {
         this.color = color;
         foreach (RingLightLed led in ledList)
         {
-            led.setColor(color);
+            led.SetColor(color);
         }
         byte[] colorBytes = new byte[] { (byte)(color.r * 255), (byte)(color.g * 255), (byte)(color.b * 255) };
-        device.sendActionMessage("ringlight/color", colorBytes);
+        device.SendActionMessage("ringlight/color", colorBytes);
     }
 
-    public void setColor(Color color, int i)
+    public void SetIndividualColor(Color color, int i)
     {
         if (i >= 0 && i < ledList.Count)
         {
-            ledList[i].setColor(color);
+            ledList[i].SetColor(color);
         }
     }
 
-    public void setAllLedsColor()
+    public void SendLedColorsToDevice()
     {
         List<byte> colorBytes = new List<byte>();
         foreach (RingLightLed led in ledList)
         {
-            Color c = led.getColor();
+            Color c = led.GetColor();
             colorBytes.Add((byte)(c.r * 255));
             colorBytes.Add((byte)(c.g * 255));
             colorBytes.Add((byte)(c.b * 255));
         }
-        device.sendActionMessage("ringlight/all_colors", colorBytes.ToArray());
+        device.SendActionMessage("ringlight/all_colors", colorBytes.ToArray());
     }
 
-    public Color getColor()
+    public Color GetColor()
     {
         return color;
     }
 
-    public void setNumOfLeds(int numOfLeds)
+    public void SetNumOfLeds(int numOfLeds)
     {
         this.numOfLeds = Mathf.Min(Mathf.Max(numOfLeds,0), maxNumLeds);
-        updateLeds();
-        device.sendActionMessage("ringlight/number_of_leds", this.numOfLeds);
+        UpdateLeds();
+        device.SendActionMessage("ringlight/number_of_leds", this.numOfLeds);
     }
 
-    public int getNumOfLeds()
+    public int GetNumOfLeds()
     {
         return numOfLeds;
     }
 
-    public RingLightLed[] getLedList()
-    {
-        return ledList.ToArray();
-    }
-
-    public int getMaxNumLeds()
+    public int GetMaxNumLeds()
     {
         return maxNumLeds;
     }
 
-    private string buildNumberString(int color)
+    public RingLightLed[] GetLedList()
+    {
+        return ledList.ToArray();
+    }
+
+    private string BuildNumberString(int color)
     {
         string temp = "";
         if (color < 10)
@@ -140,22 +134,22 @@ public class RingLight : DeviceComponent
         return temp += color;
     }
 
-    private void updateLeds()
+    private void UpdateLeds()
     {
         if (state)
         {
             for (int i = 0; i < numOfLeds; i++)
             {
-                ledList[i].setState(true);
+                ledList[i].SetState(true);
             }
             for (int i = numOfLeds; i < maxNumLeds; i++)
             {
-                ledList[i].setState(false);
+                ledList[i].SetState(false);
             }
         }else{
             for (int i = 0; i < maxNumLeds; i++)
             {
-                ledList[i].setState(false);
+                ledList[i].SetState(false);
             }
         }
     }

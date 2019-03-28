@@ -5,39 +5,45 @@ using UnityEngine;
 public class Button : DeviceComponent {
 
     private bool state;
-	private bool _justPressed;
-	private bool _justReleased;
+	private bool pressed;
+	private bool released;
 
-	public Button(TwinObject device){
-		this.device = device;
-		state = false;
-	}
-	
-	public override void update () {
-		_justPressed = false;
-		_justReleased = false;
-	}
-
-	public bool justPressed(){
-		return _justPressed;
-	}
-
-	public bool justReleased(){
-		return _justReleased;
-	}
-
-    public bool ispressed()
+    void Update()
     {
-        return state;
+        pressed = false;
+        released = false;
     }
 
-    public void setPressed(bool pressed)
+    void Start(){
+		state = false;
+        pressed = false;
+        released = false;
+    }
+
+    void OnButtonPressed()
     {
-        state = pressed;
-		if (state) {
-			_justPressed = true;
-		} else {
-			_justReleased = true;
-		}
+        pressed = true;
+        state = true;
+    }
+
+    void OnButtonRelease()
+    {
+        released = true;
+        state = false;
+    }
+
+    public bool JustReleased()
+    {
+        return released;
+    }
+
+    public bool JustPressed()
+    {
+        return pressed;
+    }
+
+    public bool IsPressed()
+    {
+        return state;
     }
 }

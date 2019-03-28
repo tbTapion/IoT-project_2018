@@ -4,30 +4,23 @@ using UnityEngine;
 
 public class Cube1 : TwinObject {
 
-    private Led led;
+    protected Led led;
 
 	// Use this for initialization
-	public override void Start () {
-		base.Start();
+	private void Start () {
         configName = "cube1";
-        led = new Led(this);
+        led = gameObject.AddComponent<Led>();
 	}
 	
 	// Update is called once per frame
-	public override void Update () {
-		base.Update ();
+	private void Update () {
 	}
 
-	protected override void updateComponent(EventMessage e){
+	protected override void UpdateComponent(EventMessage e){
 		if (e.component == "led") {
 			if(e.name == "state"){
-				led.setState(e.state);
+				led.SetState(e.state);
 			}
 		}
 	}
-
-    public Led getLed()
-    {
-        return led;
-    }
 }

@@ -2,17 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class DeviceComponent {
-
+[RequireComponent(typeof(TwinObject))]
+public abstract class DeviceComponent : MonoBehaviour
+{
     protected TwinObject device;
 
-    public void setDevice(TwinObject device){
-        this.device = device;
+    private void Start()
+    {
+        device = GetComponent<TwinObject>();
     }
-
-    public TwinObject getDevice(){
-        return device;
-    }
-
-    public abstract void update();
 }
