@@ -12,8 +12,9 @@ public class RedTile : TwinObject
     protected IMU imu;
 
     // Start is called before the first frame update
-    private void Start()
+    protected override void Start()
     {
+        base.Start();
         configName = "redtile";
         ringLight = gameObject.AddComponent<RingLight>();
         ringLight.Init(12);
@@ -26,8 +27,9 @@ public class RedTile : TwinObject
     }
 
     // Update is called once per frame
-    private void Update()
+    protected override void Update()
     {
+        base.Update();
         if (debug)
         {
             if (Input.GetMouseButtonDown(0))

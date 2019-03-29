@@ -20,14 +20,14 @@ public abstract class TwinObject : MonoBehaviour
     public List<MessagePair> getMsgBuffer = new List<MessagePair>();
 
     // Use this for initialization
-    private void Start()
+    protected virtual void Start()
     {
         pingCount = 0;
         pingTime = 60 * 60;
     }
 
     // Update is called once per frame
-    private void Update()
+    protected virtual void Update()
     {
         if (linked)
         {

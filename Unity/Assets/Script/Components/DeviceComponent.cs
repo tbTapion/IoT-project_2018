@@ -7,7 +7,7 @@ public abstract class DeviceComponent : MonoBehaviour
 {
     protected TwinObject device;
 
-    private void Start()
+    public virtual void Start()
     {
         device = GetComponent<TwinObject>();
     }

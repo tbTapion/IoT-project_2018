@@ -4,12 +4,7 @@ using UnityEngine;
 
 public class Potmeter : DeviceComponent{
 
-    private int value;
-
-    private void Start()
-    {
-        value = 0;
-    }
+    private int value = 0;
 
     public void SetValue(int value)
     {

@@ -19,15 +19,15 @@ public class FollowTheRedDotWithClasses : MonoBehaviour
         {
             GameObject redObj = Instantiate(Resources.Load("Prefabs/TilePrefab"), new Vector3(-1.6f + (i * 1.05f), 0.0f, 0.0f), Quaternion.identity) as GameObject;
             Red redTile = redObj.AddComponent<Red>();
-            redTile.SetName("RedTile" + i);
+            redObj.name = "RedTile" + i;
             tileList.Add(redTile);
-            mqttHandler.AddTwinObject(redTile);
+            mqttHandler.AddTwinObject(redObj.GetComponent<RedTile>());
 
             GameObject blueObj = Instantiate(Resources.Load("Prefabs/TilePrefab"), new Vector3(-1.6f + ((2 + i) * 1.05f), 0.0f, 0.0f), Quaternion.identity) as GameObject;
             Blue blueTile = blueObj.AddComponent<Blue>();
-            blueTile.SetName("BlueTile" + i);
+            blueObj.name = "BlueTile" + i;
             tileList.Add(blueTile);
-            mqttHandler.AddTwinObject(blueTile);
+            mqttHandler.AddTwinObject(redObj.GetComponent<BlueTile>());
         }
     }
 
@@ -39,12 +39,12 @@ public class FollowTheRedDotWithClasses : MonoBehaviour
         {
             if (gameSetupDone == false)
             {
-                setupAndPickTile();
+                SetupAndPickTile();
             }
         }
     }
 
-    private void setupAndPickTile()
+    private void SetupAndPickTile()
     {
         //Giving all tiles a tile list.
         foreach (IGameTile gameTile in tileList)

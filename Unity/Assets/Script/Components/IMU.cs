@@ -10,13 +10,14 @@ public class IMU : DeviceComponent
         tapped = false;
     }
 
-    private void Start()
+    public override void Start()
     {
+        base.Start();
         rotation = new Rotation(0.0f, 0.0f, 0.0f);
         tapped = false;
     }
 
-    private void Update()
+    void Update()
     {
         tapped = false;
     }

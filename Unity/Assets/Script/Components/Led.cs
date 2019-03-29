@@ -4,14 +4,9 @@ using UnityEngine;
 
 public class Led : DeviceComponent {
 
-    protected bool state;
+    protected bool state = false;
     protected bool heartbeat;
     protected int heartbeatTime;
-
-    private void Start()
-    {
-        state = false;
-    }
 
     public void Toggle()
     {

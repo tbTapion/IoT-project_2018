@@ -4,13 +4,8 @@ using UnityEngine;
 
 public class TimeOfFlight : DeviceComponent
 {
-    private int distance;
+    private int distance = 9999;
     private bool measuringDistance;
-
-    private void Start()
-    {
-        distance = 9999;
-    }
 
     public void SetDistance(int distance){
         this.distance = distance;

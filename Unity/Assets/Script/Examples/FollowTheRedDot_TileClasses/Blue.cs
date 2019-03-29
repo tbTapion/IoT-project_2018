@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Blue : BlueTile, IGameTile
+[RequireComponent(typeof(BlueTile))]
+public class Blue : MonoBehaviour, IGameTile
 {
 
     List<IGameTile> otherTiles;
@@ -10,13 +11,13 @@ public class Blue : BlueTile, IGameTile
     bool active;
 
     // Start is called before the first frame update
-    private void Start()
+    void Start()
     {
         active = false;
     }
 
     // Update is called once per frame
-    private void Update()
+    void Update()
     {
     }
 
@@ -25,7 +26,7 @@ public class Blue : BlueTile, IGameTile
         if (active)
         {
             active = false;
-            ringLight.SetState(false);
+            GetComponent<RingLight>().SetState(false);
             IGameTile nextObject = otherTiles[Random.Range(0, otherTiles.Count)];
             nextObject.SetActive();
         }
@@ -33,8 +34,8 @@ public class Blue : BlueTile, IGameTile
 
     public void SetActive()
     {
-        ringLight.SetState(true);
-        //tonePlayer.PlayTone(300,200);
+        GetComponent<RingLight>().SetState(true);
+        //GetComponent<TonePlayer>().PlayTone(300, 200);
     }
 
     public void SetOtherTileList(List<IGameTile> tileList)

@@ -11,8 +11,9 @@ public class Tile : TwinObject
     protected IMU imu;
 
     // Start is called before the first frame update
-    private void Start()
+    protected override void Start()
     {
+        base.Start();
         configName = "tile";
         ringLight = gameObject.AddComponent<RingLight>();
         ringLight.Init(24);

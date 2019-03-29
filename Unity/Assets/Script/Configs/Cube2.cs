@@ -9,14 +9,11 @@ public class Cube2 : TwinObject {
 
 
 	// Use this for initialization
-	private void Start () {
+	protected override void Start () {
+        base.Start();
         configName = "cube2";
         button = gameObject.AddComponent<Button>();
         potmeter = gameObject.AddComponent<Potmeter>();
-	}
-
-	// Update is called once per frame
-	private void Update () {
 	}
 
 	protected override void UpdateComponent(EventMessage e){

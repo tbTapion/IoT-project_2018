@@ -8,23 +8,10 @@ public class Cube3 : TwinObject {
 	protected Button button;
 
 	// Use this for initialization
-	private void Start () {
+    protected override void Start () {
 		configName = "cube3";
         button = gameObject.AddComponent<Button>();
         led = gameObject.AddComponent<Led>();
-	}
-	
-	// Update is called once per frame
-	private void Update () {
-		if(led.GetState()){
-			//GetComponent<Renderer>().material.shader = Shader.Find("_Color");
-			GetComponent<Renderer>().material.SetColor("_Color", Color.blue);
-		}
-        else
-        {
-            //GetComponent<Renderer>().material.shader = Shader.Find("_Color");
-            GetComponent<Renderer>().material.SetColor("_Color", Color.white);
-        }
 	}
 
 	protected override void UpdateComponent(EventMessage e){

@@ -13,8 +13,9 @@ public class BlueTile : TwinObject
     protected IMU imu;
 
     // Start is called before the first frame update
-    private void Start()
+    protected override void Start()
     {
+        base.Start();
         configName = "bluetile";
         ringLight = gameObject.AddComponent<RingLight>();
         ringLight.Init(24);
@@ -28,9 +29,9 @@ public class BlueTile : TwinObject
     }
 
     // Update is called once per frame
-    private void Update()
+    protected override void Update()
     {
-
+        base.Start();
         if (debug)
         {
             if (Input.GetMouseButtonDown(0))

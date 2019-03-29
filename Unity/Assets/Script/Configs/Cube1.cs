@@ -7,13 +7,9 @@ public class Cube1 : TwinObject {
     protected Led led;
 
 	// Use this for initialization
-	private void Start () {
+	protected override void Start () {
         configName = "cube1";
         led = gameObject.AddComponent<Led>();
-	}
-	
-	// Update is called once per frame
-	private void Update () {
 	}
 
 	protected override void UpdateComponent(EventMessage e){

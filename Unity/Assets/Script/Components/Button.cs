@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class Button : DeviceComponent {
 
     private bool state;
@@ -14,8 +15,9 @@ public class Button : DeviceComponent {
         released = false;
     }
 
-    void Start(){
-		state = false;
+    public override void Start(){
+        base.Start();
+        state = false;
         pressed = false;
         released = false;
     }
