@@ -174,8 +174,9 @@ namespace ExactFramework.Handlers{
         }
 
         ///<summary>
-        ///
+        ///Method called when a ping type MQTT message is received. Update's the twin object's link status if needed and calls the PingResponse method on the twin object.
         ///</summary>
+        ///<param name="deviceID">Message sender's ID.</param>
         private void DevicePing(string deviceID)
         {
             TwinObject to = GetObjectByID(deviceID);
@@ -189,6 +190,11 @@ namespace ExactFramework.Handlers{
             }
         }
 
+        ///<summary>
+        ///Called when a new device connects. Extracts the configuration and ID of the device.
+        ///If the ID exists, it reconnects the device, if not it checks to find a configuration that fits and links that.
+        ///</summary>
+        ///<param name="topicSplit">String array of the split topic from the MQTT connect message</param>
         private void DeviceConnect(string[] topicSplit)
         {
             Debug.Log("New Device detected!");
@@ -214,6 +220,11 @@ namespace ExactFramework.Handlers{
             }
         }
 
+        ///<summary>
+        ///Checks the list of TwinObjects and returns the one with the corresponding device ID.
+        ///</summary>
+        ///<param name="deviceID">Device ID of twin object to get.</param>
+        ///<returns>Returns a TwinObject object with the ID.</returns>
         private TwinObject GetObjectByID(string deviceID)
         {
             foreach (TwinObject obj in twinObjects)
@@ -226,11 +237,19 @@ namespace ExactFramework.Handlers{
             return null;
         }
 
+        ///<summary>
+        ///Returns the list of TwinObjects in the MQTT Handler.
+        ///</summary>
+        ///<returns>List of TwinObjects</returns>
         public List<TwinObject> GetTwinObjectList()
         {
             return twinObjects;
         }
 
+        ///<summary>
+        ///Returns the list of TwinObjects that have been connected to a physical device.
+        ///</summary>
+        ///<returns>List of connected TwinObjects</returns>
         public List<TwinObject> GetConnectedTwinObjects()
         {
             List<TwinObject> temp = new List<TwinObject>();
@@ -244,12 +263,20 @@ namespace ExactFramework.Handlers{
             return temp;
         }
 
+        ///<summary>
+        /// Adds a Twin Object to the list of TwinObjects to be controlled and updated by the MQTT Handler.
+        ///</summary>
+        ///<param name="obj">A TwinObject object.</param>
         public void AddTwinObject(TwinObject obj)
         {
             obj.SetMQTTHandler(this);
             twinObjects.Add(obj);
         }
 
+        ///<summary>
+        ///Checks to see if all TwinObjects in the list has connected to a physical device.
+        ///</summary>
+        ///<returns>Boolean value.</returns>
         public bool AllDevicesConnected()
         {
             bool connected = true;
