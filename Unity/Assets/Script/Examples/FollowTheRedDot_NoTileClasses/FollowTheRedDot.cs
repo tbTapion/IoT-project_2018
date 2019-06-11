@@ -1,5 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using ExactFramework.Component.Examples;
+using ExactFramework.Configuration;
+using ExactFramework.Configuration.Examples;
+using ExactFramework.Handlers;
 using UnityEngine;
 
 public class FollowTheRedDot : MonoBehaviour

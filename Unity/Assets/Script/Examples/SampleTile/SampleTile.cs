@@ -1,5 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using ExactFramework.Component.Examples;
+using ExactFramework.Configuration;
+using ExactFramework.Configuration.Examples;
+using ExactFramework.Handlers;
 using UnityEngine;
 
 [RequireComponent(typeof(BlueTile))]
@@ -8,6 +12,8 @@ public class SampleTile : MonoBehaviour
 
     private MQTTHandler mqttHandler;
 
+    BlueTile blueTile;
+
     Color[] colors = new Color[] { Color.red, Color.green, Color.blue };
 
     // Start is called before the first frame update
@@ -15,6 +21,8 @@ public class SampleTile : MonoBehaviour
     {
         mqttHandler = new MQTTHandler("129.241.104.227"); // May need to change. 
         mqttHandler.AddTwinObject(GetComponent<TwinObject>());
+
+        blueTile = GetComponent<BlueTile>();
     }
 
     // Update is called once per frame
@@ -23,8 +31,8 @@ public class SampleTile : MonoBehaviour
         mqttHandler.Update();
         if (mqttHandler.AllDevicesConnected())
         {
-            TimeOfFlight timeOfFlight = GetComponent<TimeOfFlight>();
-            RingLight ringLight = GetComponent<RingLight>();
+            TimeOfFlight timeOfFlight = blueTile.GetDeviceComponent<TimeOfFlight>();
+            RingLight ringLight = blueTile.GetDeviceComponent<RingLight>();
             if (timeOfFlight.GetMeasuring())
             {
                 ringLight.SetColor(Color.blue);
@@ -47,10 +55,10 @@ public class SampleTile : MonoBehaviour
 
     void OnTapped()
     {
-        RingLight ringLight = GetComponent<RingLight>();
+        RingLight ringLight = blueTile.GetDeviceComponent<RingLight>();
         ringLight.SetColor(Color.green);
         ringLight.SetNumOfLeds(ringLight.GetMaxNumLeds());
         ringLight.SetState(true);
-        GetComponent<TonePlayer>().PlayTone(300,100);
+        blueTile.GetDeviceComponent<TonePlayer>().PlayTone(300,100);
     }
 }
