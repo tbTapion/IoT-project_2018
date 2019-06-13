@@ -4,6 +4,9 @@ using ExactFramework.Component.Examples;
 using UnityEngine;
 
 namespace ExactFramework.Configuration.Examples{
+	///<summary>
+    ///Digital representation of a device with a simple LED and button connected.
+    ///</summary>
 	public class Cube3 : TwinObject {
 
 		protected Led led;

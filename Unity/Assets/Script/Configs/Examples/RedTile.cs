@@ -4,6 +4,9 @@ using ExactFramework.Component.Examples;
 using UnityEngine;
 
 namespace ExactFramework.Configuration.Examples{
+    ///<summary>
+    ///Digital representation of a device wuth a ring light, tone player, and an inertial measurement unit.
+    ///</summary>
     public class RedTile : TwinObject
     {
 

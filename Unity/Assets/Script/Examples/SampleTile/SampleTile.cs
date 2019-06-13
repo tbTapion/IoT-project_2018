@@ -7,13 +7,25 @@ using ExactFramework.Handlers;
 using UnityEngine;
 
 [RequireComponent(typeof(BlueTile))]
+///<summary>
+///An example of a use of the framework to create a sample tile that reacts to taps on an IMU, and measures distance with a time of flight distance sensor.
+///Lights up green on taps and blue when measuring distances. Uses the number of leds on its ringlight to show the distance.
+///</summary>
 public class SampleTile : MonoBehaviour
 {
-
+    ///<summary>
+    ///MQTT handler class object field.
+    ///</summary>
     private MQTTHandler mqttHandler;
 
+    ///<summary>
+    ///BlueTile object class reference. Gotten with GetComponent from the gameobject.
+    ///</summary>
     BlueTile blueTile;
 
+    ///<summary>
+    ///List of a few colors to make color picking easier. Not used.
+    ///</summary>
     Color[] colors = new Color[] { Color.red, Color.green, Color.blue };
 
     // Start is called before the first frame update
@@ -53,6 +65,9 @@ public class SampleTile : MonoBehaviour
         }
     }
 
+    ///<summary>
+    ///Old function when Unity's SendMessage functionality was used. Will be used when a proper event handler is in place.
+    ///</summary>
     void OnTapped()
     {
         RingLight ringLight = blueTile.GetDeviceComponent<RingLight>();

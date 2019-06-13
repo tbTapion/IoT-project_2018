@@ -6,14 +6,29 @@ using ExactFramework.Configuration.Examples;
 using ExactFramework.Handlers;
 using UnityEngine;
 
+///<summary>
+///A follow the red dot/follow the light game example.
 public class FollowTheRedDot : MonoBehaviour
 {
 
+    ///<summary>
+    ///MQTT Handler object reference.
+    ///</summary>
     private MQTTHandler mqttHandler;
 
+    ///<summary>
+    ///List of all the game objects used in the game.
+    ///</summary>
     public List<TwinObject> tileList = new List<TwinObject>(); //List of all tiles
+
+    ///<summary>
+    ///The currently activated game object.
+    ///</summary>
     public TwinObject activatedObject; //Activated object variable
 
+    ///<summary>
+    ///The state the game is currently in. 0 is setting up, 1 is playing.
+    ///</summary>
     private int state = 0; //Game state variable
 
     // Use this for initialization
@@ -62,6 +77,10 @@ public class FollowTheRedDot : MonoBehaviour
         }
     }
 
+    ///<summary>
+    ///Play logic method called every update after the game is finished setting up.
+    ///Checks for a tap event and picks a new game object.
+    ///</summary>
     private void RedDotPlay()
     {
         IMU imu = activatedObject.GetComponent<IMU>();
@@ -85,6 +104,10 @@ public class FollowTheRedDot : MonoBehaviour
         }
     }
 
+    ///<summary>
+    ///Setup method called every update before finishing the setup. Called when all devices have connected to the system.
+    ///Picks one random device and sets it as active.
+    ///</summary>
     private void WaitAndPickTile()
     {
         activatedObject = tileList[Random.Range(0, tileList.Count)]; //Picks a random tile from the tile list.

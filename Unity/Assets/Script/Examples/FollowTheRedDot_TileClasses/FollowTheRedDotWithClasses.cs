@@ -4,12 +4,25 @@ using ExactFramework.Configuration.Examples;
 using ExactFramework.Handlers;
 using UnityEngine;
 
+///<summary>
+///Follow the red dot/follow the light game example with most of the game logic in the objects.
+///Mostly used for setting up the game and start it.
+///</summary>
 public class FollowTheRedDotWithClasses : MonoBehaviour
 {
+    ///<summary>
+    ///MQTT handler object reference.
+    ///</summary>
     private MQTTHandler mqttHandler;
 
+    ///<summary>
+    ///List of all the tiles/game's objects.
+    ///</summary>
     List<IGameTile> tileList = new List<IGameTile>();
 
+    ///<summary>
+    ///Boolean for whether the game setup is done or not.
+    ///</summary>
     private bool gameSetupDone;
 
     // Start is called before the first frame update
@@ -46,6 +59,10 @@ public class FollowTheRedDotWithClasses : MonoBehaviour
         }
     }
 
+    ///<summary>
+    ///Called when all the devices have connected. Gives all the tile objects the list of all tiles so they can extract the other tiles for their otherTileList lists.
+    ///Picks one random tile and calls its SetActive method to start the game.
+    ///</summary>
     private void SetupAndPickTile()
     {
         //Giving all tiles a tile list.

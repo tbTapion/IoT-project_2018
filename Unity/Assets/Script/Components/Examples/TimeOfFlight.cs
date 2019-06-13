@@ -4,30 +4,51 @@ using UnityEngine;
 
 namespace ExactFramework.Component.Examples
 {
+    ///<summary>
+    ///Digital representation of a time of flight distance sensor.
+    ///</summary>
     public class TimeOfFlight : DeviceComponent
     {
+        ///<summary>
+        ///Distance measured by the sensor.
+        ///</summary>
         private int distance = 9999;
+        ///<summary>
+        ///Whether the sensor is measuring a distance or not.
+        ///</summary>
         private bool measuringDistance;
 
-        public void SetDistance(int distance)
+        ///<summary>
+        ///Method called when the a distance is received over MQTT. Sets the distance measured.
+        ///</summary>
+        ///<param name="distance">Distance value measured.</param>
+        private void SetDistance(int distance)
         {
             this.distance = distance;
         }
 
+        ///<summary>
+        ///Gets the distance measured, or last measured, by the sensor.
+        ///</summary>
+        ///<returns>Distance value.</returns>
         public int GetDistance()
         {
             return distance;
         }
 
-        public void SetMeasuringDistance(bool measuringDistance)
+        ///<summary>
+        ///Sets whether the sensor is measuring a distance or not. Value received over MQTT.
+        ///</summary>
+        ///<param name="measuringDistance">Measuring distance boolean.</param>
+        private void SetMeasuringDistance(bool measuringDistance)
         {
             this.measuringDistance = measuringDistance;
-            if (measuringDistance)
-            {
-                SendMessage("OnMeasuredDistance");
-            }
         }
 
+        ///<summary>
+        ///Returns the state of whether the sensor is measuring a distance or not.
+        ///</summary>
+        ///<returns>Dsitance measuring boolean.</returns>
         public bool GetMeasuring()
         {
             return measuringDistance;
