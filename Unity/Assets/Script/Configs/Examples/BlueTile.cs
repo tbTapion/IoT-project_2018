@@ -31,6 +31,9 @@ namespace ExactFramework.Configuration.Examples{
             {
                 GetComponent<Renderer>().material.SetColor("_Color", Color.blue);
             }
+
+            AddEventListener("OnTapped", OnTapped);
+            AddEventListener("OnDistanceChanged", OnDistanceChanged);
         }
 
         // Update is called once per frame
@@ -53,6 +56,14 @@ namespace ExactFramework.Configuration.Examples{
                     }*/
                 }
             }
+        }
+
+        void OnDistanceChanged(){
+
+        }
+
+        void OnTapped(){
+            
         }
     }
 }

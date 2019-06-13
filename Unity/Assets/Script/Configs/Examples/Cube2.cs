@@ -19,6 +19,22 @@ namespace ExactFramework.Configuration.Examples{
             configName = "cube2";
             button = AddDeviceComponent<Button>("button");
             potmeter = AddDeviceComponent<Potmeter>("potmeter");
+
+            AddEventListener("OnButtonPress", OnButtonPress);
+            AddEventListener("OnButtonRelease", OnButtonRelease);
+            AddEventListener("OnPotmeterValueChange", OnPotmeterChanged);
+        }
+
+        void OnButtonPress(){
+
+        }
+
+        void OnButtonRelease(){
+
+        }
+
+        void OnPotmeterChanged(){
+            
         }
     }
 }

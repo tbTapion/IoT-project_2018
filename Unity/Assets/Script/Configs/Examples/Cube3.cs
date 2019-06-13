@@ -17,6 +17,17 @@ namespace ExactFramework.Configuration.Examples{
 			configName = "cube3";
 			button = AddDeviceComponent<Button>("button");
 			led = AddDeviceComponent<Led>("led");
+
+			AddEventListener("OnButtonPress", OnButtonPress);
+			AddEventListener("OnButtonRelease", OnButtonRelease);
+		}
+
+		void OnButtonPress(){
+
+		}
+
+		void OnButtonRelease(){
+			
 		}
 	}
 }

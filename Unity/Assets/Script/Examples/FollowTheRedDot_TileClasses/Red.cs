@@ -31,6 +31,7 @@ public class Red : MonoBehaviour, IGameTile
     {
         active = false;
         redTile = GetComponent<RedTile>();
+        redTile.AddEventListener("OnTapped", OnTapped);
     }
 
     // Update is called once per frame

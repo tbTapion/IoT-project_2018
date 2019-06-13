@@ -22,6 +22,7 @@ namespace ExactFramework.Component.Examples
         private void SetValue(int value)
         {
             this.value = value;
+            device.InvokeEvent("OnPotmeterValueChange");
         }
 
         ///<summary>

@@ -49,6 +49,7 @@ namespace ExactFramework.Component.Examples
         void OnTapped()
         {
             tapped = true;
+            device.InvokeEvent("OnTapped");
         }
 
         ///<summary>
@@ -85,6 +86,7 @@ namespace ExactFramework.Component.Examples
         private void SetRotation(float roll, float pitch, float yaw)
         {
             rotation.SetRotation(roll, pitch, yaw);
+            device.InvokeEvent("OnRotationChange");
         }
 
         ///<summary>

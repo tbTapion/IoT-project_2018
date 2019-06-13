@@ -45,6 +45,7 @@ namespace ExactFramework.Component.Examples {
         {
             pressed = true;
             state = true;
+            device.InvokeEvent("OnButtonPress");
         }
 
         ///<summary>
@@ -55,6 +56,7 @@ namespace ExactFramework.Component.Examples {
         {
             released = true;
             state = false;
+            device.InvokeEvent("OnButtonRelease");
         }
 
         ///<summary>

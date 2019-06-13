@@ -35,6 +35,7 @@ public class SampleTile : MonoBehaviour
         mqttHandler.AddTwinObject(GetComponent<TwinObject>());
 
         blueTile = GetComponent<BlueTile>();
+        blueTile.AddEventListener("OnTapped", OnTapped);
     }
 
     // Update is called once per frame

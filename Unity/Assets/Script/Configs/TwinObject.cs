@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using ExactFramework.Component;
 using ExactFramework.Handlers;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace ExactFramework.Configuration{
 
@@ -50,6 +51,10 @@ namespace ExactFramework.Configuration{
         ///Dictionary for the DeviceComponent type components added to the twin object.
         ///</summary>
         private Dictionary<string, DeviceComponent> deviceComponents = new Dictionary<string, DeviceComponent>();
+        ///<summary>
+        ///Dictionary for events.
+        ///</summary>
+        private Dictionary<string, UnityEvent> eventList = new Dictionary<string, UnityEvent>();
 
         // Use this for initialization
         protected virtual void Start()
@@ -439,5 +444,31 @@ namespace ExactFramework.Configuration{
         protected void AddExistingDeviceComponent(string id, DeviceComponent component){
             deviceComponents.Add(id, component);
         }
+
+        ///<summary>
+        ///Adds a unity action to the event listener list. If no event with the name exists, add a new event and add the action to the listener.
+        ///</summary>
+        ///<param name="eventName">Name of the event to use when invoking the event.</param>
+        ///<param name="action">Unity action to add to the event.</param>
+        public void AddEventListener(string eventName, UnityAction action){
+            if(eventList.ContainsKey(eventName)){
+                eventList[eventName].AddListener(action);
+            }else{
+                UnityEvent tempEvent = new UnityEvent();
+                tempEvent.AddListener(action);
+                eventList.Add(eventName, tempEvent);
+            }
+        }
+
+        ///<summary>
+        ///Invokes the event with the given name if it exists in the event list.
+        ///</summary>
+        ///<param name="eventName">Name of the event to invoke.</param>
+        public void InvokeEvent(string eventName){
+            if(eventList.ContainsKey(eventName)){
+                eventList[eventName].Invoke();
+            }
+        }
+
     }
 }

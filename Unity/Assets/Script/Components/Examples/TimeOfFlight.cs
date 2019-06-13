@@ -25,6 +25,7 @@ namespace ExactFramework.Component.Examples
         private void SetDistance(int distance)
         {
             this.distance = distance;
+            device.InvokeEvent("OnDistanceChanged");
         }
 
         ///<summary>

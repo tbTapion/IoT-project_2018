@@ -25,6 +25,17 @@ namespace ExactFramework.Configuration.Examples{
             timeOfFlight = AddDeviceComponent<TimeOfFlight>("timeofflight");
             tonePlayer = AddDeviceComponent<TonePlayer>("timeofflight");
             imu = AddDeviceComponent<IMU>("imu");
+
+            AddEventListener("OnTapped", OnTapped);
+            AddEventListener("OnDistanceChanged", OnDistanceChanged);
+        }
+        
+        void OnTapped(){
+
+        }
+
+        void OnDistanceChanged(){
+
         }
     }
 }
