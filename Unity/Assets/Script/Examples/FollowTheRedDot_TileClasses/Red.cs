@@ -57,6 +57,7 @@ public class Red : MonoBehaviour, IGameTile
     ///</summary>
     public void SetActive()
     {
+        active = true;
         redTile.GetDeviceComponent<RingLight>().SetState(true);
         redTile.GetDeviceComponent<TonePlayer>().PlayTone(300, 200);
     }

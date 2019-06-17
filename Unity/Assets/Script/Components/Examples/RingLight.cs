@@ -32,13 +32,12 @@ namespace ExactFramework.Component.Examples
         ///<summary>
         ///List of individual LEDs in the ring light.
         ///</summary>
-        private List<RingLightLed> ledList;
+        private List<RingLightLed> ledList = new List<RingLightLed>();
 
         public override void Start()
         {
             base.Start();
             color = new Color(0, 1f, 0);
-            ledList = new List<RingLightLed>();
         }
 
         ///<summary>

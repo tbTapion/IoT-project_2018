@@ -58,6 +58,7 @@ public class Blue : MonoBehaviour, IGameTile
     ///</summary>
     public void SetActive()
     {
+        active = true;
         blueTile.GetDeviceComponent<RingLight>().SetState(true);
         blueTile.GetDeviceComponent<TonePlayer>().PlayTone(300, 200);
     }

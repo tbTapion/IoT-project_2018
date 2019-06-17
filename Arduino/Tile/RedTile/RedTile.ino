@@ -17,10 +17,10 @@
 
 // Update these with values suitable for your network.
 //WiFi
-const char *ssid = "IoT-WiFi";
-const char *password = "40219917";
+const char *ssid = "MyIoTNet_Andreas";
+const char *password = "MasterIoTNetExact";
 //MQTT
-const char *mqtt_server = "10.42.0.1";
+const char *mqtt_server = "192.168.4.1";
 const int mqtt_port = 1883;
 //Buzzer
 const int tonePlay = 80; // half a second tone
@@ -118,7 +118,7 @@ void setup_wifi()
   Serial.println();
   Serial.print("Connecting to ");
   Serial.println(ssid);
-
+  WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
 
   while (WiFi.status() != WL_CONNECTED)

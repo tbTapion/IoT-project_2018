@@ -35,6 +35,14 @@ namespace ExactFramework.Component {
         }
 
         ///<summary>
+        ///Gets the component's ID.
+        ///</summary>
+        ///<returns>String ID of component.</returns>
+        public string GetComponentID(){
+            return id;
+        }
+
+        ///<summary>
         ///Called by the twin object on incoming messages to update the component. 
         ///Set to virtual instead of abstract as all components do not need this method.
         ///</summary>

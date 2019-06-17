@@ -320,7 +320,9 @@ namespace ExactFramework.Configuration{
             //OnEvent(msg);
             string componentname = topic[4];
             string eventType = topic[5];
-            deviceComponents[componentname].UpdateComponent(eventType, payload);
+            if(deviceComponents.ContainsKey(componentname)){
+                deviceComponents[componentname].UpdateComponent(eventType, payload);
+            }
         }
 
         ///<summary>
@@ -339,7 +341,9 @@ namespace ExactFramework.Configuration{
             //UpdateComponent(new EventMessage(topic[4], topic[5], payload));
             string componentname = topic[4];
             string eventType = topic[5];
-            deviceComponents[componentname].UpdateComponent(eventType, payload);
+            if(deviceComponents.ContainsKey(componentname)){
+                deviceComponents[componentname].UpdateComponent(eventType, payload);
+            }
         }
 
         ///<summary>

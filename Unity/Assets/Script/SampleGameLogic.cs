@@ -11,7 +11,7 @@ public class SampleGameLogic : MonoBehaviour
     void Start()
     {
         //MQTT handler. Takes care of the connection to the RPI and sending/receiving messages.
-        mqttHandler = new MQTTHandler(""); //Enter IP here
+        mqttHandler = new MQTTHandler("129.241.104.251"); //Enter IP here
     }
 
     // Update is called once per frame

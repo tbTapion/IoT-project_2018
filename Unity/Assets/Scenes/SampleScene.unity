@@ -220,11 +220,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1419382903}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 10a0be67b0dec3db799101049bc623fa, type: 3}
+  m_Script: {fileID: 11500000, guid: 8ea7cb925c39c2b7198eb477064217c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileList: []
-  state: 0
 --- !u!4 &1419382905
 Transform:
   m_ObjectHideFlags: 0

@@ -13,11 +13,11 @@ namespace ExactFramework.Configuration
         {
             base.Start();
             for(int i = 0;i<transform.childCount; i++){
-                DeviceComponent component = transform.GetChild(i).GetComponent<DeviceComponent>();
+                DeviceComponent deviceComponent = transform.GetChild(i).GetComponent<DeviceComponent>();
                 if(useTransformNames){
-                    AddExistingDeviceComponent(transform.name, component);
+                    AddExistingDeviceComponent(transform.name, deviceComponent);
                 }else{
-                    AddExistingDeviceComponent(component);
+                    AddExistingDeviceComponent(deviceComponent);
                 }
             }  
         }
