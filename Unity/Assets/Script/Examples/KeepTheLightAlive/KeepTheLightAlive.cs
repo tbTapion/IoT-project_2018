@@ -8,12 +8,15 @@ namespace KeepAliveExample
     public class KeepTheLightAlive : MonoBehaviour
     {
 
-        enum GameStates : int { SETUP, PLAY, GAMEOVER };
-        GameStates gameState;
+        public enum GameStates : int { SETUP, PLAY, GAMEOVER };
+        public GameStates gameState;
 
         List<Tile> tileList;
 
         private MQTTHandler mqttHandler;
+
+        private int gameOverCountDown = 4;
+        private int gameOverTime = 60 * 5;
 
         // Start is called before the first frame update
         void Start()
@@ -36,6 +39,7 @@ namespace KeepAliveExample
                 tileList.Add(blueTile);
                 mqttHandler.AddTwinObject(blueTile);
             }
+
         }
 
         // Update is called once per frame
@@ -48,16 +52,54 @@ namespace KeepAliveExample
                 {
                     SetupAndPickTile();
                 }
+                else if (gameState == GameStates.GAMEOVER)
+                {
+                }
             }
         }
 
         void SetupAndPickTile()
         {
-            foreach(Tile tile in tileList){
+            foreach (Tile tile in tileList)
+            {
                 tile.SetOtherTiles(tileList);
             }
             tileList[Random.Range(0, tileList.Count)].SetActive();
             gameState = GameStates.PLAY;
+        }
+
+        void GameOver()
+        {
+            if (gameOverCountDown > 0)
+            {
+                gameOverTime--;
+                if(gameOverTime <=0){
+                    gameOverCountDown--;
+                    gameOverTime = 5*60;
+                    foreach (Tile tile in tileList)
+                    {
+                        tile.ToggleLEDs();
+                    }
+                }
+            }else{
+                gameOverCountDown = 4;
+                gameState = GameStates.SETUP;
+            }
+        }
+
+        public void SetGameStatePlay()
+        {
+            gameState = GameStates.PLAY;
+        }
+
+        public void SetGameStateSetup()
+        {
+            gameState = GameStates.SETUP;
+        }
+
+        public void SetGameStateGameOver()
+        {
+            gameState = GameStates.GAMEOVER;
         }
     }
 }
