@@ -21,9 +21,6 @@ public class RedDotBehaviour : MonoBehaviour
         tile.AddEventListener("OnTapped", OnTapped);
     }
 
-    // Update is called once per frame
-    //void Update(){}
-
     void OnTapped()
     {
         ringLight.SetState(false);
@@ -39,4 +36,7 @@ public class RedDotBehaviour : MonoBehaviour
     {
         return ringLight.GetState();
     }
+
+    // Update is called once per frame
+    //void Update(){}
 }

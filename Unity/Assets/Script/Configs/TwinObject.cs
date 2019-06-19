@@ -24,7 +24,7 @@ namespace ExactFramework.Configuration{
         /// The ID of the physical device. Its MAC-address.
         ///</summary>
         protected string deviceID;
-        public readonly string deviceID_MAC;
+        public string deviceID_MAC;
         ///<summary>
         ///Name of the device, to be set in the editor, or before the device connects. Used to prepare one digital twin for one specific physical device. Eg. Controller 1 in Unity linked up with Controller 1 physical.
         ///</summary>
