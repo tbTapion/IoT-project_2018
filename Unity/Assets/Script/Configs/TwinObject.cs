@@ -23,7 +23,16 @@ namespace ExactFramework.Configuration{
         ///<summary>
         /// The ID of the physical device. Its MAC-address.
         ///</summary>
-        public string deviceID;
+        protected string deviceID;
+        public readonly string deviceID_MAC;
+        ///<summary>
+        ///Name of the device, to be set in the editor, or before the device connects. Used to prepare one digital twin for one specific physical device. Eg. Controller 1 in Unity linked up with Controller 1 physical.
+        ///</summary>
+        public string deviceName;
+        ///<summary>
+        ///Bool set if the device name variable should be used to connect. Set in the inspector or code.true
+        ///</summary>
+        public bool useDeviceName = false;
         ///<summary>
         ///Link bool for the link between Digital Twin Object(this) and physical device.
         ///</summary>
@@ -36,9 +45,6 @@ namespace ExactFramework.Configuration{
         //Variables used for a simple ping operation
         private int pingCount;
         private int pingTime;
-
-        private string name; //unused name variable.
-
         ///<summary>
         ///Buffer for message of the action type. New messages are added from the components. Used by the MQTTHandler to build one multi message to the device.
         ///</summary>
@@ -262,6 +268,38 @@ namespace ExactFramework.Configuration{
         public string GetDeviceID()
         {
             return deviceID;
+        }
+
+        ///<summary>
+        ///Gets the unique name for the device.
+        ///</summary>
+        ///<returns>A Device's unique name</returns>
+        public string GetDeviceName()
+        {
+            return deviceName;
+        }
+        ///<summary>
+        ///Sets the unique name for the device.
+        ///</summary>
+        ///<param name="deviceName">Unique name identifier set for the device.</param>
+        public void SetDeviceName(string deviceName){
+            this.deviceName = deviceName;
+            useDeviceName = true;
+        }
+
+        ///<summary>
+        ///Sets whether the unique device name should use used or not.
+        ///</summary>
+        ///<param name="useDeviceName">Boolean value for using device name.</param>
+        public void UseDeviceName(bool useDeviceName){
+            this.useDeviceName = useDeviceName;
+        }
+
+        ///<summary>
+        ///Gets whether the device should use the unique name or not.
+        ///</summary>
+        public bool IsUsingDeviceName(){
+            return useDeviceName;
         }
 
         ///<summary>

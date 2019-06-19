@@ -201,17 +201,25 @@ namespace ExactFramework.Handlers{
             bool linkPossible = false;
             foreach (TwinObject obj in twinObjects)
             {
-                if (obj.GetDeviceID() == topicSplit[2])
-                {
-                    obj.SetLinkStatus(true);
-                    linkPossible = true;
-                    break;
-                }
-                else if (obj.GetConfigName() == topicSplit[3] && obj.GetLinkStatus() == false)
-                {
-                    obj.LinkDevice(topicSplit[2]);
-                    linkPossible = true;
-                    break;
+                if(obj.IsUsingDeviceName()){
+                    if(obj.GetDeviceName() == topicSplit[4]){
+                        obj.SetLinkStatus(true);
+                        linkPossible = true;
+                        break;
+                    }
+                }else{
+                    if (obj.GetDeviceID() == topicSplit[2])
+                    {
+                        obj.SetLinkStatus(true);
+                        linkPossible = true;
+                        break;
+                    }
+                    else if (obj.GetConfigName() == topicSplit[3] && !obj.GetLinkStatus())
+                    {
+                        obj.LinkDevice(topicSplit[2]);
+                        linkPossible = true;
+                        break;
+                    }
                 }
             }
             if (!linkPossible)
