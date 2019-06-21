@@ -39,7 +39,8 @@ public class RingLightPulseBehaviour : MonoBehaviour
 
             if(lastTime >= 2)
             {
-                greenColorValue = (greenColorValue) % 2;
+                Debug.Log("Time reached!");
+                greenColorValue = (greenColorValue+1) % 2;
                 ringLight.SetColor(new Color(0, greenColorValue, 1));
                 lastTime = 0;
             }

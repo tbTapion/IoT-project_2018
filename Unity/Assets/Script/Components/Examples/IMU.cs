@@ -1,5 +1,6 @@
 using ExactFramework.Configuration;
 using ExactFramework.Handlers;
+using UnityEngine;
 
 namespace ExactFramework.Component.Examples
 {
@@ -100,6 +101,7 @@ namespace ExactFramework.Component.Examples
         public override void UpdateComponent(string eventType, byte[] payload)
         {
             if(eventType == "tapped"){
+                Debug.Log("Tap event!");
                 OnTapped();
             }else if(eventType == "rotation"){
                 int roll = payload[0] + payload[1];

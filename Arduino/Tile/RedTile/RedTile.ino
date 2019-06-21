@@ -30,6 +30,7 @@ String clientIDstr;   //String containing mac address, used in conjunction with 
 String IP;            //String containing IP address.
 String HOSTNAME;      //String containing HOSTNAME.
 String configID = "redtile";
+String deviceName = "empty";
 //Neopixel vars
 byte individualLedColors[NUMPIXELS * 3];
 int numberOfActiveLeds = 12;
@@ -309,7 +310,7 @@ void reconnect()
     {
       Serial.println("Connected!");
       // Once connected, publish an announcement to unity: unity/connect/device-id
-      client.publish(("unity/connect/" + clientIDstr + "/" + configID).c_str(), "1");
+      client.publish(("unity/connect/" + clientIDstr + "/" + configID + "/" + deviceName).c_str(), "1");
       // Then Subcribe to everything client-id/#
       client.subscribe((clientIDstr + "/#").c_str());
     }

@@ -17,7 +17,7 @@ namespace ExactFramework.Component.Examples
         ///<summary>
         ///The state of the full ring light, if it's on or off.
         ///</summary>
-        private bool state;
+        private bool state = false;
 
         ///<summary>
         ///Variable for the maximum number of LEDs for this ring light object. Set once when initialized.
@@ -32,12 +32,13 @@ namespace ExactFramework.Component.Examples
         ///<summary>
         ///List of individual LEDs in the ring light.
         ///</summary>
-        private List<RingLightLed> ledList = new List<RingLightLed>();
+        private List<RingLightLed> ledList;
 
         public override void Start()
         {
             base.Start();
             color = new Color(0, 1f, 0);
+            Init(numOfLeds);
         }
 
         ///<summary>
@@ -46,6 +47,7 @@ namespace ExactFramework.Component.Examples
         ///<param name="numberOfLeds">Sets number of LEDs active to start with and the number of LEDs max.</param>
         public void Init(int numberOfLeds)
         {
+            ledList = new List<RingLightLed>();
             if (transform != null)
             {
                 RingLightLed[] ledList = transform.Find("RingLight").GetComponentsInChildren<RingLightLed>();

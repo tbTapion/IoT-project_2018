@@ -27,11 +27,16 @@ public class GameLogicBase : MonoBehaviour
                 devicesInScene.Add(to);
             }
         }
+        foreach(TwinObject to in devicesInScene){
+            Debug.Log(to);
+            mqttHandler.AddTwinObject(to);
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
+        mqttHandler.Update();
         if (waitForAllConnected)
         {
             if (mqttHandler.AllDevicesConnected())
@@ -46,7 +51,10 @@ public class GameLogicBase : MonoBehaviour
         List<T> listOfObjects = new List<T>();
         foreach(TwinObject to in devicesInScene)
         {
-            listOfObjects.Add(to.GetComponent<T>());
+            T temp = to.GetComponent<T>();
+            if(temp != null){
+                listOfObjects.Add(temp);
+            }
         }
         return listOfObjects;
     }

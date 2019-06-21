@@ -11,6 +11,8 @@ public class ToggleBehaviour : MonoBehaviour
     RingLight ringLight;
     TonePlayer tonePlayer;
 
+    bool active;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -19,11 +21,14 @@ public class ToggleBehaviour : MonoBehaviour
         tonePlayer = tile.GetDeviceComponent<TonePlayer>();
 
         tile.AddEventListener("OnTapped", OnTapped);
+        active = false;
     }
 
     void OnTapped()
     {
-        ringLight.Toggle();
+        Debug.Log("Tap detected!");
+        ringLight.SetState(!active);
         tonePlayer.PlayTone(300, 20);
+        active = !active;
     }
 }

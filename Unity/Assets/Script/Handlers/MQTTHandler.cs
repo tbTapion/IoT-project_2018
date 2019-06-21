@@ -78,8 +78,8 @@ namespace ExactFramework.Handlers{
         */
         public void Update()
         {
-            if (AllDevicesConnected())
-            {
+            //if (AllDevicesConnected())
+            //{
                 foreach (TwinObject obj in twinObjects)
                 {
                     if (obj.GetLinkStatus())
@@ -113,7 +113,7 @@ namespace ExactFramework.Handlers{
                         }
                     }
                 }
-            }
+            //}
 
             while (msgBuffer.Count != 0)
             {
@@ -124,6 +124,7 @@ namespace ExactFramework.Handlers{
                 {
                     if (topicSplit[1] == "connect")
                     {
+                        Debug.Log("Gonnect nessage received!");
                         DeviceConnect(topicSplit);
                     }
                     else if (topicSplit[1] == "device")
@@ -202,7 +203,9 @@ namespace ExactFramework.Handlers{
             foreach (TwinObject obj in twinObjects)
             {
                 if(obj.IsUsingDeviceName()){
+                    Debug.Log("using name");
                     if(obj.GetDeviceName() == topicSplit[4] && !obj.GetLinkStatus()){
+                        Debug.Log("Added on device name:" + obj.GetDeviceName() + topicSplit[4]);
                         obj.SetLinkStatus(true);
                         obj.LinkDevice(topicSplit[2]);
                         linkPossible = true;
@@ -211,12 +214,14 @@ namespace ExactFramework.Handlers{
                 }else{
                     if (obj.GetDeviceID() == topicSplit[2])
                     {
+                        Debug.Log("Added existing device! " + obj.GetDeviceID());
                         obj.SetLinkStatus(true);
                         linkPossible = true;
                         break;
                     }
                     else if (obj.GetConfigName() == topicSplit[3] && !obj.GetLinkStatus())
                     {
+                        Debug.Log("Added new device based on config name!");
                         obj.LinkDevice(topicSplit[2]);
                         linkPossible = true;
                         break;
