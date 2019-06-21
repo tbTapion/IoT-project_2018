@@ -200,8 +200,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47bece737de966a41972e5c2f5705d8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deviceName: 
-  useDeviceName: 0
+  deviceID_MAC: 
+  deviceName: toggler
+  useDeviceName: 1
   linked: 0
 --- !u!114 &24533480
 MonoBehaviour:
@@ -287,20 +288,9 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 4314409645778620271, guid: a8140bdc2ff30825caec1781eb19f096, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: a8140bdc2ff30825caec1781eb19f096, type: 3}
---- !u!114 &176185333 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4314409645778620271, guid: a8140bdc2ff30825caec1781eb19f096,
-    type: 3}
-  m_PrefabInstance: {fileID: 176185332}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 176185334}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a5a9d6e394c8af40be19e75040ba9c5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &176185334 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4742169896994797089, guid: a8140bdc2ff30825caec1781eb19f096,
@@ -331,6 +321,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47bece737de966a41972e5c2f5705d8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  deviceID_MAC: 
   deviceName: 
   useDeviceName: 0
   linked: 0
@@ -377,10 +368,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MQTTServerAddress: 
-  WaitForAllConnected: 0
+  waitForAllConnected: 0
+  allDevicesConnected: 0
   devicesInScene:
-  - {fileID: 1327027483}
-  - {fileID: 176185333}
+  - {fileID: 0}
+  - {fileID: 0}
   - {fileID: 24533479}
   - {fileID: 1062126481}
 --- !u!4 &193225736
@@ -472,13 +464,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 720662929}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalRotation: {x: 0.37296286, y: -0, z: -0, w: 0.92784625}
+  m_LocalPosition: {x: 2.933, y: 2.691, z: -13.382}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 43.797, y: 0, z: 0}
 --- !u!1001 &1062126479
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -572,8 +564,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47bece737de966a41972e5c2f5705d8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deviceName: 
-  useDeviceName: 0
+  deviceID_MAC: 
+  deviceName: pulser
+  useDeviceName: 1
   linked: 0
 --- !u!114 &1062126482
 MonoBehaviour:
@@ -584,7 +577,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1062126480}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 941b805d62df0084aae668b258c22854, type: 3}
+  m_Script: {fileID: 11500000, guid: 1c2ee3bdacaddbb4b9fc203d6e5b3bb0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &1327027482
@@ -659,20 +652,9 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 4314409645778620271, guid: a8140bdc2ff30825caec1781eb19f096, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: a8140bdc2ff30825caec1781eb19f096, type: 3}
---- !u!114 &1327027483 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4314409645778620271, guid: a8140bdc2ff30825caec1781eb19f096,
-    type: 3}
-  m_PrefabInstance: {fileID: 1327027482}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1327027484}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a5a9d6e394c8af40be19e75040ba9c5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1327027484 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4742169896994797089, guid: a8140bdc2ff30825caec1781eb19f096,
@@ -703,6 +685,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47bece737de966a41972e5c2f5705d8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  deviceID_MAC: 
   deviceName: 
   useDeviceName: 0
   linked: 0
@@ -773,5 +756,5 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
