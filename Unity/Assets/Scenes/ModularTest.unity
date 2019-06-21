@@ -204,6 +204,7 @@ MonoBehaviour:
   deviceName: toggler
   useDeviceName: 1
   linked: 0
+  configToSet: 
 --- !u!114 &24533480
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -306,9 +307,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 176185334}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c9dc29b0f48f7014d98784b6aa6f7fa1, type: 3}
+  m_Script: {fileID: 11500000, guid: 47bece737de966a41972e5c2f5705d8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  deviceID_MAC: 
+  deviceName: reddot2
+  useDeviceName: 0
+  linked: 0
+  configToSet: bluetile
 --- !u!114 &176185336
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -318,13 +324,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 176185334}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 47bece737de966a41972e5c2f5705d8c, type: 3}
+  m_Script: {fileID: 11500000, guid: c9dc29b0f48f7014d98784b6aa6f7fa1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deviceID_MAC: 
-  deviceName: 
-  useDeviceName: 0
-  linked: 0
 --- !u!1 &193225733
 GameObject:
   m_ObjectHideFlags: 0
@@ -371,10 +373,10 @@ MonoBehaviour:
   waitForAllConnected: 0
   allDevicesConnected: 0
   devicesInScene:
-  - {fileID: 0}
-  - {fileID: 0}
   - {fileID: 24533479}
   - {fileID: 1062126481}
+  - {fileID: 1327027485}
+  - {fileID: 176185335}
 --- !u!4 &193225736
 Transform:
   m_ObjectHideFlags: 0
@@ -568,6 +570,7 @@ MonoBehaviour:
   deviceName: pulser
   useDeviceName: 1
   linked: 0
+  configToSet: 
 --- !u!114 &1062126482
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -580,6 +583,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c2ee3bdacaddbb4b9fc203d6e5b3bb0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  NumberOfLeds: 24
 --- !u!1001 &1327027482
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -670,9 +674,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1327027484}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c9dc29b0f48f7014d98784b6aa6f7fa1, type: 3}
+  m_Script: {fileID: 11500000, guid: 47bece737de966a41972e5c2f5705d8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  deviceID_MAC: 
+  deviceName: reddot1
+  useDeviceName: 0
+  linked: 0
+  configToSet: redtile
 --- !u!114 &1327027486
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -682,13 +691,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1327027484}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 47bece737de966a41972e5c2f5705d8c, type: 3}
+  m_Script: {fileID: 11500000, guid: c9dc29b0f48f7014d98784b6aa6f7fa1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deviceID_MAC: 
-  deviceName: 
-  useDeviceName: 0
-  linked: 0
 --- !u!1 &1340565968
 GameObject:
   m_ObjectHideFlags: 0
