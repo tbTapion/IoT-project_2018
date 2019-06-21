@@ -202,8 +202,9 @@ namespace ExactFramework.Handlers{
             foreach (TwinObject obj in twinObjects)
             {
                 if(obj.IsUsingDeviceName()){
-                    if(obj.GetDeviceName() == topicSplit[4]){
+                    if(obj.GetDeviceName() == topicSplit[4] && !obj.GetLinkStatus()){
                         obj.SetLinkStatus(true);
+                        obj.LinkDevice(topicSplit[2]);
                         linkPossible = true;
                         break;
                     }

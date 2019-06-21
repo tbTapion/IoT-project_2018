@@ -25,9 +25,9 @@ namespace ExactFramework.Component.Examples
         private readonly int maxNumLeds;
 
         ///<summary>
-        ///Variable for number of active LEDs for the ring light.
+        ///Variable for number of active LEDs for the ring light. Default 24.
         ///</summary>
-        private int numOfLeds;
+        private int numOfLeds = 24;
 
         ///<summary>
         ///List of individual LEDs in the ring light.

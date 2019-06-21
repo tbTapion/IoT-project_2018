@@ -6,11 +6,12 @@ using UnityEngine;
 
 public class MyTile : TwinObject
 {
+    public string configToSet = "";
     // Start is called before the first frame update
     protected override void Start()
     {
         base.Start();
-        configName = "tile";
+        configName = configToSet;
         AddDeviceComponent<RingLight>();
         AddDeviceComponent<IMU>();
         AddDeviceComponent<TonePlayer>();

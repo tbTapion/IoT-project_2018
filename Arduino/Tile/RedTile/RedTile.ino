@@ -34,6 +34,9 @@ String configID = "redtile";
 byte individualLedColors[NUMPIXELS * 3];
 int numberOfActiveLeds = 12;
 
+//Rotation vars
+byte rotation[6];
+
 //Communication Objects
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -109,6 +112,10 @@ void setup()
     individualLedColors[(i * 3) + 2] = 0;
   }
   lightsConnected(20);
+
+  for(int i = 0; i < 6; i++){
+    rotation[i] = 0;
+  }
 }
 
 void setup_wifi()
@@ -170,7 +177,6 @@ void callback(char *topic, byte *payload, unsigned int length)
   }
 }
 
-byte rotation[6];
 void get_event(char *topicElement)
 {
   while (topicElement != NULL)

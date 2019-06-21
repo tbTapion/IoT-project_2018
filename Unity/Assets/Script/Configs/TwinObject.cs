@@ -329,6 +329,7 @@ namespace ExactFramework.Configuration{
         public void LinkDevice(string deviceID)
         {
             this.deviceID = deviceID;
+            this.deviceID_MAC = deviceID;
             SetLinkStatus(true);
             SendPingMessage();
         }

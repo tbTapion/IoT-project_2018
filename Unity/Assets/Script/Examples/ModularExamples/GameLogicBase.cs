@@ -19,6 +19,14 @@ public class GameLogicBase : MonoBehaviour
     void Start()
     {
         mqttHandler = new MQTTHandler(MQTTServerAddress);
+        TwinObject[] objectsInScene = GameObject.FindObjectsOfType<TwinObject>();
+        foreach(TwinObject to in objectsInScene)
+        {
+            if (!devicesInScene.Contains(to))
+            {
+                devicesInScene.Add(to);
+            }
+        }
     }
 
     // Update is called once per frame
