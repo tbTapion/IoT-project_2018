@@ -291,7 +291,7 @@ namespace ExactFramework.Configuration{
         ///Sets whether the unique device name should use used or not.
         ///</summary>
         ///<param name="useDeviceName">Boolean value for using device name.</param>
-        public void UseDeviceName(bool useDeviceName){
+        public void SetUseDeviceName(bool useDeviceName){
             this.useDeviceName = useDeviceName;
         }
 
