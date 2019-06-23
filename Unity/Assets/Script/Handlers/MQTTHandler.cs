@@ -200,32 +200,28 @@ namespace ExactFramework.Handlers{
         {
             Debug.Log("New Device detected!");
             bool linkPossible = false;
-            foreach (TwinObject obj in twinObjects)
-            {
-                if(topicSplit[4] != "" && !obj.GetLinkStatus()){
-                    Debug.Log("using name");
+
+            foreach (TwinObject obj in twinObjects.FindAll(x => !x.GetLinkStatus()))
+            {   
+                if(obj.useDeviceName){
                     if(obj.GetDeviceName() == topicSplit[4]){
-                        Debug.Log("Added on device name:" + obj.GetDeviceName() + topicSplit[4]);
-                        obj.SetLinkStatus(true);
                         obj.LinkDevice(topicSplit[2]);
                         linkPossible = true;
                         break;
                     }
-                }else if (obj.GetDeviceID() == topicSplit[2])
-                {
-                    Debug.Log("Added existing device! " + obj.GetDeviceID());
-                    obj.SetLinkStatus(true);
-                    linkPossible = true;
-                    break;
-                }
-                else if (obj.GetConfigName() == topicSplit[3] && !obj.GetLinkStatus())
-                {
-                    Debug.Log("Added new device based on config name!");
-                    obj.LinkDevice(topicSplit[2]);
-                    linkPossible = true;
-                    break;
+                }else{
+                    if(obj.GetDeviceID() == topicSplit[2]){
+                        obj.SetLinkStatus(true);
+                        linkPossible = true;
+                        break;
+                    }else if(obj.GetConfigName() == topicSplit[3]){
+                        obj.LinkDevice(topicSplit[2]);
+                        linkPossible = true;
+                        break;
+                    }
                 }
             }
+
             if (!linkPossible)
             {
                 SendDeviceMessage(topicSplit[2] + "/ping", new byte[] { 0 });
@@ -282,11 +278,7 @@ namespace ExactFramework.Handlers{
         public void AddTwinObject(TwinObject obj)
         {
             obj.SetMQTTHandler(this);
-            if(obj.useDeviceName){
-                twinObjects.Insert(0,obj);
-            }else{
-                twinObjects.Add(obj);
-            }
+            twinObjects.Add(obj);
         }
 
         ///<summary>
