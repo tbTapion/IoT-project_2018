@@ -7,6 +7,7 @@ namespace ExactFramework.Configuration
 {
     public class NestedTwinObject : TwinObject
     {   
+        //Set if you want to set named per component in their transform. Useful if using multiple of a component like two LEDs and separating them with led1 and led2
         public bool useTransformNames = false;
         // Start is called before the first frame update
         protected override void Start()
