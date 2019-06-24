@@ -14,14 +14,17 @@ public class RingLightPulseBehaviour : MonoBehaviour
     float lastTime;
     int greenColorValue = 0;
 
-    public int NumberOfLeds = 0;
+    public int NumberOfLeds = 24;
 
     // Start is called before the first frame update
     void Start()
     {
         tile = GetComponent<MyTile>();
         ringLight = tile.GetDeviceComponent<RingLight>();
-        ringLight.Init(NumberOfLeds);
+        Debug.Log(ringLight);
+        if(ringLight != null){
+            ringLight.Init(NumberOfLeds);
+        }
     }
 
     // Update is called once per frame
@@ -29,19 +32,14 @@ public class RingLightPulseBehaviour : MonoBehaviour
     {
         if (tile.GetLinkStatus())
         {
-            if (!ringLightSwitchedOn)
-            {
-                ringLight.SetState(true);
-                ringLightSwitchedOn = true;
-            }
 
             lastTime += Time.deltaTime;
 
             if(lastTime >= 2)
             {
-                Debug.Log("Time reached!");
                 greenColorValue = (greenColorValue+1) % 2;
                 ringLight.SetColor(new Color(0, greenColorValue, 1));
+                ringLight.SetState(true);
                 lastTime = 0;
             }
         }

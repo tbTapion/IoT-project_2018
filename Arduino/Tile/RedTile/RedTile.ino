@@ -30,7 +30,7 @@ String clientIDstr;   //String containing mac address, used in conjunction with 
 String IP;            //String containing IP address.
 String HOSTNAME;      //String containing HOSTNAME.
 String configID = "redtile";
-String deviceName = "empty";
+String deviceName = "toggle";
 //Neopixel vars
 byte individualLedColors[NUMPIXELS * 3];
 int numberOfActiveLeds = 12;
@@ -174,8 +174,26 @@ void callback(char *topic, byte *payload, unsigned int length)
     {
       get_event(topicElement);
     }
+    else if (strcmp(topicElement, "hello") == 0)
+    {
+      hello_event();
+    }
     topicElement = strtok(NULL, "/");
   }
+}
+
+void hello_event()
+{
+  //Reset all output components(in this case the ring light)
+  lightsOff();
+  for (int i = 0; i < NUMPIXELS; i++)
+  {
+    individualLedColors[(i * 3)] = 0;
+    individualLedColors[(i * 3) + 1] = 150;
+    individualLedColors[(i * 3) + 2] = 0;
+  }
+  //Connect to Unity again.
+  client.publish(("unity/connect/" + clientIDstr + "/" + configID + "/" + deviceName).c_str(), "1");
 }
 
 void get_event(char *topicElement)
@@ -313,6 +331,7 @@ void reconnect()
       client.publish(("unity/connect/" + clientIDstr + "/" + configID + "/" + deviceName).c_str(), "1");
       // Then Subcribe to everything client-id/#
       client.subscribe((clientIDstr + "/#").c_str());
+      client.subscribe("esp8266/#");
     }
     else
     {

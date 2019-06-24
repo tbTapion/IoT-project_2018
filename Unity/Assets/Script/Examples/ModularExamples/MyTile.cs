@@ -8,13 +8,17 @@ public class MyTile : TwinObject
 {   
     //Set this in the inspector so components can connect, or create subclasses to set specific config named per Twin Object.
     public string configToSet = "";
-    // Start is called before the first frame update
+
+    void Awake(){
+        AddDeviceComponent<RingLight>();
+        AddDeviceComponent<IMU>();
+        AddDeviceComponent<TonePlayer>();
+    }
+
+    // Start is called before the first frame updat
     protected override void Start()
     {
         base.Start();
         configName = configToSet;
-        AddDeviceComponent<RingLight>();
-        AddDeviceComponent<IMU>();
-        AddDeviceComponent<TonePlayer>();
     }
 }

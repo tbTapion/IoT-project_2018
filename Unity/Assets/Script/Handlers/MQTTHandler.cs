@@ -8,7 +8,8 @@ using uPLibrary.Networking.M2Mqtt.Messages;
 using System;
 using ExactFramework.Configuration;
 
-namespace ExactFramework.Handlers{
+namespace ExactFramework.Handlers
+{
     ///<summary>
     /// MQTT handler class for receiving and sending MQTT messages to the system.
     /// Holds references to all the twin objects in the game client and sends mqtt message updates to them accordingly.
@@ -46,7 +47,7 @@ namespace ExactFramework.Handlers{
             client.Subscribe(new string[] { "unity/#" }, new byte[] { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE }); //Subscribing to the topic
             client.Publish("esp8266/hello", new byte[] { 0 });
         }
-        
+
         ///<summary>
         ///Sends a simple message to the MQTT network. Message built on TwinObject.
         ///</summary>
@@ -80,39 +81,39 @@ namespace ExactFramework.Handlers{
         {
             //if (AllDevicesConnected())
             //{
-                foreach (TwinObject obj in twinObjects)
+            foreach (TwinObject obj in twinObjects)
+            {
+                if (obj.GetLinkStatus())
                 {
-                    if (obj.GetLinkStatus())
+                    if (obj.actionMsgBuffer.Count > 0)
                     {
-                        if (obj.actionMsgBuffer.Count > 0)
+                        delay = obj.actionMsgBuffer.Count * 50;
+                        string actionMessageString = "";
+                        List<byte> payloads = new List<byte>();
+                        actionMessageString += obj.GetDeviceID() + "/action";
+                        foreach (MessagePair mp in obj.actionMsgBuffer)
                         {
-                            delay = obj.actionMsgBuffer.Count * 50;
-                            string actionMessageString = "";
-                            List<byte> payloads = new List<byte>();
-                            actionMessageString += obj.GetDeviceID() + "/action";
-                            foreach (MessagePair mp in obj.actionMsgBuffer)
-                            {
-                                actionMessageString += "/" + mp.topic;
-                                payloads.AddRange(mp.payload);
-                            }
-                            obj.actionMsgBuffer = new List<MessagePair>();
-                            SendDeviceMessage(actionMessageString, payloads.ToArray());
+                            actionMessageString += "/" + mp.topic;
+                            payloads.AddRange(mp.payload);
                         }
-                        if (obj.getMsgBuffer.Count > 0)
+                        obj.actionMsgBuffer = new List<MessagePair>();
+                        SendDeviceMessage(actionMessageString, payloads.ToArray());
+                    }
+                    if (obj.getMsgBuffer.Count > 0)
+                    {
+                        delay = obj.getMsgBuffer.Count * 20;
+                        string getMessageString = "";
+                        getMessageString += obj.GetDeviceID() + "/get";
+                        foreach (MessagePair mp in obj.getMsgBuffer)
                         {
-                            delay = obj.getMsgBuffer.Count * 20;
-                            string getMessageString = "";
-                            getMessageString += obj.GetDeviceID() + "/get";
-                            foreach (MessagePair mp in obj.getMsgBuffer)
-                            {
-                                getMessageString += "/" + mp.topic;
-                                obj.getMsgBuffer.Remove(mp);
-                            }
-                            obj.getMsgBuffer = new List<MessagePair>();
-                            SendDeviceMessage(getMessageString, new byte[] { 0 });
+                            getMessageString += "/" + mp.topic;
+                            obj.getMsgBuffer.Remove(mp);
                         }
+                        obj.getMsgBuffer = new List<MessagePair>();
+                        SendDeviceMessage(getMessageString, new byte[] { 0 });
                     }
                 }
+            }
             //}
 
             while (msgBuffer.Count != 0)
@@ -201,29 +202,45 @@ namespace ExactFramework.Handlers{
             Debug.Log("New Device detected!");
             bool linkPossible = false;
 
-            foreach (TwinObject obj in twinObjects.FindAll(x => !x.GetLinkStatus()))
-            {   
-                if(obj.useDeviceName){
-                    if(obj.GetDeviceName() == topicSplit[4]){
-                        obj.LinkDevice(topicSplit[2]);
-                        linkPossible = true;
-                        break;
-                    }
-                }else{
-                    if(obj.GetDeviceID() == topicSplit[2]){
+            foreach (TwinObject obj in twinObjects)
+            {
+                if (obj.GetLinkStatus() == false)
+                {
+                    Debug.Log("Found object without link!");
+                    if (obj.GetDeviceID() == topicSplit[2])
+                    {
+                        Debug.Log("ID Connect!");
                         obj.SetLinkStatus(true);
                         linkPossible = true;
                         break;
-                    }else if(obj.GetConfigName() == topicSplit[3]){
-                        obj.LinkDevice(topicSplit[2]);
-                        linkPossible = true;
-                        break;
+                    }
+                    else if (obj.useDeviceName)
+                    {
+                        Debug.Log("Object is using name!");
+                        if (obj.GetDeviceName() == topicSplit[4])
+                        {
+                            Debug.Log("Name Connect!");
+                            obj.LinkDevice(topicSplit[2]);
+                            linkPossible = true;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        if (obj.GetConfigName() == topicSplit[3])
+                        {
+                            Debug.Log("Config Connect!");
+                            obj.LinkDevice(topicSplit[2]);
+                            linkPossible = true;
+                            break;
+                        }
                     }
                 }
             }
 
             if (!linkPossible)
             {
+                Debug.Log("Link not possible!");
                 SendDeviceMessage(topicSplit[2] + "/ping", new byte[] { 0 });
             }
         }
@@ -278,7 +295,14 @@ namespace ExactFramework.Handlers{
         public void AddTwinObject(TwinObject obj)
         {
             obj.SetMQTTHandler(this);
-            twinObjects.Add(obj);
+            if (obj.useDeviceName)
+            {
+                twinObjects.Insert(0, obj);
+            }
+            else
+            {
+                twinObjects.Add(obj);
+            }
         }
 
         ///<summary>

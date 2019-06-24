@@ -30,7 +30,7 @@ String clientIDstr;   //String containing mac address, used in conjunction with 
 String IP;            //String containing IP address.
 String HOSTNAME;      //String containing HOSTNAME.
 String configID = "bluetile";
-String deviceName = "empty";
+String deviceName = "pulser";
 //Neopixel vars
 byte individualLedColors[NUMPIXELS * 3];
 int numberOfActiveLeds = NUMPIXELS;

@@ -18,6 +18,10 @@ public class ToggleBehaviour : MonoBehaviour
     {
         tile = GetComponent<MyTile>();
         ringLight = tile.GetDeviceComponent<RingLight>();
+        Debug.Log(ringLight);
+        if(ringLight != null){
+            ringLight.Init(24);
+        }
         tonePlayer = tile.GetDeviceComponent<TonePlayer>();
 
         tile.AddEventListener("OnTapped", OnTapped);
@@ -28,7 +32,7 @@ public class ToggleBehaviour : MonoBehaviour
     {
         Debug.Log("Tap detected!");
         ringLight.SetState(!active);
-        tonePlayer.PlayTone(300, 20);
+        //tonePlayer.PlayTone(300, 20);
         active = !active;
     }
 }

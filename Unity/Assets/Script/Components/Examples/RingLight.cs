@@ -48,13 +48,10 @@ namespace ExactFramework.Component.Examples
         public void Init(int numberOfLeds)
         {
             ledList = new List<RingLightLed>();
-            if (transform != null)
+            RingLightLed[] transformLedList = transform.Find("RingLight").GetComponentsInChildren<RingLightLed>();
+            if (transformLedList != null)
             {
-                RingLightLed[] ledList = transform.Find("RingLight").GetComponentsInChildren<RingLightLed>();
-                if (ledList != null)
-                {
-                    this.ledList.AddRange(ledList);
-                }
+                this.ledList.AddRange(transformLedList);
             }
             else
             {

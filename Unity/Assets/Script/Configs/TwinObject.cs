@@ -43,8 +43,8 @@ namespace ExactFramework.Configuration{
         protected string configName;
 
         //Variables used for a simple ping operation
-        private int pingCount;
-        private int pingTime;
+        public int pingCount;
+        public float pingTime;
         ///<summary>
         ///Buffer for message of the action type. New messages are added from the components. Used by the MQTTHandler to build one multi message to the device.
         ///</summary>
@@ -66,7 +66,6 @@ namespace ExactFramework.Configuration{
         protected virtual void Start()
         {
             pingCount = 0;
-            pingTime = 60 * 60;
         }
 
         // Update is called once per frame. Holds the simple ping messaging handling.
@@ -74,10 +73,10 @@ namespace ExactFramework.Configuration{
         {
             if (linked)
             {
-                pingTime--;
-                if (pingTime == 0)
+                pingTime += Time.deltaTime;
+                if (pingTime > 15)
                 {
-                    if (pingCount > 2)
+                    if (pingCount >= 1)
                     {
                         linked = false;
                         Debug.Log("Tile " + deviceID + " disconnected...");
@@ -87,7 +86,7 @@ namespace ExactFramework.Configuration{
                         SendPingMessage();
                         pingCount++;
                     }
-                    pingTime = 60 * 60;
+                    pingTime = 0;
                 }
             }
         }
@@ -462,7 +461,8 @@ namespace ExactFramework.Configuration{
         public T GetDeviceComponent<T>() where T : DeviceComponent{
             try{
                 string id = typeof(T).Name.ToLower();
-                T component = (T)deviceComponents[id];
+                Debug.Log(id);
+                T component = deviceComponents[id] as T;
                 return component;
             }catch(Exception e){
                 Debug.Log(e.StackTrace);
