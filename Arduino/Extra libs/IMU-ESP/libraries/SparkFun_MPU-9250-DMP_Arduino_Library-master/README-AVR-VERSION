@@ -1,0 +1,22 @@
+AVR version of IMU library
+---------------------------
+
+Author: Dag Svanaes, NTNU.  (dags@idi.ntnu.no)
+Date: July, 2018.
+
+Changed files:
+  inv_mpu.h
+  inv_mpu.c
+  inv_mpu_dmp_motion_driver.c
+  SparkFunMPU9250.ccp
+
+  
+Background:
+  The library did not work on AVR architecture Arduinos due to:
+  1. Too little space for arrays in memory (in inv_mpu_dmp_motion_driver.c)
+  2. A problem with float arithmetic (in SparkFunMPU9250.ccp)
+  
+Solution.
+  1. The 3K of code for the IMU is moved into PROGMEM.
+     Changes done to: inv_mpu.h, inv_mpu.c, inv_mpu_dmp_motion_driver.c
+  2. "MPU9250_DMP::qToFloat" in SparkFunMPU9250.ccp is modified.   
