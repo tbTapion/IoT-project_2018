@@ -13,6 +13,8 @@ Add/import the MQTT folder and the ExactFramework folder to your Unity project.
 The MQTT folder has the MQTT library used in the framework.
 The ExactFramework folder has the framework itself with accompanying examples.
 
+If this doesn't work, try opening the project in the Unity-old folder and use that.
+
 ### Raspberry Pi
 
 Follow the guide over at https://www.raspberrypi.org/documentation/configuration/wireless/access-point.md if you want to use a raspberry pi for the MQTT broker.
@@ -28,7 +30,7 @@ After the package is installed, restart the RPi and the mosquitto broker should 
 
 ### Arduino
 
-This framework has been developed using Arduinos of type ESP8266, hence the WiFi and MQTT Libraries are suited those. 
+The Arduino programs have been developed using Arduinos of type ESP8266, hence the WiFi and MQTT Libraries are suited those. 
 The MQTT Library used for the Arduino also supports other ESP models and Arduino models.
 
 MQTT Library by Nick O'Leary, version 2.7.0: PubSubClient
