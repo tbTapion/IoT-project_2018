@@ -142,7 +142,7 @@ void MQTTSocket::loop(){
         Serial.println("Connected!");
         _client.publish(("unity/connect/" + _clientIDstr + "/" + _configID + "/" + _deviceName).c_str(), "1");
         _client.subscribe((_clientID + "/#").c_str());
-        _client.subscribe("esp8266/#");
+        _client.subscribe("unityconnect/#");
       }else{
         Serial.print("failed, rc=");
         Serial.print(_client.state());

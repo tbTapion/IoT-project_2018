@@ -3,6 +3,8 @@ Arduino ESP8266 WiFi and MQTT
 */
 
 #include "MQTTSocket.h"
+#include "PLab_PushButton.h"
+#include "Led.h"
 
 // Update these with values suitable for your network.
 
@@ -13,11 +15,14 @@ const int mqtt_port = 1883;
 const char* configID = "ButtonLight";
 const char* deviceName = "switch";
 
+//MQTT and WIFi class
 MQTTSocket mqttSocket;
 
+//Component classes
 Led led(BUILTIN_LED); //Built-in led as output
-PLab_PushButton button(4); //PLab PushButton type button.
+PLab_PushButton button(4); //Button object
 
+//Setup
 void setup() {
   Serial.begin(115200); //Starts serial
   mqttSocket.initConfiguration(configID, deviceName); //Sets up the configuration variables
@@ -28,23 +33,32 @@ void setup() {
   mqttSocket.setCallbackHello(helloEvent);
 }
 
+//Called when unity sends the unityconnect/hello message
+//Useful to reset output components
 void helloEvent(){
-  led.setState(LOW);
   led.setHeartbeatInterval(0);
+  led.setState(LOW);
 }
 
+//Called on get message received and when the main callback function handles the message
 void getEvent(char *component, char *valueType){
-  if(component == "led"){
-    if(valueType == "state"){
-      char state = (char)led.getState();
+  if(strcmp(component, "led") == 0){
+    if(strcmp(valueType, "state") == 0){
+      string state = "" + char(led.getState());
       mqttSocket.sendValue("led", "state", state);
+    }
+  }else if(strcmp(component, "button") == 0){
+    if(strcmp(valueType, "state") == 0){
+      string state = "" + char(button.isDown());
+      mqttSocket.sendValue("button", "state", state);
     }
   }
 }
 
+//Called on action message received and when the main callback function handles the message
 void actionEvent(char *component, char *actionType, byte *payload){
-  if(component == "led"){
-    if(actionType == "state"){
+  if(strcmp(component, "led") == 0){
+    if(strcmp(actionType, "state") == 0){
       if(payload[0] == "1"){
         led.setState(HIGH);
       }else{
@@ -54,9 +68,11 @@ void actionEvent(char *component, char *actionType, byte *payload){
   }
 }
 
+//Main arduino loop.
 void loop() {
   mqttSocket.loop();
   button.update();
+  led.update();
   if(button.pressed()){
     mqttSocket.sendEvent("button", "pressed", "1");
   }else if(button.released()){
