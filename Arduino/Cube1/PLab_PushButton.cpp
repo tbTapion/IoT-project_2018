@@ -18,17 +18,17 @@ PLab_PushButton::PLab_PushButton(int pin)
 void PLab_PushButton::update()
 {
   justreleased = 0;
-  justpressed = 0;
-
+  justpressed = 0; 
+  
   if ((lasttime + DEBOUNCE) > millis()) {
     // not enough time has passed to debounce
-    return;
+    return; 
   }
   // ok we have waited DEBOUNCE milliseconds, lets reset the timer
   lasttime = millis();
-
+  
   currentstate = digitalRead(_pin);   // read the button
-
+    
     if (currentstate == previousstate) {
       if ((_pressed == LOW) && (currentstate == LOW)) {
           // just pressed
