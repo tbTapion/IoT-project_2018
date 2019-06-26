@@ -76,6 +76,6 @@ void loop() {
   if(button.pressed()){
     mqttSocket.sendEvent("button", "pressed", "1");
   }else if(button.released()){
-    mqttSocket.sendEvent("button", "pressed", "1");
+    mqttSocket.sendEvent("button", "released", "1");
   }
 }
