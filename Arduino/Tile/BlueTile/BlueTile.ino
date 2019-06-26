@@ -17,8 +17,8 @@
 
 // Update these with values suitable for your network.
 //WiFi
-const char *ssid = "MyIoTNet_Andreas";
-const char *password = "MasterIoTNetExact";
+const char *ssid = "MyExactNet";
+const char *password = "MyExactNetPassword";
 //MQTT
 const char *mqtt_server = "192.168.4.1";
 const int mqtt_port = 1883;
@@ -151,7 +151,7 @@ void callback(char *topic, byte *payload, unsigned int length)
   Serial.print("New message arrived [");
   Serial.print(topic);
   Serial.print("] ");
-  
+
   payloadIndex = 0;
 
   char *topicElement;
@@ -341,7 +341,7 @@ bool rangeCode()
     // int green = map(range, 0, 160, 0, 255);
     pixelBar(&ringLight, pixels, ringLight.Color(red, 0, blue));*/
     //firstTimeOff = true;
-    
+
     return true;
   }else{
     if(sendingRanges == true){

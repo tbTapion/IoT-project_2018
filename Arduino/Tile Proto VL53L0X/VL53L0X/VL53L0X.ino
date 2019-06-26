@@ -16,10 +16,10 @@ Arduino ESP8266 WiFi and MQTT
 
 // Update these with values suitable for your network.
 //WiFi
-const char* ssid = "IoT-WiFi";
-const char* password = "40219917";
+const char* ssid = "MyExactNet";
+const char* password = "MyExactNetPassword";
 //MQTT
-const char* mqtt_server = "10.42.0.1";
+const char* mqtt_server = "192.168.4.1";
 const int mqtt_port = 1883;
 //Buzzer
 const int speakerOut = 13; // Put speaker through 220 ohm on pin 13.
@@ -33,7 +33,7 @@ Adafruit_VL53L0X vl = Adafruit_VL53L0X();
 WiFiClient espClient;
 PubSubClient client(espClient);
 
-const char* clientID; //Filled with mac address, unused, but kept in case of future functionality requiring it. 
+const char* clientID; //Filled with mac address, unused, but kept in case of future functionality requiring it.
 String clientIDstr; //String containing mac address, used in conjunction with message building
 String IP; //String containing IP address.
 String HOSTNAME; //String containing HOSTNAME.
@@ -70,7 +70,7 @@ void setup() {
     Serial.println(F("Failed to find VL6180X sensor"));
     while (1);
   }
-  
+
   Serial.println(F("Loading VL6180X sensor... Success!"));
 }//End of setup
 
@@ -105,7 +105,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
   char* topicElement;
   topicElement = strtok(topic, "/");
-  
+
   while(topicElement != NULL){
     Serial.println(topicElement);
     if(strcmp(topicElement, "ping") == 0){
@@ -186,17 +186,17 @@ void loop() {
   } else {
     Serial.println(" out of range ");
   }
-  
+
   client.loop();
   if (measure.RangeMilliMeter < 100 && previousRange >= 100) {
     client.publish(("unity/device/" + clientIDstr + "/event/button").c_str(), "1");
     lightsOff();
   }
-    
+
   else if((measure.RangeMilliMeter >= 100) && previousRange < 100){
     client.publish(("unity/device/" + clientIDstr + "/event/button").c_str(), "0");
   }
-    
+
   previousRange = measure.RangeMilliMeter;
 
   delay(100);

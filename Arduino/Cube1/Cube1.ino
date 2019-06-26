@@ -8,9 +8,9 @@ Arduino ESP8266 WiFi and MQTT
 
 // Update these with values suitable for your network.
 
-const char* ssid = "pisbizarreadventure";
-const char* password = "piberryrasp";
-const char* mqtt_server = "192.168.42.1";
+const char* ssid = "MyExactNet";
+const char* password = "MyExactNetPassword";
+const char* mqtt_server = "192.168.4.1";
 const int mqtt_port = 1883;
 
 WiFiClient espClient;
@@ -18,7 +18,7 @@ PubSubClient client(espClient);
 
 Led led(BUILTIN_LED); //Built-in led as output
 
-const char* clientID; //Filled with mac address, unused, but kept in case of future functionality requiring it. 
+const char* clientID; //Filled with mac address, unused, but kept in case of future functionality requiring it.
 String clientIDstr; //String containing mac address, used in conjunction with message building
 
 String configID = "cube1";

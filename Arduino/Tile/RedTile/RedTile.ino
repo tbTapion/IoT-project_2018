@@ -17,8 +17,8 @@
 
 // Update these with values suitable for your network.
 //WiFi
-const char *ssid = "MyIoTNet_Andreas";
-const char *password = "MasterIoTNetExact";
+const char *ssid = "MyExactNet";
+const char *password = "MyExactNetPassword";
 //MQTT
 const char *mqtt_server = "192.168.4.1";
 const int mqtt_port = 1883;

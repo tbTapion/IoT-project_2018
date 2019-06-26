@@ -16,10 +16,10 @@ Arduino ESP8266 WiFi and MQTT
 
 // Update these with values suitable for your network.
 //WiFi
-const char *ssid = "IoT-WiFi";
-const char *password = "40219917";
+const char *ssid = "MyExactNet";
+const char *password = "MyExactNetPassword";
 //MQTT
-const char *mqtt_server = "10.42.0.1";
+const char *mqtt_server = "192.168.4.1";
 const int mqtt_port = 1883;
 //Buzzer
 const int speakerOut = 13; // Put speaker through 220 ohm on pin 13.

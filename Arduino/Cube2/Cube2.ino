@@ -9,18 +9,18 @@ Arduino ESP8266 WiFi and MQTT
 
 // Update these with values suitable for your network.
 
-const char* ssid = "pisbizarreadventure";
-const char* password = "piberryrasp";
-const char* mqtt_server = "192.168.42.1";
+const char* ssid = "MyExactNet";
+const char* password = "MyExactNetPassword";
+const char* mqtt_server = "192.168.4.1";
 const int mqtt_port = 1883;
 
 WiFiClient espClient;
 PubSubClient client(espClient);
 
-PLab_PushButton button(4); //Button class with pin nr. 4 passed. Change to actual pin used. 
+PLab_PushButton button(4); //Button class with pin nr. 4 passed. Change to actual pin used.
 Potmeter potmeter(A0); //Potmeter class with pin nr. 5 passed. Change to actual pin used.
 
-const char* clientID; //Filled with mac address, unused, but kept in case of future functionality requiring it. 
+const char* clientID; //Filled with mac address, unused, but kept in case of future functionality requiring it.
 String clientIDstr; //String containing mac address, used in conjunction with message building
 
 String configID = "cube2";
