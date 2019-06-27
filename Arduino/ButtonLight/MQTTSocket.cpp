@@ -1,40 +1,41 @@
+#include <Arduino.h>
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 #include "MQTTSocket.h"
 
 MQTTSocket::MQTTSocket(){
   _port = 1883;
-  _client = NULL;
-  _espClient = NULL;
 }
 //MQTTSocket(char *ssid, char *password);
 //MQTTSocket(char *ssid, char *password, char *mqttBrokerIP);
 //MQTTSocket(char *ssid, char *password, char *mqttBrokerIP, int port);
-void MQTTSocket::initConfiguration(char *configID, char *deviceName){
+void MQTTSocket::initConfiguration(const char *configID, const char *deviceName){
   _configID = configID;
   _deviceName = deviceName;
 }
 
-void MQTTSocket::initMQTT(char *mqttBrokerIP){
+void MQTTSocket::initMQTT(const char *mqttBrokerIP){
   _mqttBrokerIP = mqttBrokerIP;
 
   PubSubClient client(_espClient);
   _client = client;
-  _client.setServer(_mqttBrokerIP, _port);
+  _client.setServer(_mqttBrokerIP.c_str(), _port);
+  std::function<void(char*, unsigned char*, unsigned int)> callback = [=](char *a, unsigned char *b, unsigned int c) {this->myCallback(a, b, c);};
   _client.setCallback(callback);
 }
 
-void MQTTSocket::initMQTT(char *mqttBrokerIP, int port){
+void MQTTSocket::initMQTT(const char *mqttBrokerIP, int port){
   _mqttBrokerIP = mqttBrokerIP;
   _port = port;
 
   PubSubClient client(_espClient);
   _client = client;
-  _client.setServer(_mqttBrokerIP, _port);
+  _client.setServer(_mqttBrokerIP.c_str(), _port);
+  std::function<void(char*, unsigned char*, unsigned int)> callback = [=](char *a, unsigned char *b, unsigned int c) {this->myCallback(a, b, c);};
   _client.setCallback(callback);
 }
 
-void MQTTSocket::initWiFi(char *ssid, char *password){
+void MQTTSocket::initWiFi(const char *ssid, const char *password){
   WiFiClient espClient;
   _espClient = espClient;
   Serial.println("Starting WiFi...");
@@ -49,14 +50,14 @@ void MQTTSocket::initWiFi(char *ssid, char *password){
     Serial.print(".");
   }
 
-  Seral.println("");
+  Serial.println("");
   Serial.println("WiFi connected!");
-  s_ip = WiFi.localIP().toString();
+  _ip = WiFi.localIP().toString();
   _hostname = WiFi.hostname();
   _clientID = WiFi.macAddress();
 }
 
-void callback(char *topic, byte *payload, unsigned int length)
+void MQTTSocket::myCallback(char *topic, unsigned char *payload, unsigned int length)
 {
   Serial.print("New message arrived [");
   Serial.print(topic);
@@ -102,19 +103,19 @@ void MQTTSocket::pingEvent(byte *payload)
   Serial.print("Ping event received & ");
   if (payload[0] == 1)
   {
-    client.publish(("unity/device/" + _clientID + "/ping").c_str(), "1");
+    _client.publish(("unity/device/" + _clientID + "/ping").c_str(), "1");
     Serial.print("returned.\n");
   }
   else
   {
     Serial.print("disconnecting WiFi in 3 sec...");
     delay(3000);
-  }
     WiFi.disconnect(true);
+  }
 }
 
 void MQTTSocket::unityConnectEvent(){
-  client.publish(("unity/connect/" + _clientID + "/" + _configID + "/" + _deviceName).c_str(), "1");
+  _client.publish(("unity/connect/" + _clientID + "/" + _configID + "/" + _deviceName).c_str(), "1");
   helloEvent();
 }
 
@@ -126,11 +127,15 @@ void MQTTSocket::setCallbackAction(ACTION_CALLBACK_SIGNATURE){
   this->actionEvent = actionEvent;
 }
 
-void MQTTSocket::sendEvent(string component, string eventType, byte *payload){
+void MQTTSocket::setCallbackHello(UNITYCONNECT_CALLBACK_SIGNATURE){
+  this->helloEvent = helloEvent;
+}
+
+void MQTTSocket::sendEvent(char* component, char* eventType, char *payload){
   _client.publish(("unity/device/" + _clientID + "/event/" + component + "/" + eventType).c_str(), payload);
 }
 
-void MQTTSocket::sendValue(char *component, char *eventType, byte *payload){
+void MQTTSocket::sendValue(char *component, char *eventType, char *payload){
   _client.publish(("unity/device/" + _clientID + "/event/" + component + "/" + eventType).c_str(), payload);
 }
 
@@ -138,9 +143,9 @@ void MQTTSocket::loop(){
   if(!_client.connected()){
     while(!_client.connected()){
       Serial.print("Connecting to MQTT server... ");
-      if(_client.connect(_clientID)){
+      if(_client.connect(_clientID.c_str())){
         Serial.println("Connected!");
-        _client.publish(("unity/connect/" + _clientIDstr + "/" + _configID + "/" + _deviceName).c_str(), "1");
+        _client.publish(("unity/connect/" + _clientID + "/" + _configID + "/" + _deviceName).c_str(), "1");
         _client.subscribe((_clientID + "/#").c_str());
         _client.subscribe("unityconnect/#");
       }else{

@@ -45,7 +45,7 @@ namespace ExactFramework.Handlers
             client.MqttMsgPublishReceived += HandleMQTTMessage; //Setting up the function triggered on received messages
             client.Connect("Unity02"); //Connecting to the MQTT broker specified on the ip in the client init - String: client ID
             client.Subscribe(new string[] { "unity/#" }, new byte[] { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE }); //Subscribing to the topic
-            client.Publish("esp8266/hello", new byte[] { 0 });
+            client.Publish("unityconnect/hello", new byte[] { 0 });
         }
 
         ///<summary>

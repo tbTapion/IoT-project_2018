@@ -8,12 +8,12 @@ Arduino ESP8266 WiFi and MQTT
 
 // Update these with values suitable for your network.
 
-const char* ssid = "MyExactNet";
-const char* password = "MyExactNetPassword";
-const char* mqtt_server = "192.168.42.1";
-const int mqtt_port = 1883;
-const char* configID = "ButtonLight";
-const char* deviceName = "switch";
+const char *ssid = "MyExactNet";
+const char *password = "MyExactNetPassword";
+const char *mqtt_server = "192.168.4.1";
+int mqtt_port = 1883;
+const char *configID = "ButtonLight";
+const char *deviceName = "switch";
 
 //MQTT and WIFi class
 MQTTSocket mqttSocket;
@@ -37,20 +37,20 @@ void setup() {
 //Useful to reset output components
 void helloEvent(){
   led.setHeartbeatInterval(0);
-  led.setState(LOW);
+  led.setValue(LOW);
 }
 
 //Called on get message received and when the main callback function handles the message
 void getEvent(char *component, char *valueType){
   if(strcmp(component, "led") == 0){
     if(strcmp(valueType, "state") == 0){
-      string state = "" + char(led.getState());
-      mqttSocket.sendValue("led", "state", state);
+      char state[2] = {char(48+led.getValue())};
+      mqttSocket.sendValue("led", "state", (char*)48+led.getValue());
     }
   }else if(strcmp(component, "button") == 0){
     if(strcmp(valueType, "state") == 0){
-      string state = "" + char(button.isDown());
-      mqttSocket.sendValue("button", "state", state);
+      char state[2] = {char(48+button.isDown())};
+      mqttSocket.sendValue("button", "state", (char*)48+button.isDown());
     }
   }
 }
@@ -59,10 +59,10 @@ void getEvent(char *component, char *valueType){
 void actionEvent(char *component, char *actionType, byte *payload){
   if(strcmp(component, "led") == 0){
     if(strcmp(actionType, "state") == 0){
-      if(payload[0] == "1"){
-        led.setState(HIGH);
+      if(payload[0] == 1){
+        led.setValue(HIGH);
       }else{
-        led.setState(LOW);
+        led.setValue(LOW);
       }
     }
   }
