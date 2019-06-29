@@ -6,22 +6,31 @@
 MQTTSocket::MQTTSocket(){
   _port = 1883;
 }
-//MQTTSocket(char *ssid, char *password);
-//MQTTSocket(char *ssid, char *password, char *mqttBrokerIP);
-//MQTTSocket(char *ssid, char *password, char *mqttBrokerIP, int port);
+
+MQTTSocket::MQTTSocket(char *ssid, char *password){
+  _port = 1883;
+  initWiFi(ssid, password);
+}
+
+MQTTSocket::MQTTSocket(char *ssid, char *password, char *mqttBrokerIP){
+  _port = 1883;
+  initWiFi(ssid, password);
+  initMQTT(mqttBrokerIP);
+}
+
+MQTTSocket::MQTTSocket(char *ssid, char *password, char *mqttBrokerIP, int port){
+  _port = port;
+  initWiFi(ssid, password);
+  initMQTT(mqttBrokerIP, port);
+}
+
 void MQTTSocket::initConfiguration(const char *configID, const char *deviceName){
   _configID = configID;
   _deviceName = deviceName;
 }
 
 void MQTTSocket::initMQTT(const char *mqttBrokerIP){
-  _mqttBrokerIP = mqttBrokerIP;
-
-  PubSubClient client(_espClient);
-  _client = client;
-  _client.setServer(_mqttBrokerIP.c_str(), _port);
-  std::function<void(char*, unsigned char*, unsigned int)> callback = [=](char *a, unsigned char *b, unsigned int c) {this->myCallback(a, b, c);};
-  _client.setCallback(callback);
+  initMQTT(mqttBrokerIP, 1883);
 }
 
 void MQTTSocket::initMQTT(const char *mqttBrokerIP, int port){
@@ -31,8 +40,8 @@ void MQTTSocket::initMQTT(const char *mqttBrokerIP, int port){
   PubSubClient client(_espClient);
   _client = client;
   _client.setServer(_mqttBrokerIP.c_str(), _port);
-  std::function<void(char*, unsigned char*, unsigned int)> callback = [=](char *a, unsigned char *b, unsigned int c) {this->myCallback(a, b, c);};
-  _client.setCallback(callback);
+//  std::function<void(char*, unsigned char*, unsigned int)> callback = [=](char *a, unsigned char *b, unsigned int c) {this->myCallback(a, b, c);};
+  _client.setCallback([=](char *topic, unsigned char *payload, unsigned int length) {this->myCallback(topic, payload, length);});
 }
 
 void MQTTSocket::initWiFi(const char *ssid, const char *password){
@@ -71,6 +80,10 @@ void MQTTSocket::myCallback(char *topic, unsigned char *payload, unsigned int le
   Serial.println("Message type: ");
   Serial.print(messageType);
 
+  int payloadIndex = 0;
+  int nextComponentPayload = payload[payloadIndex] + 1;
+  int payloadSize = payload[payloadIndex];
+
   if(strcmp(messageType, "ping") == 0){
     pingEvent(payload);
   }else if(strcmp(messageType, "hello") == 0){
@@ -79,14 +92,17 @@ void MQTTSocket::myCallback(char *topic, unsigned char *payload, unsigned int le
 
   char *component = strtok(NULL, "/");
   char *eventType = strtok(NULL, "/");
+  byte * payloadPart;
   while (component != NULL)
   {
     Serial.println(component);
     Serial.println(eventType);
 
+    std::copy(payload + payloadIndex +1, payload + payloadIndex + payloadSize, payloadPart);
+
     if (strcmp(topicElement, "action") == 0)
     {
-      actionEvent(component, eventType, payload);
+      actionEvent(component, eventType, payloadPart);
     }
     else if (strcmp(topicElement, "get") == 0)
     {
