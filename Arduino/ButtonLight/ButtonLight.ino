@@ -45,12 +45,14 @@ void getEvent(char *component, char *valueType){
   if(strcmp(component, "led") == 0){
     if(strcmp(valueType, "state") == 0){
       char state[2] = {char(48+led.getValue())};
-      mqttSocket.sendValue("led", "state", (char*)48+led.getValue());
+      mqttSocket.sendValue("led", "state", state);
+      delete [] state;
     }
   }else if(strcmp(component, "button") == 0){
     if(strcmp(valueType, "state") == 0){
       char state[2] = {char(48+button.isDown())};
-      mqttSocket.sendValue("button", "state", (char*)48+button.isDown());
+      mqttSocket.sendValue("button", "state", state);
+      delete [] state;
     }
   }
 }
