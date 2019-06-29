@@ -38,9 +38,9 @@ private:
 
 public:
   MQTTSocket();
-  //MQTTSocket(char *ssid, char *password);
-  //MQTTSocket(char *ssid, char *password, char *mqttBrokerIP);
-  //MQTTSocket(char *ssid, char *password, char *mqttBrokerIP, int port);
+  MQTTSocket(char *ssid, char *password);
+  MQTTSocket(char *ssid, char *password, char *mqttBrokerIP);
+  MQTTSocket(char *ssid, char *password, char *mqttBrokerIP, int port);
   void initConfiguration(const char *configID, const char *deviceName);
   void initWiFi(const char *ssid, const char *password);
   void initMQTT(const char *mqttBrokerIP);
