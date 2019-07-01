@@ -97,7 +97,8 @@ void MQTTSocket::myCallback(char *topic, unsigned char *payload, unsigned int le
   {
     Serial.println(component);
     Serial.println(eventType);
-
+    
+    //extract the next part of the payload bundle and put it into payloadPart
     std::copy(payload + payloadIndex +1, payload + payloadIndex + payloadSize, payloadPart);
 
     if (strcmp(topicElement, "action") == 0)
@@ -108,6 +109,9 @@ void MQTTSocket::myCallback(char *topic, unsigned char *payload, unsigned int le
     {
       getEvent(component, eventType);
     }
+
+    payloadIndex = payloadIndex + payloadSize + 1 // 1 added to reach the next divider byte
+    payloadSize = payload[payloadIndex] //Next payload size
 
     component = strtok(NULL, "/");
     eventType = strtok(NULL, "/");
